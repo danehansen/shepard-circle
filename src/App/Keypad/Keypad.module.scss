@@ -1,0 +1,25 @@
+.root {
+  border-radius: 50%;
+  border: 1px solid black;
+}
+
+.button {
+  font-weight: bold;
+  font-size: 16px;
+  $size: 60px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: $size;
+  height: $size;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: transform 0.1s;
+  border: 1px solid black;
+  outline: none;
+  cursor: pointer;
+
+  &:active {
+    transform: translate(-50%, -50%) scale(1.5);
+  }
+}
