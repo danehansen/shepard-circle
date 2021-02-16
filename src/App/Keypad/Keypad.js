@@ -15,8 +15,8 @@ export default function Keypad({className, notes}) {
             left: `${(x + 1) * 50}%`,
             top: `${(y + 1) * 50}%`,
           }}
-          onPointerDown={note.play}
-          onPointerUp={note.pause}
+          onTouchStart={note.play}
+          onTouchEnd={note.pause}
         >{note.label}</button>
       })}
     </div>

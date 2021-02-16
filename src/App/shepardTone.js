@@ -6,7 +6,7 @@ const CURRENT_NOTES = [];
 
 function startNote(index) {
   const START_FREQ = A / Math.pow(2, 4);
-  const audioCtx = new AudioContext();
+  const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
   CURRENT_NOTES[index] = audioCtx;
   const gainNode = audioCtx.createGain();
   const steps_per_loop = 12;

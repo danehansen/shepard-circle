@@ -12,6 +12,17 @@ $padding: 50px;
   align-items: center;
 }
 
+.holder {
+  width: 100%;
+  background: gray;
+}
+
+.touchPad {
+  height: 0;
+  padding-top: 100%;
+  position: relative;
+}
+
 .label {
   position: absolute;
   top: $padding;
@@ -21,16 +32,6 @@ $padding: 50px;
 .toggle {
   width: 20px;
   height: 20px;
-}
-
-.holderHolder {
-  width: 100%;
-}
-
-.holder {
-  height: 0;
-  padding-top: 100%;
-  position: relative;
 }
 
 .display {
