@@ -9,11 +9,11 @@ export default function Keypad({className, notes}) {
         const x = Math.cos(rad);
         const y = Math.sin(rad)
         return <button
-          className={styles.button}
+          className={classnames(styles.button, note.label.length > 1 && styles.small)}
           key={note.label}
           style={{
-            left: `${(x + 1) * 50}%`,
-            top: `${(y + 1) * 50}%`,
+            left: `${(x * 35 + 50)}%`,
+            top: `${(y * 35 + 50)}%`,
           }}
           onTouchStart={note.play}
           onTouchEnd={note.pause}

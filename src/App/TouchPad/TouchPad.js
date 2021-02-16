@@ -32,7 +32,6 @@ export default function TouchPad({className, callback}) {
     }
     const rect = rootNode.current.getBoundingClientRect();
 
-    // console.log('anyTouch', rect);
     const circ = Math.PI * 2;
     const directions = []
     for (let i = 0; i < targetTouches.length; i++) {
@@ -41,10 +40,11 @@ export default function TouchPad({className, callback}) {
       const y = clientY - rect.y - rect.height * 0.5;
       const rad = (Math.atan2(-y, x) + circ) % circ;
       const rounded = Math.round(round(rad, circ / 12) / circ * 12) % 12;
-      const direction = (12 - (rounded + 9)) % 12;
+      const direction = (12 * 2 - (rounded + 9)) % 12;
       // console.log('anyTouch', direction);
       directions.push(direction);
     }
+    // console.log('anyTouch', directions);
     callback(directions);
   }
 

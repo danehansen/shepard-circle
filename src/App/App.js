@@ -9,6 +9,7 @@ import {initializaAudioContexts} from './shepardTone';
 export default function App() {
   let [isChromatic, setChromatic] = useState(true);
   let [hasInitializedSound, setHasInitializedSound] = useState(false);
+  let [activeNotes, setActiveNotes] = useState([]);
 
   function onChange(evt) {
     setChromatic(!isChromatic);
@@ -27,6 +28,7 @@ export default function App() {
         note.pause();
       }
     }
+    setActiveNotes(directions);
   }
 
   return (
@@ -36,7 +38,11 @@ export default function App() {
         <input className={styles.toggle} type="checkbox" checked={isChromatic} onChange={onChange} />
       </label>
       <div className={styles.holder}>
-        <TouchPad callback={onTouchCallback} className={styles.touchPad}/>
+        <div className={styles.holdee}>
+          <Display activeNotes={activeNotes} className={styles.touchPad} />
+          <Keypad className={styles.touchPad} notes={isChromatic ? CHROMATIC_NOTES : FIFTH_NOTES} />
+          <TouchPad callback={onTouchCallback} className={styles.touchPad}/>
+        </div>
       </div>
     </div>
   );

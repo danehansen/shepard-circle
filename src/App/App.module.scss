@@ -14,13 +14,19 @@ $padding: 50px;
 
 .holder {
   width: 100%;
-  background: gray;
 }
 
-.touchPad {
+.holdee {
   height: 0;
   padding-top: 100%;
   position: relative;
+}
+
+.touchPad {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  width: 100%;
 }
 
 .label {
@@ -32,18 +38,4 @@ $padding: 50px;
 .toggle {
   width: 20px;
   height: 20px;
-}
-
-.display {
-  position: absolute;
-  height: 100%;
-  top: 0;
-  width: 100%;
-}
-
-.keypad {
-  position: absolute;
-  height: 100%;
-  top: 0;
-  width: 100%;
 }
