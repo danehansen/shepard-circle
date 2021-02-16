@@ -1,6 +1,6 @@
 {
   "files": {
-    "main.css": "/shepard-circle/static/css/main.276014f4.chunk.css",
+    "main.css": "/shepard-circle/static/css/main.5c3f4df6.chunk.css",
     "main.js": "/shepard-circle/static/js/main.c4eebcae.chunk.js",
     "main.js.map": "/shepard-circle/static/js/main.c4eebcae.chunk.js.map",
     "runtime-main.js": "/shepard-circle/static/js/runtime-main.43d134d1.js",
@@ -10,13 +10,13 @@
     "static/js/3.4361d379.chunk.js": "/shepard-circle/static/js/3.4361d379.chunk.js",
     "static/js/3.4361d379.chunk.js.map": "/shepard-circle/static/js/3.4361d379.chunk.js.map",
     "index.html": "/shepard-circle/index.html",
-    "static/css/main.276014f4.chunk.css.map": "/shepard-circle/static/css/main.276014f4.chunk.css.map",
+    "static/css/main.5c3f4df6.chunk.css.map": "/shepard-circle/static/css/main.5c3f4df6.chunk.css.map",
     "static/js/2.d88cdcb7.chunk.js.LICENSE.txt": "/shepard-circle/static/js/2.d88cdcb7.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.43d134d1.js",
     "static/js/2.d88cdcb7.chunk.js",
-    "static/css/main.276014f4.chunk.css",
+    "static/css/main.5c3f4df6.chunk.css",
     "static/js/main.c4eebcae.chunk.js"
   ]
 }
