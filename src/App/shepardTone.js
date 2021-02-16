@@ -3,11 +3,11 @@ const MIN_FREQ = 20;
 const MAX_FREQ = 20000;
 
 const CURRENT_NOTES = [];
+const AUDIO_CONTEXTS = [];
 
-function startNote(index) {
+function initializeContext(index) {
   const START_FREQ = A / Math.pow(2, 4);
   const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  CURRENT_NOTES[index] = audioCtx;
   const gainNode = audioCtx.createGain();
   const steps_per_loop = 12;
   const multiplier = Math.pow(2, 1 / steps_per_loop);
@@ -29,11 +29,22 @@ function startNote(index) {
     oscillator.start(0);
     oscillators[i] = oscillator;
   }
+  audioCtx.suspend();
+  AUDIO_CONTEXTS[index] = audioCtx;
+}
+
+function startNote(index) {
+  CURRENT_NOTES[index] = true;
+  if (!AUDIO_CONTEXTS[index]) {
+    initializeContext(index);
+  } else {
+    AUDIO_CONTEXTS[index].resume();
+  }
 }
 
 function stopNote(index) {
-  CURRENT_NOTES[index].close();
-  CURRENT_NOTES[index] = null;
+  AUDIO_CONTEXTS[index].suspend();
+  CURRENT_NOTES[index] = false;
 }
 
 export default function toggleNote(note, isPlaying) {
@@ -41,5 +52,11 @@ export default function toggleNote(note, isPlaying) {
     startNote(note);
   } else if (!isPlaying && CURRENT_NOTES[note]) {
     stopNote(note);
+  }
+}
+
+export function initializaAudioContexts() {
+  for (let i = 0; i < 12; i++) {
+    initializeContext(i);
   }
 }
