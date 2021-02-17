@@ -1,6 +1,7 @@
 import styles from './App.module.scss';
 import Display from './Display/Display';
 import Keypad from './Keypad/Keypad';
+import TouchPad from './TouchPad/TouchPad';
 import {CHROMATIC_NOTES, FIFTH_NOTES} from './notes';
 import {useState} from 'react';
 import {initializaAudioContexts} from './shepardTone';
@@ -8,6 +9,7 @@ import {initializaAudioContexts} from './shepardTone';
 export default function App() {
   let [isChromatic, setChromatic] = useState(true);
   let [hasInitializedSound, setHasInitializedSound] = useState(false);
+  let [activeNotes, setActiveNotes] = useState([]);
 
   function onChange(evt) {
     setChromatic(!isChromatic);
@@ -18,6 +20,19 @@ export default function App() {
     setHasInitializedSound(true);
   }
 
+  function onTouchCallback(directions) {
+    for(const note of CHROMATIC_NOTES) {
+      const index = (note.index + 3)%12;
+      // const index = note.index;
+      if (directions.indexOf(note.index) >= 0) {
+        isChromatic ? CHROMATIC_NOTES[index].play() : FIFTH_NOTES[index].play()
+      } else {
+        isChromatic ? CHROMATIC_NOTES[index].pause() : FIFTH_NOTES[index].pause()
+      }
+    }
+    setActiveNotes(directions);
+  }
+
   return (
     <div className={styles.root} onClick={hasInitializedSound ? null : onClick}>
       <label className={styles.label}>
@@ -25,9 +40,10 @@ export default function App() {
         <input className={styles.toggle} type="checkbox" checked={isChromatic} onChange={onChange} />
       </label>
       <div className={styles.holder}>
-        <div className={styles.touchPad}>
-        <Display className={styles.display} />
-        <Keypad className={styles.keypad} notes={isChromatic ? CHROMATIC_NOTES : FIFTH_NOTES} />
+        <div className={styles.holdee}>
+          <Display activeNotes={activeNotes} className={styles.touchPad} isChromatic={isChromatic} />
+          <Keypad className={styles.touchPad} notes={isChromatic ? CHROMATIC_NOTES : FIFTH_NOTES} />
+          <TouchPad callback={onTouchCallback} className={styles.touchPad}/>
         </div>
       </div>
     </div>

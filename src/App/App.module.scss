@@ -1,4 +1,4 @@
-$padding: 50px;
+$padding: 5px;
 
 .root {
   font-family: 'Helvetica Neue', sans-serif;
@@ -10,17 +10,25 @@ $padding: 50px;
   display: flex;
   justify-content: center;
   align-items: center;
+  touch-action: none;
 }
 
 .holder {
   width: 100%;
-  background: gray;
+  user-select: none;
 }
 
-.touchPad {
+.holdee {
   height: 0;
   padding-top: 100%;
   position: relative;
+}
+
+.touchPad {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  width: 100%;
 }
 
 .label {
@@ -32,18 +40,4 @@ $padding: 50px;
 .toggle {
   width: 20px;
   height: 20px;
-}
-
-.display {
-  position: absolute;
-  height: 100%;
-  top: 0;
-  width: 100%;
-}
-
-.keypad {
-  position: absolute;
-  height: 100%;
-  top: 0;
-  width: 100%;
 }
