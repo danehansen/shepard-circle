@@ -22,10 +22,12 @@ export default function App() {
 
   function onTouchCallback(directions) {
     for(const note of CHROMATIC_NOTES) {
+      const index = (note.index + 3)%12;
+      // const index = note.index;
       if (directions.indexOf(note.index) >= 0) {
-        isChromatic ? note.play() : FIFTH_NOTES[note.index].play()
+        isChromatic ? CHROMATIC_NOTES[index].play() : FIFTH_NOTES[index].play()
       } else {
-        isChromatic ? note.pause() : FIFTH_NOTES[note.index].pause()
+        isChromatic ? CHROMATIC_NOTES[index].pause() : FIFTH_NOTES[index].pause()
       }
     }
     setActiveNotes(directions);
