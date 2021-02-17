@@ -23,9 +23,9 @@ export default function App() {
   function onTouchCallback(directions) {
     for(const note of CHROMATIC_NOTES) {
       if (directions.indexOf(note.index) >= 0) {
-        note.play();
+        isChromatic ? note.play() : FIFTH_NOTES[note.index].play()
       } else {
-        note.pause();
+        isChromatic ? note.pause() : FIFTH_NOTES[note.index].pause()
       }
     }
     setActiveNotes(directions);
@@ -39,7 +39,7 @@ export default function App() {
       </label>
       <div className={styles.holder}>
         <div className={styles.holdee}>
-          <Display activeNotes={activeNotes} className={styles.touchPad} />
+          <Display activeNotes={activeNotes} className={styles.touchPad} isChromatic={isChromatic} />
           <Keypad className={styles.touchPad} notes={isChromatic ? CHROMATIC_NOTES : FIFTH_NOTES} />
           <TouchPad callback={onTouchCallback} className={styles.touchPad}/>
         </div>

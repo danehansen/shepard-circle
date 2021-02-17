@@ -2,6 +2,7 @@ import styles from './Display.module.scss';
 import classnames from 'classnames';
 import React from 'react';
 import Canvas from './canvas';
+import {FIFTH_NOTES} from '../notes';
 
 const colors = ['#f00', '#f80', '#ff0', '#8f0', '#0f0', '#0f8', '#0ff', '#08f', '#00f', '#80f', '#f0f', '#f08'];
 
@@ -27,6 +28,10 @@ export default class Display extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
+    if (prevProps.isChromatic !== this.props.isChromatic) {
+      this._drawBackground();
+      this._root.drawImage(this._background);
+    }
     if (prevProps.activeNotes !== this.props.activeNotes) {
       this._buffer.clearRect();
       this._buffer.drawImage(this._background);
@@ -56,8 +61,10 @@ export default class Display extends React.Component {
   }
 
   _drawBackground() {
+    const {isChromatic} = this.props;
     for (let i = 0; i < colors.length; i++) {
-      fillSlice(this._background, colors[i], i);
+      const color = isChromatic ? colors[i] : colors[(FIFTH_NOTES[i].index + 6) % 12];
+      fillSlice(this._background, color, i);
     }
   }
 
