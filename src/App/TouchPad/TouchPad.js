@@ -1,7 +1,9 @@
 import {useRef} from 'react';
 import {round} from '@danehansen/math';
+import styles from './TouchPad.module.scss';
+import convertRadiansToIndex from '../../util/convertRadiansToIndex';
 
-export default function TouchPad({className, callback}) {
+export default function TouchPad({className, callback, semitones, diameter, layoutIncrement, rootPitch}) {
   const rootNode = useRef(null);
 
   function onTouchMove(evt) {
@@ -27,30 +29,30 @@ export default function TouchPad({className, callback}) {
 
   function anyTouch(evt) {
     const {targetTouches} = evt;
+
     if (!targetTouches) {
       callback([]);
     }
     const rect = rootNode.current.getBoundingClientRect();
-
-    const circ = Math.PI * 2;
-    const directions = []
+    const pitches = []
     for (let i = 0; i < targetTouches.length; i++) {
       const {clientX, clientY} = targetTouches[i];
-      const x = clientX - rect.x - rect.width * 0.5;
-      const y = clientY - rect.y - rect.height * 0.5;
-      const rad = (Math.atan2(-y, x) + circ) % circ;
-      const rounded = Math.round(round(rad, circ / 12) / circ * 12) % 12;
-      const direction = (12 * 2 - (rounded + 9)) % 12;
-      // console.log('anyTouch', direction);
-      directions.push(direction);
+      const x = clientX - rect.x - diameter * 0.5;
+      const y = -(clientY - rect.y - diameter * 0.5);
+
+      const length = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
+      if (length <= diameter / 2) {
+        const rad = Math.atan2(y, x);
+        const pitch = convertRadiansToIndex(rad, semitones, rootPitch, layoutIncrement);
+        pitches.push(pitch);
+      }
     }
-    // console.log('anyTouch', directions);
-    callback(directions);
+    callback(pitches);
   }
 
   return <div
     ref={rootNode}
-    className={className}
+    className={styles.root}
     onTouchMove={onTouchMove}
     onTouchStart={onTouchStart}
     onTouchEnd={onTouchEnd}
