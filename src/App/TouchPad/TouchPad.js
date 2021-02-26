@@ -1,5 +1,5 @@
 import {useRef} from 'react';
-import {round} from '@danehansen/math';
+import {round, modulo} from '@danehansen/math';
 import styles from './TouchPad.module.scss';
 import convertRadiansToIndex from '../../util/convertRadiansToIndex';
 
@@ -42,7 +42,7 @@ export default function TouchPad({className, callback, semitones, diameter, layo
 
       const length = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
       if (length <= diameter / 2) {
-        const rad = Math.atan2(y, x);
+        const rad = modulo(Math.atan2(y, x), Math.PI * 2);
         const pitch = convertRadiansToIndex(rad, semitones, rootPitch, layoutIncrement);
         pitches.push(pitch);
       }

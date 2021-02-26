@@ -31,7 +31,7 @@ export default function App() {
     setMaxFreq(num);
   }
 
-  let [semitones, setSemitones] = useState(11);
+  let [semitones, setSemitones] = useState(12);
   function changeSemitones(num) {
     const incrementOptions = findIncrementOptions(num);
     if (incrementOptions.indexOf(layoutIncrement) >= 0) {
