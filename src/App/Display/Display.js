@@ -51,7 +51,7 @@ export default class Display extends React.Component {
       const radians = convertIndexToRadians(pitch, semitones, rootPitch, layoutIncrement);
       const color = colors[i];
       const isActive = activePitches.indexOf(pitch) >= 0;
-      fillSlice(this._buffer, color, pitch, semitones, rootPitch, layoutIncrement, diameter, isActive ? 1 : 0.9, isActive ? 0.15 : 0.1);
+      fillSlice(this._buffer, color, pitch, semitones, rootPitch, layoutIncrement, diameter, isActive ? 1 : 0.95, isActive ? 0.12 : 0.1);
     }
   }
 
@@ -81,12 +81,13 @@ function fillSlice(canvas, color, pitch, semitones, rootPitch, layoutIncrement, 
   canvas.moveTo(center + cos * center * holeRadius, center + sin * -center * holeRadius);
   canvas.lineTo(center + cos * center * outerRadius, center + sin * -center * outerRadius);
 
-  // outer arc TODO
-
-  // outer line
-  cos = Math.cos(radians + halfSlice);
-  sin = Math.sin(radians + halfSlice);
-  canvas.lineTo(center + cos * center * outerRadius, center + sin * -center * outerRadius);
+  // outer arc
+  cos = Math.cos(radians);
+  sin = Math.sin(radians);
+  const newAngle = Math.atan2(-sin, cos)
+  let startAngle = newAngle + halfSlice;
+  let endAngle = newAngle - halfSlice;
+  canvas.arc(center, center, center * outerRadius, startAngle, endAngle, true);
 
   // this is the edge of slice on the anticlockwise side
   cos = Math.cos(radians + halfSlice);
@@ -94,12 +95,12 @@ function fillSlice(canvas, color, pitch, semitones, rootPitch, layoutIncrement, 
   canvas.moveTo(center + cos * center * outerRadius, center + sin * -center * outerRadius);
   canvas.lineTo(center + cos * center * holeRadius, center + sin * -center * holeRadius);
 
-  // inner arc TODO
-
-  // inner line
-  cos = Math.cos(radians - halfSlice);
-  sin = Math.sin(radians - halfSlice);
-  canvas.lineTo(center + cos * center * holeRadius, center + sin * -center * holeRadius);
+  // inner arc
+  cos = Math.cos(radians);
+  sin = Math.sin(radians);
+  startAngle = newAngle - halfSlice;
+  endAngle = newAngle + halfSlice;
+  canvas.arc(center, center, center * holeRadius, startAngle, endAngle, false);
 
   canvas.fill();
 }
