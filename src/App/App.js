@@ -1,51 +1,132 @@
 import styles from './App.module.scss';
-import Display from './Display/Display';
-import Keypad from './Keypad/Keypad';
-import TouchPad from './TouchPad/TouchPad';
-import {CHROMATIC_NOTES, FIFTH_NOTES} from './notes';
+import Menu from './Menu/Menu';
 import {useState} from 'react';
-import {initializaAudioContexts} from './shepardTone';
+import {MIN_FREQ, MAX_FREQ, TEMPERMENT_TYPES, OSCILLATOR_TYPES} from '../constants';
+import findIncrementOptions from '../util/findIncrementOptions';
+import ResizeListener from './ResizeListener/ResizeListener';
+import Label from './Label/Label';
+import TouchPad from './TouchPad/TouchPad';
+import Display from './Display/Display';
+import {initializaAudio, toggleNote} from '../util/shepardTone'
 
 export default function App() {
-  let [isChromatic, setChromatic] = useState(true);
-  let [hasInitializedSound, setHasInitializedSound] = useState(false);
-  let [activeNotes, setActiveNotes] = useState([]);
+  let [isMenuOpen, setMenuOpen] = useState(false);
+  let [a4, setA4] = useState(440);
+  let [temperment, setTemperment] = useState(TEMPERMENT_TYPES.EQUAL);
+  let [oscillator, setOscillator] = useState(OSCILLATOR_TYPES.SINE);
+  let [rootPitch, setRootPitch] = useState(3);
 
-  function onChange(evt) {
-    setChromatic(!isChromatic);
+  let [minFreq, setMinFreq] = useState(MIN_FREQ);
+  let [maxFreq, setMaxFreq] = useState(MAX_FREQ);
+  function changeMinFreq(num) {
+    if (num >= maxFreq) {
+      setMaxFreq(num + 1);
+    }
+    setMinFreq(num);
+  }
+  function changeMaxFreq(num) {
+    if (num <= minFreq) {
+      setMinFreq(num - 1);
+    }
+    setMaxFreq(num);
   }
 
-  function onClick(evt) {
-    initializaAudioContexts();
-    setHasInitializedSound(true);
+  let [semitones, setSemitones] = useState(11);
+  function changeSemitones(num) {
+    const incrementOptions = findIncrementOptions(num);
+    if (incrementOptions.indexOf(layoutIncrement) >= 0) {
+      setLayoutIncrement(1);
+    }
+    if (temperment !== TEMPERMENT_TYPES.EQUAL) {
+      setTemperment(TEMPERMENT_TYPES.EQUAL);
+    }
+    setSemitones(num);
   }
 
-  function onTouchCallback(directions) {
-    for(const note of CHROMATIC_NOTES) {
-      const index = (note.index + 3)%12;
-      // const index = note.index;
-      if (directions.indexOf(note.index) >= 0) {
-        isChromatic ? CHROMATIC_NOTES[index].play() : FIFTH_NOTES[index].play()
+  let [layoutIncrement, setLayoutIncrement] = useState(1);
+  function changeLayoutIncrement(num) {
+    setLayoutIncrement(num);
+  }
+
+
+  let [hasInitializedAudio, setHasInitializedAudio] = useState(false);
+  function onInitialClick() {
+    initializaAudio(semitones, a4, minFreq, maxFreq);
+    setHasInitializedAudio(true);
+  }
+
+  function onMenuButtonClick() {
+    if (isMenuOpen) {
+      initializaAudio(semitones, a4, minFreq, maxFreq);
+    }
+    setMenuOpen(!isMenuOpen);
+  }
+
+  let [activePitches, setActivePitches] = useState([]);
+
+  function onTouchCallback(pitches) {
+    for(let i = 0; i < semitones; i++) {
+      if (pitches.indexOf(i) >= 0) {
+        toggleNote(i, true, oscillator)
       } else {
-        isChromatic ? CHROMATIC_NOTES[index].pause() : FIFTH_NOTES[index].pause()
+        toggleNote(i, false, oscillator)
       }
     }
-    setActiveNotes(directions);
+    setActivePitches(pitches);
   }
 
   return (
-    <div className={styles.root} onClick={hasInitializedSound ? null : onClick}>
-      <label className={styles.label}>
-        {isChromatic ? 'CHROMATIC' : 'CIRCLE OF FIFTHS'}
-        <input className={styles.toggle} type="checkbox" checked={isChromatic} onChange={onChange} />
-      </label>
-      <div className={styles.holder}>
-        <div className={styles.holdee}>
-          <Display activeNotes={activeNotes} className={styles.touchPad} isChromatic={isChromatic} />
-          <Keypad className={styles.touchPad} notes={isChromatic ? CHROMATIC_NOTES : FIFTH_NOTES} />
-          <TouchPad callback={onTouchCallback} className={styles.touchPad}/>
-        </div>
+    <div className={styles.root} onClick={hasInitializedAudio ? null : onInitialClick}>
+      <div className={styles.contentHolder}>
       </div>
+      <ResizeListener>
+        {function(innerWidth, innerHeight) {
+          const smallest = Math.min(innerWidth, innerHeight);
+          return <div className={styles.wheelHolder} style={{width: `${smallest}px`, height: `${smallest}px`}}>
+            <Display
+              diameter={smallest}
+              semitones={semitones}
+              layoutIncrement={layoutIncrement}
+              activePitches={activePitches}
+              rootPitch={rootPitch}
+              diameter={smallest}
+            />
+            <Label
+              layoutIncrement={layoutIncrement}
+              rootPitch={rootPitch}
+              semitones={semitones}
+            />
+            {hasInitializedAudio && <TouchPad
+              callback={onTouchCallback}
+              semitones={semitones}
+              diameter={smallest}
+              layoutIncrement={layoutIncrement}
+              rootPitch={rootPitch}
+            />}
+          </div>
+        }}
+      </ResizeListener>
+
+      {isMenuOpen && <div className={styles.menuHolder}><Menu
+        minFreq={minFreq}
+        maxFreq={maxFreq}
+        setMinFreq={changeMinFreq}
+        setMaxFreq={changeMaxFreq}
+        a4={a4}
+        setA4={setA4}
+        temperment={temperment}
+        setTemperment={setTemperment}
+        oscillator={oscillator}
+        setOscillator={setOscillator}
+        semitones={semitones}
+        setSemitones={changeSemitones}
+        rootPitch={rootPitch}
+        setRootPitch={setRootPitch}
+        layoutIncrement={layoutIncrement}
+        setLayoutIncrement={changeLayoutIncrement}
+      /></div>}
+
+      <button className={styles.menuButton} onClick={onMenuButtonClick}>{isMenuOpen ? 'close menu' : 'open menu'}</button>
     </div>
   );
 }

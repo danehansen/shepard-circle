@@ -1,0 +1,22 @@
+.root {
+  pointer-events: none;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.button {
+  font-weight: bold;
+  font-size: 16px;
+  $size: 60px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  transition: transform 0.1s;
+
+  &.small {
+    font-weight: normal;
+    font-size: 12px;
+  }
+}

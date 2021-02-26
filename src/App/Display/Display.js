@@ -2,12 +2,11 @@ import styles from './Display.module.scss';
 import classnames from 'classnames';
 import React from 'react';
 import Canvas from './canvas';
-import {FIFTH_NOTES} from '../notes';
-
-const colors = ['#f00', '#f80', '#ff0', '#8f0', '#0f0', '#0f8', '#0ff', '#08f', '#00f', '#80f', '#f0f', '#f08'];
+import {modulo} from '@danehansen/math';
+import convertIndexToRadians from '../../util/convertIndexToRadians';
 
 export default class Display extends React.Component {
-  state={}
+  state = {}
 
   constructor(props) {
     super(props);
@@ -16,43 +15,22 @@ export default class Display extends React.Component {
 
   componentDidMount() {
     const {current} = this._rootNode;
-    const {offsetWidth, offsetHeight} = current;
+    const {diameter} = this.props;
     this._root = new Canvas(current);
     this._root.globalCompositeOperation = 'copy';
-    this._buffer = new Canvas(undefined, offsetWidth, offsetHeight);
-    this._background = new Canvas(undefined, offsetWidth, offsetHeight);
+    this._buffer = new Canvas(undefined, diameter, diameter);
 
-
-    this._drawBackground();
-    this._root.drawImage(this._background);
+    this._drawSlices();
+    this._root.drawImage(this._buffer);
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (prevProps.isChromatic !== this.props.isChromatic) {
-      this._drawBackground();
-      this._root.drawImage(this._background);
-    }
-    if (prevProps.activeNotes !== this.props.activeNotes) {
+    if (prevProps !== this.props) {
       this._buffer.clearRect();
-      this._buffer.drawImage(this._background);
-      // this._buffer.globalCompositeOperation = 'hue';
-      // this._buffer.globalCompositeOperation = 'multiply';
-      // this._buffer.globalCompositeOperation = 'screen';
-      // this._buffer.globalCompositeOperation = 'overlay';
-      // this._buffer.globalCompositeOperation = 'darken';
-      // this._buffer.globalCompositeOperation = 'lighten';
-      // this._buffer.globalCompositeOperation = 'color-dodge';
-      // this._buffer.globalCompositeOperation = 'color-burn';
-      // this._buffer.globalCompositeOperation = 'luminosity';
-      this._drawHitStates();
-      this._connectNotes();
-      // this._buffer.globalCompositeOperation = 'source-over';
+      this._drawSlices();
+      this._connectPitches();
       this._root.drawImage(this._buffer);
     }
-  }
-
-  componentWillUnmount() {
-
   }
 
   render() {
@@ -60,56 +38,110 @@ export default class Display extends React.Component {
     return <canvas className={classnames(styles.root, className)} ref={this._rootNode} />;
   }
 
-  _drawBackground() {
-    const {isChromatic} = this.props;
-    for (let i = 0; i < colors.length; i++) {
-      const color = isChromatic ? colors[i] : colors[(FIFTH_NOTES[i].index + 6) % 12];
-      fillSlice(this._background, color, i);
+  _drawSlices() {
+    const {activePitches, layoutIncrement, semitones, rootPitch, diameter} = this.props;
+
+    const colors = findColors(semitones);
+    for (let i = 0; i < rootPitch; i++) {
+      colors.unshift(colors.pop());
+    }
+
+    for (let i = 0; i < semitones; i++) {
+      const pitch = i;
+      const radians = convertIndexToRadians(pitch, semitones, rootPitch, layoutIncrement);
+      const color = colors[i];
+      const isActive = activePitches.indexOf(pitch) >= 0;
+      fillSlice(this._buffer, color, pitch, semitones, rootPitch, layoutIncrement, diameter, isActive ? 1 : 0.9, isActive ? 0.15 : 0.1);
     }
   }
 
-  _drawHitStates() {
-    for (const note of this.props.activeNotes) {
-      fillSlice(this._buffer, `rgba(0,0,0,0.2)`, note);
-    }
-  }
-
-  _connectNotes() {
-    const {activeNotes} = this.props;
-    const center = this._buffer.width / 2;
-    const slice = Math.PI * 2 / 12;
-    const canvas = this._buffer;
-    for (let i = 0; i < activeNotes.length; i++) {
-      const beginRad = slice * (activeNotes[i] + 9);
-      const beginCos = Math.cos(beginRad);
-      const beginSin = Math.sin(beginRad);
-      for (let j = i; j < activeNotes.length; j++) {
-        const endRad = slice * (activeNotes[j] + 9);
-        const endCos = Math.cos(endRad);
-        const endSin = Math.sin(endRad);
-        canvas.beginPath();
-        canvas.moveTo(center + beginCos * center, center + beginSin * center)
-        canvas.lineTo(center + endCos * center, center + endSin * center);
-        canvas.stroke();
+  _connectPitches() {
+    const {activePitches, semitones, rootPitch, layoutIncrement, diameter} = this.props;
+    for (let i = 0; i < activePitches.length; i++) {
+      const pitchA = activePitches[i];
+      for (let j = i; j < activePitches.length; j++) {
+        const pitchB = activePitches[j];
+        connectPitches(pitchA, pitchB, semitones, rootPitch, layoutIncrement, diameter, this._buffer, 0.4);
       }
     }
   }
 }
 
-function fillSlice(canvas, color, index) {
-  const center = canvas.width / 2;
-  const slice = Math.PI * 2 / 12;
+function fillSlice(canvas, color, pitch, semitones, rootPitch, layoutIncrement, diameter, outerRadius, holeRadius) {
+  const center = diameter / 2;
+  const halfSlice = Math.PI / semitones;
+  let radians = convertIndexToRadians(pitch, semitones, rootPitch, layoutIncrement);
 
+  // this is the edge of slice on the clockwise side
+  // canvas.moveTo(center, center);
+  let cos = Math.cos(radians - halfSlice);
+  let sin = Math.sin(radians - halfSlice);
   canvas.beginPath();
   canvas.fillStyle = color;
-  canvas.moveTo(center, center);
+  canvas.moveTo(center + cos * center * holeRadius, center + sin * -center * holeRadius);
+  canvas.lineTo(center + cos * center * outerRadius, center + sin * -center * outerRadius);
 
-  const rad = slice * (index - 3.5);
-  const cos = Math.cos(rad);
-  const sin = Math.sin(rad);
-  canvas.lineTo(center + cos * center, center + sin * center);
+  // outer arc TODO
 
-  const closingRad = rad + slice;
-  canvas.arc(center, center, center, rad, closingRad);
+  // outer line
+  cos = Math.cos(radians + halfSlice);
+  sin = Math.sin(radians + halfSlice);
+  canvas.lineTo(center + cos * center * outerRadius, center + sin * -center * outerRadius);
+
+  // this is the edge of slice on the anticlockwise side
+  cos = Math.cos(radians + halfSlice);
+  sin = Math.sin(radians + halfSlice);
+  canvas.moveTo(center + cos * center * outerRadius, center + sin * -center * outerRadius);
+  canvas.lineTo(center + cos * center * holeRadius, center + sin * -center * holeRadius);
+
+  // inner arc TODO
+
+  // inner line
+  cos = Math.cos(radians - halfSlice);
+  sin = Math.sin(radians - halfSlice);
+  canvas.lineTo(center + cos * center * holeRadius, center + sin * -center * holeRadius);
+
   canvas.fill();
+}
+
+function findColors(semitones) {
+  const colors = [];
+  const buttonSlice = Math.PI * 2 / semitones;
+  for(let i = 0; i < semitones; i++) {
+    colors.push(directionalColor(i * buttonSlice));
+  }
+  return colors;
+}
+
+function directionalColor(direction) {
+  const colorSlice = Math.PI * 2 / 3;
+  const cosR = Math.cos(direction);
+  const sinR = Math.sin(direction);
+  const cosG = Math.cos(direction - colorSlice);
+  const sinG = Math.sin(direction - colorSlice);
+  const cosB = Math.cos(direction + colorSlice);
+  const sinB = Math.sin(direction + colorSlice);
+
+  const r = Math.round(cosR * 255 * 0.5 + 255 * 0.5);
+  const g = Math.round(cosG * 255 * 0.5 + 255 * 0.5);
+  const b = Math.round(cosB * 255 * 0.5 + 255 * 0.5);
+
+  return `rgb(${r}, ${g}, ${b})`;
+}
+
+function connectPitches(pitchA, pitchB, semitones, rootPitch, layoutIncrement, diameter, canvas, radius) {
+  const center = diameter / 2;
+
+  const radianA = convertIndexToRadians(pitchA, semitones, rootPitch, layoutIncrement);
+  const cosA = Math.cos(radianA);
+  const sinA = Math.sin(-radianA);
+
+  const radianB = convertIndexToRadians(pitchB, semitones, rootPitch, layoutIncrement);
+  const cosB = Math.cos(radianB);
+  const sinB = Math.sin(-radianB);
+
+  canvas.beginPath();
+  canvas.moveTo(center + cosA * center * radius, center + sinA * center * radius)
+  canvas.lineTo(center + cosB * center * radius, center + sinB * center * radius);
+  canvas.stroke();
 }
