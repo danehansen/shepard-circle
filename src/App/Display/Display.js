@@ -4,6 +4,7 @@ import React from 'react';
 import Canvas from './canvas';
 import {modulo} from '@danehansen/math';
 import convertIndexToRadians from '../../util/convertIndexToRadians';
+import findInterval from '../../util/findInterval';
 
 export default class Display extends React.Component {
   state = {}
@@ -141,8 +142,45 @@ function connectPitches(pitchA, pitchB, semitones, rootPitch, layoutIncrement, d
   const cosB = Math.cos(radianB);
   const sinB = Math.sin(-radianB);
 
+  const pointA = {
+    x: center + cosA * center * radius,
+    y: center + sinA * center * radius,
+  };
+
+  const pointB = {
+    x: center + cosB * center * radius,
+    y: center + sinB * center * radius,
+  };
+
+  const interval = findInterval(pitchA, pitchB, semitones);
+  if (interval) {
+    canvas.strokeStyle = "#888";
+    const xDiff = pointB.x - pointA.x;
+    const yDiff = pointB.y - pointA.y;
+    const diff = Math.sqrt(Math.pow(xDiff, 2) + Math.pow(yDiff, 2));
+    const radiusA = diff / interval.a / 2;
+    const radiusB = diff / interval.b / 2;
+
+    for (let i = 0; i < interval.a; i++) {
+      canvas.beginPath();
+      const centerX = pointA.x + xDiff / interval.a * (i + 0.5);
+      const centerY = pointA.y + yDiff / interval.a * (i + 0.5);
+      canvas.arc(centerX, centerY, radiusA, 0, Math.PI * 2);
+      canvas.stroke();
+    }
+
+    for (let i = 0; i < interval.b; i++) {
+      canvas.beginPath();
+      const centerX = pointA.x + xDiff / interval.b * (i + 0.5);
+      const centerY = pointA.y + yDiff / interval.b * (i + 0.5);
+      canvas.arc(centerX, centerY, radiusB, 0, Math.PI * 2);
+      canvas.stroke();
+    }
+  }
+
+  canvas.strokeStyle = "black";
   canvas.beginPath();
-  canvas.moveTo(center + cosA * center * radius, center + sinA * center * radius)
-  canvas.lineTo(center + cosB * center * radius, center + sinB * center * radius);
+  canvas.moveTo(pointA.x, pointA.y);
+  canvas.lineTo(pointB.x, pointB.y);
   canvas.stroke();
 }
