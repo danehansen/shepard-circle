@@ -118,7 +118,7 @@ export default function Menu({ a4, temperment, semitones, minFreq, maxFreq, layo
         </label>
       </div>
 
-      <div className={styles.property}>
+      {/*<div className={styles.property}>
         <h2 className={styles.title}>Temperment</h2>
         <label className={styles.label}>
           <input className={styles.input} type="radio" disabled checked={temperment === TEMPERMENT_TYPES.EQUAL} value={TEMPERMENT_TYPES.EQUAL} onChange={onTempermentChange} />
@@ -136,7 +136,7 @@ export default function Menu({ a4, temperment, semitones, minFreq, maxFreq, layo
           <input className={styles.input} type="radio" disabled checked={temperment === TEMPERMENT_TYPES.PYTHAGOREAN} value={TEMPERMENT_TYPES.PYTHAGOREAN} onChange={onTempermentChange} />
           <div className={styles.labelText}>{TEMPERMENT_TYPES.PYTHAGOREAN}</div>
         </label>
-      </div>
+      </div>*/}
     </form>
   );
 }
