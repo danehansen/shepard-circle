@@ -1,13 +1,21 @@
 .root {
   background: rgba(white, 0.8);
+  padding: 20px;
+  min-height: 100%;
 }
 
 .property {
+  margin-bottom: 20px;
+}
 
+.columns {
+  grid-template-columns: repeat(auto-fill, minmax(100px, auto));
+  column-gap: 10px;
+  display: grid;
 }
 
 .title {
-
+  margin: 0;
 }
 
 .label {
@@ -19,5 +27,7 @@
 }
 
 .input {
-
+  &[type="range"] {
+    width: 100%;
+  }
 }

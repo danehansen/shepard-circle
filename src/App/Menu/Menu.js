@@ -49,13 +49,22 @@ export default function Menu({ a4, temperment, semitones, minFreq, maxFreq, layo
       </div>
 
       <div className={styles.property}>
+        <h2 className={styles.title}>Semitones</h2>
+        <label className={styles.label}>
+          <input className={styles.input} type="range" min={1} max={120} value={semitones} step="1" onChange={function({target: {value}}){setSemitones(parseInt(value))}} />
+        </label>
+      </div>
+
+      <div className={styles.property}>
         <h2 className={styles.title}>Root Pitch</h2>
-        {pitchNames.map(function(name, index) {
-          return <label className={styles.label} key={name}>
-            <input className={styles.input} type="radio" value={index} name="rootPitch" checked={rootPitch === index} onChange={function({target:{value}}){setRootPitch(parseInt(value))}} />
-            <div className={styles.labelText}>{name}</div>
-          </label>
-        })}
+        <div className={styles.columns}>
+          {pitchNames.map(function(name, index) {
+            return <label className={styles.label} key={name}>
+              <input className={styles.input} type="radio" value={index} name="rootPitch" checked={rootPitch === index} onChange={function({target:{value}}){setRootPitch(parseInt(value))}} />
+              <div className={styles.labelText}>{name}</div>
+            </label>
+          })}
+        </div>
       </div>
 
       <div className={styles.property}>
@@ -73,7 +82,7 @@ export default function Menu({ a4, temperment, semitones, minFreq, maxFreq, layo
         <label className={styles.label}>
           <input
             className={styles.input}
-            type="number"
+            type="range"
             min={MIN_FREQ}
             max={MAX_FREQ}
             value={minFreq}
@@ -85,7 +94,7 @@ export default function Menu({ a4, temperment, semitones, minFreq, maxFreq, layo
         <label className={styles.label}>
           <input
             className={styles.input}
-            type="number"
+            type="range"
             min={MIN_FREQ}
             max={MAX_FREQ}
             value={maxFreq}
@@ -96,12 +105,7 @@ export default function Menu({ a4, temperment, semitones, minFreq, maxFreq, layo
         </label>
       </div>
 
-      <div className={styles.property}>
-        <h2 className={styles.title}>Semitones</h2>
-        <label className={styles.label}>
-          <input className={styles.input} type="number" min={1} max={100} value={semitones} step="1" onChange={function({target: {value}}){setSemitones(parseInt(value))}} />
-        </label>
-      </div>
+
 
       <div className={styles.property}>
         <h2 className={styles.title}>A4</h2>
