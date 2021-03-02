@@ -1,3 +1,5 @@
+import {round} from '@danehansen/math';
+
 const NAMES = ['A', 'A#/Bb', 'B', 'C', 'C#/Db', 'D', 'D#/Eb', 'E', 'F', 'F#/Gb', 'G', 'G#/Ab'];
 
 export default function(semitones) {
@@ -9,6 +11,6 @@ export default function(semitones) {
     if (!remainder) {
       return prefix;
     }
-    return `${prefix}${String(remainder).slice(1,5)}`;
+    return `${prefix}${String(round(remainder, 0.001)).slice(1,5)}`;
   })
 }
