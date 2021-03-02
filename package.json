@@ -1,8 +1,8 @@
 {
-  "name": "shepard-circle",
+  "name": "shepard-wheel",
   "version": "0.0.1",
   "private": true,
-  "homepage": "https://danehansen.github.io/shepard-circle/",
+  "homepage": "https://danehansen.github.io/shepard-wheel/",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
