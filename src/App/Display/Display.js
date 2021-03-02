@@ -154,7 +154,9 @@ function connectPitches(pitchA, pitchB, semitones, rootPitch, layoutIncrement, d
 
   const interval = findInterval(pitchA, pitchB, semitones);
   if (interval) {
-    canvas.strokeStyle = "#888";
+    canvas.strokeStyle = "white";
+    canvas.lineWidth = 1;
+    canvas.globalCompositeOperation = "color";
     const xDiff = pointB.x - pointA.x;
     const yDiff = pointB.y - pointA.y;
     const diff = Math.sqrt(Math.pow(xDiff, 2) + Math.pow(yDiff, 2));
@@ -178,7 +180,9 @@ function connectPitches(pitchA, pitchB, semitones, rootPitch, layoutIncrement, d
     }
   }
 
-  canvas.strokeStyle = "black";
+  canvas.globalCompositeOperation = "source-over";
+  canvas.strokeStyle = "white";
+  canvas.lineWidth = 4;
   canvas.beginPath();
   canvas.moveTo(pointA.x, pointA.y);
   canvas.lineTo(pointB.x, pointB.y);
