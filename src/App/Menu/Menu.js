@@ -1,7 +1,5 @@
 import styles from './Menu.module.scss';
 import {MIN_FREQ, MAX_FREQ, TEMPERMENT_TYPES, OSCILLATOR_TYPES} from '../../constants';
-import findIncrementOptions from '../../../src/util/findIncrementOptions';
-import findPitchNames from '../../../src/util/findPitchNames';
 
 function findIncrementLabel(increment, semitones) {
   let str = String(increment);
@@ -15,7 +13,7 @@ function findIncrementLabel(increment, semitones) {
   return str;
 }
 
-export default function Menu({ a4, temperment, semitones, minFreq, maxFreq, layoutIncrement, oscillator, rootPitch, setMinFreq, setMaxFreq, setA4, setTemperment, setOscillator, setSemitones, setRootPitch, setLayoutIncrement }) {
+export default function Menu({ a4, temperment, semitones, minFreq, maxFreq, layoutIncrement, oscillator, rootPitch, setMinFreq, setMaxFreq, setA4, setTemperment, setOscillator, setSemitones, setRootPitch, setLayoutIncrement, pitchNames, incrementOptions }) {
   function onTempermentChange({ target: { value }}) {
     setTemperment(value);
   }
@@ -23,8 +21,6 @@ export default function Menu({ a4, temperment, semitones, minFreq, maxFreq, layo
   function onOscillatorChange({ target: { value }}) {
     setOscillator(value);
   }
-
-  const pitchNames = findPitchNames(semitones);
 
   return (
     <form className={styles.root}>
@@ -69,7 +65,7 @@ export default function Menu({ a4, temperment, semitones, minFreq, maxFreq, layo
 
       <div className={styles.property}>
         <h2 className={styles.title}>Layout Increment</h2>
-        {findIncrementOptions(semitones).map(function(num) {
+        {incrementOptions.map(function(num) {
           return <label className={styles.label} key={num}>
             <input className={styles.input} type="radio" value={num} name="increment" checked={layoutIncrement === num} onChange={function({target:{value}}){setLayoutIncrement(parseInt(value))}} />
             <div className={styles.labelText}>{findIncrementLabel(num, semitones)}</div>

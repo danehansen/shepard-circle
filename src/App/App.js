@@ -3,6 +3,7 @@ import Menu from './Menu/Menu';
 import {useState} from 'react';
 import {MIN_FREQ, MAX_FREQ, TEMPERMENT_TYPES, OSCILLATOR_TYPES} from '../constants';
 import findIncrementOptions from '../util/findIncrementOptions';
+import findPitchNames from '../util/findPitchNames';
 import ResizeListener from './ResizeListener/ResizeListener';
 import Label from './Label/Label';
 import TouchPad from './TouchPad/TouchPad';
@@ -33,7 +34,6 @@ export default function App() {
 
   let [semitones, setSemitones] = useState(12);
   function changeSemitones(num) {
-    const incrementOptions = findIncrementOptions(num);
     if (incrementOptions.indexOf(layoutIncrement) >= 0) {
       setLayoutIncrement(1);
     }
@@ -48,6 +48,8 @@ export default function App() {
     setLayoutIncrement(num);
   }
 
+  let [pitchNames, setPitchNames] = useState(findPitchNames(semitones));
+  let [incrementOptions, setIncrementOptions] = useState(findIncrementOptions(semitones));
 
   let [hasInitializedAudio, setHasInitializedAudio] = useState(false);
   function onInitialClick() {
@@ -63,6 +65,7 @@ export default function App() {
   }
 
   let [activePitches, setActivePitches] = useState([]);
+
 
   function onTouchCallback(pitches) {
     for(let i = 0; i < semitones; i++) {
@@ -95,6 +98,7 @@ export default function App() {
               layoutIncrement={layoutIncrement}
               rootPitch={rootPitch}
               semitones={semitones}
+              pitchNames={pitchNames}
             />
             {hasInitializedAudio && <TouchPad
               callback={onTouchCallback}
@@ -122,8 +126,10 @@ export default function App() {
         setSemitones={changeSemitones}
         rootPitch={rootPitch}
         setRootPitch={setRootPitch}
+        pitchNames={pitchNames}
         layoutIncrement={layoutIncrement}
         setLayoutIncrement={changeLayoutIncrement}
+        incrementOptions={incrementOptions}
       /></div>}
 
       <button className={styles.menuButton} onClick={onMenuButtonClick}>{isMenuOpen ? 'close menu' : 'open menu'}</button>

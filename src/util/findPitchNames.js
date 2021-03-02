@@ -1,6 +1,6 @@
 import {round} from '@danehansen/math';
 
-const NAMES = ['A', 'A#/Bb', 'B', 'C', 'C#/Db', 'D', 'D#/Eb', 'E', 'F', 'F#/Gb', 'G', 'G#/Ab'];
+const NAMES = ['A', 'A♯/B♭', 'B', 'C', 'C♯/D♭', 'D', 'D♯/E♭', 'E', 'F', 'F♯/G♭', 'G', 'G♯/A♭'];
 
 export default function(semitones) {
   return [...Array(semitones).keys()].map(function(i) {

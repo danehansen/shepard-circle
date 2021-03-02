@@ -1,10 +1,8 @@
 import styles from './Label.module.scss';
 import classnames from 'classnames';
-import findPitchNames from '../../util/findPitchNames';
 import convertIndexToRadians from '../../util/convertIndexToRadians';
 
-export default function Label({rootPitch, semitones, layoutIncrement}) {
-  const pitchNames = findPitchNames(semitones);
+export default function Label({rootPitch, semitones, layoutIncrement, pitchNames}) {
   const radius = 35;
   return <div className={styles.root}>
   {pitchNames.map(function(name, index) {
