@@ -1,71 +1,75 @@
 import styles from './App.module.scss';
-import Menu from './Menu/Menu';
-import {useState} from 'react';
-import {MIN_FREQ, MAX_FREQ, TEMPERMENT_TYPES, OSCILLATOR_TYPES} from '../constants';
-import findIncrementOptions from '../util/findIncrementOptions';
+import {useState, useEffect} from 'react';
+import {OSCILLATOR_TYPES, DEFAULT_SEMITONES} from '../constants';
+import findPitchSkipOptions from '../util/findPitchSkipOptions';
 import findPitchNames from '../util/findPitchNames';
-import ResizeListener from './ResizeListener/ResizeListener';
+import transposeFrequency from '../util/transposeFrequency';
+import findBaseFrequencies from '../util/findBaseFrequencies';
+import findPitchSequence from '../util/findPitchSequence';
+import sortPitchNames from '../util/sortPitchNames';
+import Display from './Display/Display';
+import Menu from './Menu/Menu';
 import Label from './Label/Label';
 import TouchPad from './TouchPad/TouchPad';
-import Display from './Display/Display';
+import ResizeListener from './ResizeListener/ResizeListener';
 import {initializaAudio, toggleNote} from '../util/shepardTone'
 
 export default function App() {
-  let [isMenuOpen, setMenuOpen] = useState(false);
-  let [a4, setA4] = useState(440);
-  let [temperment, setTemperment] = useState(TEMPERMENT_TYPES.EQUAL);
-  let [oscillator, setOscillator] = useState(OSCILLATOR_TYPES.SINE);
-  let [rootPitch, setRootPitch] = useState(3);
+  const [a4, setA4] = useState(440);
+  const [oscillator, setOscillator] = useState(OSCILLATOR_TYPES.SINE);
+  const [semitones, setSemitones] = useState(DEFAULT_SEMITONES);
+  const [transposition, setTransposition] = useState(3);
 
-  let [minFreq, setMinFreq] = useState(MIN_FREQ);
-  let [maxFreq, setMaxFreq] = useState(MAX_FREQ);
-  function changeMinFreq(num) {
-    if (num >= maxFreq) {
-      setMaxFreq(num + 1);
-    }
-    setMinFreq(num);
-  }
-  function changeMaxFreq(num) {
-    if (num <= minFreq) {
-      setMinFreq(num - 1);
-    }
-    setMaxFreq(num);
-  }
+  const [pitchNames, setPitchNames] = useState(findPitchNames(semitones, transposition));
+  useEffect(function() {
+    setPitchNames(findPitchNames(semitones, transposition));
+  }, [semitones, transposition]);
 
-  let [semitones, setSemitones] = useState(12);
-  function changeSemitones(num) {
-    if (incrementOptions.indexOf(layoutIncrement) >= 0) {
-      setLayoutIncrement(1);
-    }
-    if (temperment !== TEMPERMENT_TYPES.EQUAL) {
-      setTemperment(TEMPERMENT_TYPES.EQUAL);
-    }
-    setSemitones(num);
-  }
+  const [pitchSkipOptions, setPitchSkipOptions] = useState(findPitchSkipOptions(semitones));
+  useEffect(function() {
+    setPitchSkipOptions(findPitchSkipOptions(semitones));
+  }, [semitones]);
 
-  let [layoutIncrement, setLayoutIncrement] = useState(1);
-  function changeLayoutIncrement(num) {
-    setLayoutIncrement(num);
-  }
+  const [pitchSkip, setPitchSkip] = useState(pitchSkipOptions[0]);
+  useEffect(function() {
+    setPitchSkip(pitchSkipOptions[0]);
+  }, [pitchSkipOptions]);
 
-  let [pitchNames, setPitchNames] = useState(findPitchNames(semitones));
-  let [incrementOptions, setIncrementOptions] = useState(findIncrementOptions(semitones));
+  const [rootFrequency, setRootFrequency] = useState(transposeFrequency(a4, transposition, DEFAULT_SEMITONES));
+  useEffect(function() {
+    setRootFrequency(transposeFrequency(a4, transposition, DEFAULT_SEMITONES));
+  }, [transposition, a4]);
 
-  let [hasInitializedAudio, setHasInitializedAudio] = useState(false);
+  const [baseFrequencies, setBaseFrequencies] = useState(findBaseFrequencies(semitones, rootFrequency));
+  useEffect(function() {
+    setBaseFrequencies(findBaseFrequencies(semitones, rootFrequency));
+  }, [semitones, rootFrequency]);
+
+  const [pitchSequence, setPitchSequence] = useState(findPitchSequence(semitones, pitchSkip));
+  useEffect(function() {
+    setPitchSequence(findPitchSequence(semitones, pitchSkip));
+  }, [semitones, pitchSkip]);
+
+  const [pitchNamesSorted, setPitchNamesSorted] = useState(sortPitchNames(pitchNames, transposition, pitchSkip));
+  useEffect(function() {
+    setPitchNamesSorted(sortPitchNames(pitchNames, pitchSkip));
+  }, [pitchNames, pitchSkip]);
+
+  const [activePitches, setActivePitches] = useState([]);
+
+  const [hasInitializedAudio, setHasInitializedAudio] = useState(false);
   function onInitialClick() {
-    initializaAudio(semitones, a4, minFreq, maxFreq);
+    initializaAudio(baseFrequencies);
     setHasInitializedAudio(true);
   }
 
+  const [isMenuOpen, setMenuOpen] = useState(false);
   function onMenuButtonClick() {
     if (isMenuOpen) {
-      initializaAudio(semitones, a4, minFreq, maxFreq);
+      initializaAudio(baseFrequencies);
     }
     setMenuOpen(!isMenuOpen);
   }
-
-  let [activePitches, setActivePitches] = useState([]);
-
 
   function onTouchCallback(pitches) {
     for(let i = 0; i < semitones; i++) {
@@ -78,6 +82,8 @@ export default function App() {
     setActivePitches(pitches);
   }
 
+  console.log({baseFrequencies})
+
   return (
     <div className={styles.root} onClick={hasInitializedAudio ? null : onInitialClick}>
       <div className={styles.contentHolder}>
@@ -87,49 +93,35 @@ export default function App() {
           const smallest = Math.min(innerWidth, innerHeight);
           return <div className={styles.wheelHolder} style={{width: `${smallest}px`, height: `${smallest}px`}}>
             <Display
-              diameter={smallest}
-              semitones={semitones}
-              layoutIncrement={layoutIncrement}
               activePitches={activePitches}
-              rootPitch={rootPitch}
+              baseFrequencies={baseFrequencies}
               diameter={smallest}
+              pitchSequence={pitchSequence}
             />
-            <Label
-              layoutIncrement={layoutIncrement}
-              rootPitch={rootPitch}
-              semitones={semitones}
-              pitchNames={pitchNames}
-            />
-            {hasInitializedAudio && <TouchPad
-              callback={onTouchCallback}
-              semitones={semitones}
-              diameter={smallest}
-              layoutIncrement={layoutIncrement}
-              rootPitch={rootPitch}
-            />}
+            <Label pitchNamesSorted={pitchNamesSorted} />
+            {hasInitializedAudio &&
+              <TouchPad
+                callback={onTouchCallback}
+                diameter={smallest}
+                pitchSequence={pitchSequence}
+              />
+            }
           </div>
         }}
       </ResizeListener>
 
       {isMenuOpen && <div className={styles.menuHolder}><Menu
-        minFreq={minFreq}
-        maxFreq={maxFreq}
-        setMinFreq={changeMinFreq}
-        setMaxFreq={changeMaxFreq}
         a4={a4}
         setA4={setA4}
-        temperment={temperment}
-        setTemperment={setTemperment}
         oscillator={oscillator}
         setOscillator={setOscillator}
+        pitchSkip={pitchSkip}
+        setPitchSkip={setPitchSkip}
         semitones={semitones}
-        setSemitones={changeSemitones}
-        rootPitch={rootPitch}
-        setRootPitch={setRootPitch}
-        pitchNames={pitchNames}
-        layoutIncrement={layoutIncrement}
-        setLayoutIncrement={changeLayoutIncrement}
-        incrementOptions={incrementOptions}
+        setSemitones={setSemitones}
+        transposition={transposition}
+        setTransposition={setTransposition}
+        pitchSkipOptions={pitchSkipOptions}
       /></div>}
 
       <button className={styles.menuButton} onClick={onMenuButtonClick}>{isMenuOpen ? 'close menu' : 'open menu'}</button>

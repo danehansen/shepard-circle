@@ -23,7 +23,7 @@ describe('convertRadiansToIndex', function() {
   it('correctly identifies indexes of chromatic scale starting with A', function() {
     const semitones = 12;
     const RADIANS_IN_SLICE = CIRC / semitones;
-    const layoutIncrement = 1;
+    const pitchSkip = 1;
     const rootPitch = 0;
     const expectedResults = [
       3,
@@ -41,7 +41,7 @@ describe('convertRadiansToIndex', function() {
     ];
 
     for (let i = 0; i < expectedResults.length; i++) {
-      const result = convertRadiansToIndex(i * RADIANS_IN_SLICE, semitones, rootPitch, layoutIncrement);
+      const result = convertRadiansToIndex(i * RADIANS_IN_SLICE, semitones, rootPitch, pitchSkip);
       const expectedResult = expectedResults[i];
       expect(result).toBe(expectedResult);
     }
@@ -50,7 +50,7 @@ describe('convertRadiansToIndex', function() {
   it('correctly idendifies indexes of chromatic scale starting with C', function() {
     const semitones = 12;
     const RADIANS_IN_SLICE = CIRC / semitones;
-    const layoutIncrement = 1;
+    const pitchSkip = 1;
     const rootPitch = 3;
     const expectedResults = [
       6,
@@ -68,7 +68,7 @@ describe('convertRadiansToIndex', function() {
     ];
 
     for (let i = 0; i < expectedResults.length; i++) {
-      const result = convertRadiansToIndex(i * RADIANS_IN_SLICE, semitones, rootPitch, layoutIncrement);
+      const result = convertRadiansToIndex(i * RADIANS_IN_SLICE, semitones, rootPitch, pitchSkip);
       const expectedResult = expectedResults[i];
       expect(result).toBe(expectedResult);
     }
@@ -77,7 +77,7 @@ describe('convertRadiansToIndex', function() {
   it('correctly idendifies indexes of circle of fifths starting with A', function() {
     const semitones = 12;
     const RADIANS_IN_SLICE = CIRC / semitones;
-    const layoutIncrement = 7;
+    const pitchSkip = 7;
     const rootPitch = 0;
     const expectedResults = [
       9,
@@ -95,7 +95,7 @@ describe('convertRadiansToIndex', function() {
     ];
 
     for (let i = 0; i < expectedResults.length; i++) {
-      const result = convertRadiansToIndex(i * RADIANS_IN_SLICE, semitones, rootPitch, layoutIncrement);
+      const result = convertRadiansToIndex(i * RADIANS_IN_SLICE, semitones, rootPitch, pitchSkip);
       const expectedResult = expectedResults[i];
       expect(result).toBe(expectedResult);
     }
@@ -104,7 +104,7 @@ describe('convertRadiansToIndex', function() {
   it('correctly idendifies indexes of circle of fifths starting with C', function() {
     const semitones = 12;
     const RADIANS_IN_SLICE = CIRC / semitones;
-    const layoutIncrement = 7;
+    const pitchSkip = 7;
     const rootPitch = 3;
     const expectedResults = [
       0,
@@ -122,7 +122,7 @@ describe('convertRadiansToIndex', function() {
     ];
 
     for (let i = 0; i < expectedResults.length; i++) {
-      const result = convertRadiansToIndex(i * RADIANS_IN_SLICE, semitones, rootPitch, layoutIncrement);
+      const result = convertRadiansToIndex(i * RADIANS_IN_SLICE, semitones, rootPitch, pitchSkip);
       const expectedResult = expectedResults[i];
       expect(result).toBe(expectedResult);
     }
@@ -132,7 +132,7 @@ describe('convertRadiansToIndex', function() {
     const semitones = 11;
     const RADIANS_IN_SLICE = CIRC / semitones;
     const DEGREES_IN_SLICE = 360 / semitones;
-    const layoutIncrement = 1;
+    const pitchSkip = 1;
     const rootPitch = 0;
     const expectedResults = [
       0,
@@ -149,9 +149,9 @@ describe('convertRadiansToIndex', function() {
     ];
 
     for (let i = 0; i < expectedResults.length; i++) {
-      const degrees = DEGREES_IN_SLICE * i * layoutIncrement;
+      const degrees = DEGREES_IN_SLICE * i * pitchSkip;
       const radians = toRadianDirection(degrees);
-      const result = convertRadiansToIndex(radians, semitones, rootPitch, layoutIncrement);
+      const result = convertRadiansToIndex(radians, semitones, rootPitch, pitchSkip);
       const expectedResult = expectedResults[i];
       expect(result).toBe(expectedResult);
     }
@@ -161,7 +161,7 @@ describe('convertRadiansToIndex', function() {
     const semitones = 11;
     const RADIANS_IN_SLICE = CIRC / semitones;
     const DEGREES_IN_SLICE = 360 / semitones;
-    const layoutIncrement = 1;
+    const pitchSkip = 1;
     const rootPitch = 3;
     const expectedResults = [
       3,
@@ -178,9 +178,9 @@ describe('convertRadiansToIndex', function() {
     ];
 
     for (let i = 0; i < expectedResults.length; i++) {
-      const degrees = DEGREES_IN_SLICE * i * layoutIncrement;
+      const degrees = DEGREES_IN_SLICE * i * pitchSkip;
       const radians = toRadianDirection(degrees);
-      const result = convertRadiansToIndex(radians, semitones, rootPitch, layoutIncrement);
+      const result = convertRadiansToIndex(radians, semitones, rootPitch, pitchSkip);
       const expectedResult = expectedResults[i];
       expect(result).toBe(expectedResult);
     }
@@ -190,7 +190,7 @@ describe('convertRadiansToIndex', function() {
     const semitones = 11;
     const RADIANS_IN_SLICE = CIRC / semitones;
     const DEGREES_IN_SLICE = 360 / semitones;
-    const layoutIncrement = 3;
+    const pitchSkip = 3;
     const rootPitch = 3;
     const expectedResults = [
       3,
@@ -207,9 +207,9 @@ describe('convertRadiansToIndex', function() {
     ];
 
     for (let i = 0; i < expectedResults.length; i++) {
-      const degrees = modulo(DEGREES_IN_SLICE * (i - rootPitch) * layoutIncrement, 360);
+      const degrees = modulo(DEGREES_IN_SLICE * (i - rootPitch) * pitchSkip, 360);
       const radians = toRadianDirection(degrees);
-      const result = convertRadiansToIndex(radians, semitones, rootPitch, layoutIncrement);
+      const result = convertRadiansToIndex(radians, semitones, rootPitch, pitchSkip);
       const expectedResult = expectedResults[i];
       // console.log('test', i, round(degrees, ROUND), round(radians, ROUND), result, expectedResults[i]);
       expect(result).toBe(expectedResult);

@@ -1,22 +1,31 @@
 import styles from './Menu.module.scss';
-import {MIN_FREQ, MAX_FREQ, TEMPERMENT_TYPES, OSCILLATOR_TYPES} from '../../constants';
+import {MIN_FREQ, MAX_FREQ, TEMPERMENT_TYPES, OSCILLATOR_TYPES, DEFAULT_SEMITONES, PITCH_NAMES} from '../../constants';
 
 function findIncrementLabel(increment, semitones) {
   let str = String(increment);
   if (increment === 1) {
-    str += ` (chromatic)`
+    str += ` (chromatic)`;
   } else if (increment === semitones - 1) {
-    str += ` (reverse chromatic)`
+    str += ` (reverse chromatic)`;
   } else if (semitones === 12 && increment === 7) {
-    str += ` (circle of fifths)`
+    str += ` (circle of fifths)`;
   }
   return str;
 }
 
-export default function Menu({ a4, temperment, semitones, minFreq, maxFreq, layoutIncrement, oscillator, rootPitch, setMinFreq, setMaxFreq, setA4, setTemperment, setOscillator, setSemitones, setRootPitch, setLayoutIncrement, pitchNames, incrementOptions }) {
-  function onTempermentChange({ target: { value }}) {
-    setTemperment(value);
-  }
+export default function Menu({
+    a4,
+    setA4,
+    oscillator,
+    setOscillator,
+    pitchSkip,
+    setPitchSkip,
+    semitones,
+    setSemitones,
+    transposition,
+    setTransposition,
+    pitchSkipOptions,
+  }) {
 
   function onOscillatorChange({ target: { value }}) {
     setOscillator(value);
@@ -52,56 +61,24 @@ export default function Menu({ a4, temperment, semitones, minFreq, maxFreq, layo
       </div>
 
       <div className={styles.property}>
-        <h2 className={styles.title}>Root Pitch</h2>
-        <div className={styles.columns}>
-          {pitchNames.map(function(name, index) {
+        <h2 className={styles.title}>Transposition</h2>
+          {PITCH_NAMES.map(function(name, index) {
             return <label className={styles.label} key={name}>
-              <input className={styles.input} type="radio" value={index} name="rootPitch" checked={rootPitch === index} onChange={function({target:{value}}){setRootPitch(parseInt(value))}} />
+              <input className={styles.input} type="radio" value={index} name="transposition" checked={transposition === index} onChange={function({target:{value}}){setTransposition(parseInt(value))}} />
               <div className={styles.labelText}>{name}</div>
             </label>
           })}
-        </div>
       </div>
 
       <div className={styles.property}>
-        <h2 className={styles.title}>Layout Increment</h2>
-        {incrementOptions.map(function(num) {
+        <h2 className={styles.title}>Pitch Skip</h2>
+        {pitchSkipOptions.map(function(num) {
           return <label className={styles.label} key={num}>
-            <input className={styles.input} type="radio" value={num} name="increment" checked={layoutIncrement === num} onChange={function({target:{value}}){setLayoutIncrement(parseInt(value))}} />
+            <input className={styles.input} type="radio" value={num} name="pitchSkip" checked={pitchSkip === num} onChange={function({target:{value}}){setPitchSkip(parseInt(value))}} />
             <div className={styles.labelText}>{findIncrementLabel(num, semitones)}</div>
           </label>
         })}
       </div>
-
-      <div className={styles.property}>
-        <h2 className={styles.title}>Frequencies</h2>
-        <label className={styles.label}>
-          <input
-            className={styles.input}
-            type="range"
-            min={MIN_FREQ}
-            max={MAX_FREQ}
-            value={minFreq}
-            step="1"
-            onChange={function({target:{value}}){setMinFreq(parseInt(value))}}
-          />
-          <div className={styles.labelText}>Minimum Frequency</div>
-        </label>
-        <label className={styles.label}>
-          <input
-            className={styles.input}
-            type="range"
-            min={MIN_FREQ}
-            max={MAX_FREQ}
-            value={maxFreq}
-            step="1"
-            onChange={function({target:{value}}){setMaxFreq(parseInt(value))}}
-          />
-          <div className={styles.labelText}>Max Frequency</div>
-        </label>
-      </div>
-
-
 
       <div className={styles.property}>
         <h2 className={styles.title}>A4</h2>
@@ -117,26 +94,6 @@ export default function Menu({ a4, temperment, semitones, minFreq, maxFreq, layo
           />
         </label>
       </div>
-
-      {/*<div className={styles.property}>
-        <h2 className={styles.title}>Temperment</h2>
-        <label className={styles.label}>
-          <input className={styles.input} type="radio" disabled checked={temperment === TEMPERMENT_TYPES.EQUAL} value={TEMPERMENT_TYPES.EQUAL} onChange={onTempermentChange} />
-          <div className={styles.labelText}>{TEMPERMENT_TYPES.EQUAL}</div>
-        </label>
-        <label className={styles.label}>
-          <input className={styles.input} type="radio" disabled checked={temperment === TEMPERMENT_TYPES.JUST} value={TEMPERMENT_TYPES.JUST} onChange={onTempermentChange} />
-          <div className={styles.labelText}>{TEMPERMENT_TYPES.JUST}</div>
-        </label>
-        <label className={styles.label}>
-          <input className={styles.input} type="radio" disabled checked={temperment === TEMPERMENT_TYPES.MEANTONE} value={TEMPERMENT_TYPES.MEANTONE} onChange={onTempermentChange} />
-          <div className={styles.labelText}>{TEMPERMENT_TYPES.MEANTONE}</div>
-        </label>
-        <label className={styles.label}>
-          <input className={styles.input} type="radio" disabled checked={temperment === TEMPERMENT_TYPES.PYTHAGOREAN} value={TEMPERMENT_TYPES.PYTHAGOREAN} onChange={onTempermentChange} />
-          <div className={styles.labelText}>{TEMPERMENT_TYPES.PYTHAGOREAN}</div>
-        </label>
-      </div>*/}
     </form>
   );
 }

@@ -1,20 +1,24 @@
 import styles from './Label.module.scss';
 import classnames from 'classnames';
 import convertIndexToRadians from '../../util/convertIndexToRadians';
+import {toRadianDirection} from '../../util/math';
 
-export default function Label({rootPitch, semitones, layoutIncrement, pitchNames}) {
+export default function Label({pitchNamesSorted}) {
   const radius = 35;
-  return <div className={styles.root}>
-  {pitchNames.map(function(name, index) {
-    const rad = convertIndexToRadians(index, semitones, rootPitch, layoutIncrement);
-    const x = Math.cos(rad);
-    const y = -Math.sin(rad);
+  const semitones = pitchNamesSorted.length;
+
+  return <div className={styles.root}>{pitchNamesSorted.map(function(name, index) {
+    const degrees = 360 / semitones * index;
+    const radians = toRadianDirection(degrees);
+    const cos = Math.cos(radians);
+    const sin = Math.sin(radians);
+
     return <div
       className={classnames(styles.button, name.length > 1 && styles.small)}
-      key={name}
+      key={index}
       style={{
-        left: `${(x * radius + 50)}%`,
-        top: `${(y * radius + 50)}%`,
+        left: `${(cos * radius + 50)}%`,
+        top: `${(-sin * radius + 50)}%`,
       }}
     >{name}</div>
   })}</div>
