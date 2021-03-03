@@ -2,12 +2,21 @@ import styles from './Display.module.scss';
 import classnames from 'classnames';
 import React from 'react';
 import Canvas from './canvas';
-import {modulo} from '@danehansen/math';
-import convertIndexToRadians from '../../util/convertIndexToRadians';
+import {toRadianDirection} from '../../util/math';
 import findInterval from '../../util/findInterval';
+import PropTypes from 'prop-types';
+
+function flipRadiansVertically(radians) {
+  return Math.atan2(-Math.sin(radians), Math.cos(radians));
+}
 
 export default class Display extends React.Component {
-  state = {}
+  static propTypes = {
+    activePitches: PropTypes.arrayOf(PropTypes.number).isRequired,
+    baseFrequencies: PropTypes.arrayOf(PropTypes.number).isRequired,
+    diameter: PropTypes.number.isRequired,
+    pitchSequence: PropTypes.arrayOf(PropTypes.number).isRequired,
+  };
 
   constructor(props) {
     super(props);
@@ -40,68 +49,61 @@ export default class Display extends React.Component {
   }
 
   _drawSlices() {
-    const {activePitches, layoutIncrement, semitones, rootPitch, diameter} = this.props;
-
+    const {activePitches, diameter, pitchSequence} = this.props;
+    const semitones = pitchSequence.length;
+    const halfSlice = Math.PI / semitones;
     const colors = findColors(semitones);
-    for (let i = 0; i < rootPitch; i++) {
-      colors.unshift(colors.pop());
-    }
 
     for (let i = 0; i < semitones; i++) {
-      const pitch = i;
-      const radians = convertIndexToRadians(pitch, semitones, rootPitch, layoutIncrement);
+      const pitch = pitchSequence[i];
+      const degrees = pitch / semitones * 360;
       const color = colors[i];
-      const isActive = activePitches.indexOf(pitch) >= 0;
-      fillSlice(this._buffer, color, pitch, semitones, rootPitch, layoutIncrement, diameter, isActive ? 1 : 0.95, isActive ? 0.12 : 0.1);
+      const isActive = activePitches.indexOf(pitchSequence.indexOf(i)) >= 0;
+      const radians = toRadianDirection(degrees);
+
+      fillSlice(this._buffer, color, diameter, radians - halfSlice, radians + halfSlice, isActive ? 1 : 0.95, isActive ? 0.12 : 0.1);
     }
   }
 
   _connectPitches() {
-    const {activePitches, semitones, rootPitch, layoutIncrement, diameter} = this.props;
+    const {activePitches, baseFrequencies, diameter, pitchSequence} = this.props;
+    const colors = findColors(pitchSequence.length);
     for (let i = 0; i < activePitches.length; i++) {
       const pitchA = activePitches[i];
-      for (let j = i; j < activePitches.length; j++) {
+      const degreesA = 360 / pitchSequence.length * pitchSequence.indexOf(pitchA);
+      const frequencyA = baseFrequencies[pitchSequence.indexOf(pitchA)];
+      for (let j = i + 1; j < activePitches.length; j++) {
         const pitchB = activePitches[j];
-        connectPitches(pitchA, pitchB, semitones, rootPitch, layoutIncrement, diameter, this._buffer, 0.4);
+        const degreesB = 360 / pitchSequence.length * pitchSequence.indexOf(pitchB);
+        const frequencyB = baseFrequencies[pitchSequence.indexOf(pitchB)];
+        connectPitches(toRadianDirection(degreesA), toRadianDirection(degreesB), diameter, this._buffer, 0.4, frequencyA, frequencyB, colors[i], colors[j]);
       }
     }
   }
 }
 
-function fillSlice(canvas, color, pitch, semitones, rootPitch, layoutIncrement, diameter, outerRadius, holeRadius) {
+function fillSlice(canvas, color, diameter, startRadians, endRadians, outerRadius, holeRadius) {
   const center = diameter / 2;
-  const halfSlice = Math.PI / semitones;
-  let radians = convertIndexToRadians(pitch, semitones, rootPitch, layoutIncrement);
 
-  // this is the edge of slice on the clockwise side
-  // canvas.moveTo(center, center);
-  let cos = Math.cos(radians - halfSlice);
-  let sin = Math.sin(radians - halfSlice);
+  // clockwise straight edge
+  let cos = Math.cos(startRadians);
+  let sin = Math.sin(startRadians);
   canvas.beginPath();
   canvas.fillStyle = color;
   canvas.moveTo(center + cos * center * holeRadius, center + sin * -center * holeRadius);
   canvas.lineTo(center + cos * center * outerRadius, center + sin * -center * outerRadius);
 
   // outer arc
-  cos = Math.cos(radians);
-  sin = Math.sin(radians);
-  const newAngle = Math.atan2(-sin, cos)
-  let startAngle = newAngle + halfSlice;
-  let endAngle = newAngle - halfSlice;
-  canvas.arc(center, center, center * outerRadius, startAngle, endAngle, true);
+  canvas.arc(center, center, center * outerRadius, flipRadiansVertically(startRadians), flipRadiansVertically(endRadians), true);
 
-  // this is the edge of slice on the anticlockwise side
-  cos = Math.cos(radians + halfSlice);
-  sin = Math.sin(radians + halfSlice);
+  // anticlockwise straight edge
+  cos = Math.cos(endRadians);
+  sin = Math.sin(endRadians);
   canvas.moveTo(center + cos * center * outerRadius, center + sin * -center * outerRadius);
   canvas.lineTo(center + cos * center * holeRadius, center + sin * -center * holeRadius);
 
   // inner arc
-  cos = Math.cos(radians);
-  sin = Math.sin(radians);
-  startAngle = newAngle - halfSlice;
-  endAngle = newAngle + halfSlice;
-  canvas.arc(center, center, center * holeRadius, startAngle, endAngle, false);
+  canvas.arc(center, center, center * holeRadius, flipRadiansVertically(endRadians), flipRadiansVertically(startRadians), false);
 
   canvas.fill();
 }
@@ -131,14 +133,12 @@ function directionalColor(direction) {
   return `rgb(${r}, ${g}, ${b})`;
 }
 
-function connectPitches(pitchA, pitchB, semitones, rootPitch, layoutIncrement, diameter, canvas, radius) {
+function connectPitches(radianA, radianB, diameter, canvas, radius, frequencyA, frequencyB, colorA, colorB) {
   const center = diameter / 2;
 
-  const radianA = convertIndexToRadians(pitchA, semitones, rootPitch, layoutIncrement);
   const cosA = Math.cos(radianA);
   const sinA = Math.sin(-radianA);
 
-  const radianB = convertIndexToRadians(pitchB, semitones, rootPitch, layoutIncrement);
   const cosB = Math.cos(radianB);
   const sinB = Math.sin(-radianB);
 
@@ -152,29 +152,47 @@ function connectPitches(pitchA, pitchB, semitones, rootPitch, layoutIncrement, d
     y: center + sinB * center * radius,
   };
 
-  const interval = findInterval(pitchA, pitchB, semitones);
+  const interval = findInterval(frequencyA, frequencyB);
   if (interval) {
-    canvas.strokeStyle = "white";
     canvas.lineWidth = 1;
-    canvas.globalCompositeOperation = "color";
+    canvas.globalCompositeOperation = "lighten";
+
+    // canvas.globalCompositeOperation = "lighter";
+    // canvas.globalCompositeOperation = "multiply";
+    // canvas.globalCompositeOperation = "screen";
+    // canvas.globalCompositeOperation = "overlay";
+    // canvas.globalCompositeOperation = "darken";
+
+    // canvas.globalCompositeOperation = "color-dodge";
+    // canvas.globalCompositeOperation = "color-burn";
+    // canvas.globalCompositeOperation = "hard-light";
+    // canvas.globalCompositeOperation = "soft-light";
+    // canvas.globalCompositeOperation = "difference";
+    // canvas.globalCompositeOperation = "exclusion";
+    // canvas.globalCompositeOperation = "hue";
+    // canvas.globalCompositeOperation = "saturation";
+    // canvas.globalCompositeOperation = "color";
+    // canvas.globalCompositeOperation = "luminosity";
     const xDiff = pointB.x - pointA.x;
     const yDiff = pointB.y - pointA.y;
     const diff = Math.sqrt(Math.pow(xDiff, 2) + Math.pow(yDiff, 2));
-    const radiusA = diff / interval.a / 2;
-    const radiusB = diff / interval.b / 2;
+    const radiusA = diff / interval[0] / 2;
+    const radiusB = diff / interval[1] / 2;
 
-    for (let i = 0; i < interval.a; i++) {
+    canvas.strokeStyle = colorA;
+    for (let i = 0; i < interval[0]; i++) {
       canvas.beginPath();
-      const centerX = pointA.x + xDiff / interval.a * (i + 0.5);
-      const centerY = pointA.y + yDiff / interval.a * (i + 0.5);
+      const centerX = pointA.x + xDiff / interval[0] * (i + 0.5);
+      const centerY = pointA.y + yDiff / interval[0] * (i + 0.5);
       canvas.arc(centerX, centerY, radiusA, 0, Math.PI * 2);
       canvas.stroke();
     }
 
-    for (let i = 0; i < interval.b; i++) {
+    canvas.strokeStyle = colorB;
+    for (let i = 0; i < interval[1]; i++) {
       canvas.beginPath();
-      const centerX = pointA.x + xDiff / interval.b * (i + 0.5);
-      const centerY = pointA.y + yDiff / interval.b * (i + 0.5);
+      const centerX = pointA.x + xDiff / interval[1] * (i + 0.5);
+      const centerY = pointA.y + yDiff / interval[1] * (i + 0.5);
       canvas.arc(centerX, centerY, radiusB, 0, Math.PI * 2);
       canvas.stroke();
     }
@@ -182,7 +200,7 @@ function connectPitches(pitchA, pitchB, semitones, rootPitch, layoutIncrement, d
 
   canvas.globalCompositeOperation = "source-over";
   canvas.strokeStyle = "white";
-  canvas.lineWidth = 4;
+  canvas.lineWidth = 2;
   canvas.beginPath();
   canvas.moveTo(pointA.x, pointA.y);
   canvas.lineTo(pointB.x, pointB.y);

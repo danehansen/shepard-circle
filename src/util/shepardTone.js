@@ -1,9 +1,11 @@
+import {MAX_FREQ} from '../constants';
+
 let frequencies;
 let currentOscillators;
 let audioCtx;
 let gainNode;
 
-export function initializaAudio(semitones, a4, minFreq, maxFreq) {
+export function initializaAudio(baseFrequencies) {
   if (audioCtx) {
     audioCtx.close();
   }
@@ -17,22 +19,16 @@ export function initializaAudio(semitones, a4, minFreq, maxFreq) {
 
   currentOscillators = [];
   frequencies = [];
-  for(let i = 0; i < semitones; i++) {
-    frequencies[i] = findFrequencies(i, a4, minFreq, maxFreq, semitones)
-  }
+  frequencies = baseFrequencies.map(function(frequency) {
+    return findAudibleOctaves(frequency);
+  })
 }
 
-function findFrequencies(distance, a4, minFreq, maxFreq, semitones) {
-  let lowestFrequency = a4 * Math.pow(Math.pow(2, 1 / semitones), distance);
-
-  while(lowestFrequency >= minFreq) {
-    lowestFrequency /= 2;
-  }
-  lowestFrequency *= 2;
-
+function findAudibleOctaves(frequency) {
   const frequencies = [];
-  for (let currentFrequency = lowestFrequency; currentFrequency <= maxFreq; currentFrequency *= 2) {
-    frequencies.push(currentFrequency);
+  while(frequency < MAX_FREQ) {
+    frequencies.push(frequency);
+    frequency *= 2;
   }
   return frequencies;
 }

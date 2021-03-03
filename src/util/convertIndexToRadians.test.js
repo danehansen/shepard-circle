@@ -21,7 +21,7 @@ describe('convertIndexToRadians', function() {
 
   it('correctly postions chromatic scale starting with A', function() {
     const semitones = 12;
-    const layoutIncrement = 1;
+    const pitchSkip = 1;
     const rootPitch = 0;
     const expectedResults = [
       OCLOCK_12,
@@ -39,7 +39,7 @@ describe('convertIndexToRadians', function() {
     ];
 
     for (let i = 0; i < expectedResults.length; i++) {
-      const result = convertIndexToRadians(i, semitones, rootPitch, layoutIncrement);
+      const result = convertIndexToRadians(i, semitones, rootPitch, pitchSkip);
       const resultRounded = round(result, ROUND);
       const expectedResult = expectedResults[i];
       const expectedResultRounded = round(expectedResult, ROUND);
@@ -49,7 +49,7 @@ describe('convertIndexToRadians', function() {
 
   it('correctly postions chromatic scale starting with C', function() {
     const semitones = 12;
-    const layoutIncrement = 1;
+    const pitchSkip = 1;
     const rootPitch = 3;
     const expectedResults = [
       OCLOCK_09,
@@ -67,7 +67,7 @@ describe('convertIndexToRadians', function() {
     ];
 
     for (let i = 0; i < expectedResults.length; i++) {
-      const result = convertIndexToRadians(i, semitones, rootPitch, layoutIncrement);
+      const result = convertIndexToRadians(i, semitones, rootPitch, pitchSkip);
       const resultRounded = round(result, ROUND);
       const expectedResult = expectedResults[i];
       const expectedResultRounded = round(expectedResult, ROUND);
@@ -77,7 +77,7 @@ describe('convertIndexToRadians', function() {
 
   it('correctly postions circle of fifths starting with A', function() {
     const semitones = 12;
-    const layoutIncrement = 7;
+    const pitchSkip = 7;
     const rootPitch = 0;
     const expectedResults = [
       OCLOCK_12,
@@ -95,7 +95,7 @@ describe('convertIndexToRadians', function() {
     ];
 
     for (let i = 0; i < expectedResults.length; i++) {
-      const result = convertIndexToRadians(i, semitones, rootPitch, layoutIncrement);
+      const result = convertIndexToRadians(i, semitones, rootPitch, pitchSkip);
       const resultRounded = round(result, ROUND);
       const expectedResult = expectedResults[i];
       const expectedResultRounded = round(expectedResult, ROUND);
@@ -105,7 +105,7 @@ describe('convertIndexToRadians', function() {
 
   it('correctly postions circle of fifths starting with C', function() {
     const semitones = 12;
-    const layoutIncrement = 7;
+    const pitchSkip = 7;
     const rootPitch = 3;
     const expectedResults = [
       OCLOCK_03,
@@ -123,7 +123,7 @@ describe('convertIndexToRadians', function() {
     ];
 
     for (let i = 0; i < expectedResults.length; i++) {
-      const result = convertIndexToRadians(i, semitones, rootPitch, layoutIncrement);
+      const result = convertIndexToRadians(i, semitones, rootPitch, pitchSkip);
       const resultRounded = round(result, ROUND);
       const expectedResult = expectedResults[i];
       const expectedResultRounded = round(expectedResult, ROUND);
