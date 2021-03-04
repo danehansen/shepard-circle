@@ -1,15 +1,17 @@
 import styles from './App.module.scss';
 import {useState, useEffect} from 'react';
-import {OSCILLATOR_TYPES, DEFAULT_SEMITONES} from '../constants';
+import {OSCILLATOR_TYPES, DEFAULT_SEMITONES, CHORD_NAMES} from '../constants';
 import findPitchSkipOptions from '../util/findPitchSkipOptions';
 import findPitchNames from '../util/findPitchNames';
 import transposeFrequency from '../util/transposeFrequency';
 import findBaseFrequencies from '../util/findBaseFrequencies';
 import findPitchSequence from '../util/findPitchSequence';
+import findChordNames from '../util/findChordNames';
 import sortPitchNames from '../util/sortPitchNames';
 import Display from './Display/Display';
 import Menu from './Menu/Menu';
-import Label from './Label/Label';
+import PitchLabel from './PitchLabel/PitchLabel';
+import ChordLabel from './ChordLabel/ChordLabel';
 import TouchPad from './TouchPad/TouchPad';
 import ResizeListener from './ResizeListener/ResizeListener';
 import {initializaAudio, toggleNote} from '../util/shepardTone'
@@ -55,6 +57,11 @@ export default function App() {
     setPitchNamesSorted(sortPitchNames(pitchNames, pitchSkip));
   }, [pitchNames, pitchSkip]);
 
+  const [chordNamesSorted, setChordNamesSorted] = useState(sortPitchNames(findChordNames(semitones), pitchSkip));
+  useEffect(function(){
+    setChordNamesSorted(sortPitchNames(findChordNames(semitones), pitchSkip));
+  }, [semitones, pitchSkip]);
+
   const [activePitches, setActivePitches] = useState([]);
 
   const [hasInitializedAudio, setHasInitializedAudio] = useState(false);
@@ -82,8 +89,6 @@ export default function App() {
     setActivePitches(pitches);
   }
 
-  console.log({baseFrequencies})
-
   return (
     <div className={styles.root} onClick={hasInitializedAudio ? null : onInitialClick}>
       <div className={styles.contentHolder}>
@@ -98,7 +103,8 @@ export default function App() {
               diameter={smallest}
               pitchSequence={pitchSequence}
             />
-            <Label pitchNamesSorted={pitchNamesSorted} />
+            <PitchLabel pitchNamesSorted={pitchNamesSorted} diameter={smallest} />
+            <ChordLabel chordNamesSorted={chordNamesSorted} diameter={smallest} />
             {hasInitializedAudio &&
               <TouchPad
                 callback={onTouchCallback}

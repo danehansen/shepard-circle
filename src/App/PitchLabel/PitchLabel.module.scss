@@ -9,12 +9,9 @@
   color: white;
   font-weight: bold;
   font-size: 14vw;
-  $size: 60px;
   position: absolute;
   left: 50%;
   top: 50%;
-  transform: translate(-50%, -50%);
-  transition: transform 0.1s;
 
   &.small {
     font-weight: normal;
