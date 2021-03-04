@@ -1,5 +1,5 @@
 import styles from './Menu.module.scss';
-import {MIN_FREQ, MAX_FREQ, TEMPERMENT_TYPES, OSCILLATOR_TYPES, DEFAULT_SEMITONES, PITCH_NAMES} from '../../constants';
+import {MIN_FREQ, MAX_FREQ, TEMPERMENT_TYPES, OSCILLATOR_TYPES, DEFAULT_SEMITONES, PITCH_NAMES, MODES} from '../../constants';
 
 function findIncrementLabel(increment, semitones) {
   let str = String(increment);
@@ -16,6 +16,8 @@ function findIncrementLabel(increment, semitones) {
 export default function Menu({
     a4,
     setA4,
+    mode,
+    setMode,
     oscillator,
     setOscillator,
     pitchSkip,
@@ -66,6 +68,19 @@ export default function Menu({
           {PITCH_NAMES.map(function(name, index) {
             return <label className={styles.label} key={name}>
               <input className={styles.input} type="radio" value={index} name="transposition" checked={transposition === index} onChange={function({target:{value}}){setTransposition(parseInt(value))}} />
+              <div className={styles.labelText}>{name}</div>
+            </label>
+          })}
+      </div>
+
+      <div className={styles.property}>
+        <h2 className={styles.title}>Mode</h2>
+          {MODES.map(function(name, index) {
+            if (!name) {
+              return null;
+            }
+            return <label className={styles.label} key={name}>
+              <input className={styles.input} type="radio" value={index} name="mode" checked={mode === index} onChange={function({target:{value}}){setMode(parseInt(value))}} />
               <div className={styles.labelText}>{name}</div>
             </label>
           })}

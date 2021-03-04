@@ -8,12 +8,6 @@
   margin-bottom: 20px;
 }
 
-.columns {
-  grid-template-columns: repeat(auto-fill, minmax(100px, auto));
-  column-gap: 10px;
-  display: grid;
-}
-
 .title {
   text-transform: uppercase;
   font-size: 14px;
