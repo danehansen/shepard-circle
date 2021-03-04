@@ -3,6 +3,7 @@ import classnames from 'classnames';
 import React from 'react';
 import Canvas from './canvas';
 import {toRadianDirection} from '../../util/math';
+import {modulo} from '@danehansen/math';
 import findInterval from '../../util/findInterval';
 import PropTypes from 'prop-types';
 
@@ -84,28 +85,42 @@ export default class Display extends React.Component {
 
 function fillSlice(canvas, color, diameter, startRadians, endRadians, outerRadius, holeRadius) {
   const center = diameter / 2;
+  const isCircle = modulo(startRadians, Math.PI * 2) === modulo(endRadians, Math.PI * 2);
 
-  // clockwise straight edge
-  let cos = Math.cos(startRadians);
-  let sin = Math.sin(startRadians);
   canvas.beginPath();
   canvas.fillStyle = color;
-  canvas.moveTo(center + cos * center * holeRadius, center + sin * -center * holeRadius);
-  canvas.lineTo(center + cos * center * outerRadius, center + sin * -center * outerRadius);
 
-  // outer arc
-  canvas.arc(center, center, center * outerRadius, flipRadiansVertically(startRadians), flipRadiansVertically(endRadians), true);
+  if (isCircle) {
+    canvas.arc(center, center, center * outerRadius, 0, 2 * Math.PI);
+  } else {
+    // clockwise straight edge
+    let cos = Math.cos(startRadians);
+    let sin = Math.sin(startRadians);
+    canvas.moveTo(center + cos * center * holeRadius, center + sin * -center * holeRadius);
+    canvas.lineTo(center + cos * center * outerRadius, center + sin * -center * outerRadius);
 
-  // anticlockwise straight edge
-  cos = Math.cos(endRadians);
-  sin = Math.sin(endRadians);
-  canvas.moveTo(center + cos * center * outerRadius, center + sin * -center * outerRadius);
-  canvas.lineTo(center + cos * center * holeRadius, center + sin * -center * holeRadius);
+    // outer arc
+    canvas.arc(center, center, center * outerRadius, flipRadiansVertically(startRadians), flipRadiansVertically(endRadians), true);
 
-  // inner arc
-  canvas.arc(center, center, center * holeRadius, flipRadiansVertically(endRadians), flipRadiansVertically(startRadians), false);
+    // anticlockwise straight edge
+    cos = Math.cos(endRadians);
+    sin = Math.sin(endRadians);
+    canvas.moveTo(center + cos * center * outerRadius, center + sin * -center * outerRadius);
+    canvas.lineTo(center + cos * center * holeRadius, center + sin * -center * holeRadius);
+
+    // inner arc
+    canvas.arc(center, center, center * holeRadius, flipRadiansVertically(endRadians), flipRadiansVertically(startRadians), false);
+  }
 
   canvas.fill();
+
+  if (isCircle) {
+    canvas.beginPath();
+    canvas.globalCompositeOperation = 'destination-out';
+    canvas.arc(center, center, center * holeRadius, 0, 2 * Math.PI);
+    canvas.fill();
+    canvas.globalCompositeOperation = 'source-over';
+  }
 }
 
 function findColors(semitones) {

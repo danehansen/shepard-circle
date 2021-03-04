@@ -1,6 +1,6 @@
 export default function(semitones) {
-  const increments = [];
-  for(let i = 1; i < semitones; i++) {
+  const increments = [1];
+  for(let i = 2; i < semitones; i++) {
     if (findIncrementsOfSemitone(semitones, i)) {
       increments.push(i);
     }

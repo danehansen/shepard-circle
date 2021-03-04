@@ -57,6 +57,7 @@ export default function Menu({
         <h2 className={styles.title}>Semitones</h2>
         <label className={styles.label}>
           <input className={styles.input} type="range" min={1} max={120} value={semitones} step="1" onChange={function({target: {value}}){setSemitones(parseInt(value))}} />
+          <div className={styles.labelText}>{semitones}</div>
         </label>
       </div>
 
@@ -85,13 +86,14 @@ export default function Menu({
         <label className={styles.label}>
           <input
             className={styles.input}
-            type="number"
-            min={MIN_FREQ}
-            max={MAX_FREQ}
+            type="range"
+            min={390}
+            max={490}
             value={a4}
             step="1"
             onChange={function({target:{value}}){setA4(parseInt(value))}}
           />
+          <div className={styles.labelText}>{a4}</div>
         </label>
       </div>
     </form>
