@@ -2,11 +2,16 @@ import styles from './PitchLabel.module.scss';
 import classnames from 'classnames';
 import convertIndexToRadians from '../../util/convertIndexToRadians';
 import {toRadianDirection} from '../../util/math';
+import {MODES} from '../../constants';
 
-export default function PitchLabel({pitchNamesSorted, diameter}) {
+export default function PitchLabel({pitchNamesSorted, diameter, mode}) {
   const semitones = pitchNamesSorted.length;
+  const {chords} = MODES[mode];
 
   return <div className={styles.root}>{pitchNamesSorted.map(function(name, index) {
+    if (!chords[index]) {
+      return null;
+    }
     const degrees = 360 / semitones * index;
     const isSmall = name.length > 1;
     let transform;

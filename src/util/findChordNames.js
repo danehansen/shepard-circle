@@ -1,11 +1,12 @@
-import {CHORD_NAMES} from '../constants';
+import {MODES} from '../constants';
 
-export default function(semitones) {
-  return [...Array(semitones).keys()].map(function(i) {
-    const {length} = CHORD_NAMES;
-    const nameIndex = (i / semitones * length) % length;
+export default function(semitones, modeIndex) {
+  const {chords} = MODES[modeIndex]
+  const {length} = chords;
+  return chords.map(function(name, index) {
+    const nameIndex = (index / semitones * length) % length;
     if (!(nameIndex % 1)) {
-      return CHORD_NAMES[nameIndex];
+      return chords[nameIndex];
     }
     return null;
   })
