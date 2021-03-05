@@ -6,6 +6,7 @@ import {toRadianDirection} from '../../util/math';
 import {modulo} from '@danehansen/math';
 import findInterval from '../../util/findInterval';
 import PropTypes from 'prop-types';
+import {MODES} from '../../constants';
 
 function flipRadiansVertically(radians) {
   return Math.atan2(-Math.sin(radians), Math.cos(radians));
@@ -16,6 +17,7 @@ export default class Display extends React.Component {
     activePitches: PropTypes.arrayOf(PropTypes.number).isRequired,
     baseFrequencies: PropTypes.arrayOf(PropTypes.number).isRequired,
     diameter: PropTypes.number.isRequired,
+    mode: PropTypes.number.isRequired,
     pitchSequence: PropTypes.arrayOf(PropTypes.number).isRequired,
   };
 
@@ -37,6 +39,7 @@ export default class Display extends React.Component {
 
   componentDidUpdate(prevProps, prevState) {
     if (prevProps !== this.props) {
+      this._root.clearRect();
       this._buffer.clearRect();
       this._drawSlices();
       this._connectPitches();
@@ -50,10 +53,11 @@ export default class Display extends React.Component {
   }
 
   _drawSlices() {
-    const {activePitches, diameter, pitchSequence} = this.props;
+    const {activePitches, diameter, pitchSequence, mode} = this.props;
     const semitones = pitchSequence.length;
     const halfSlice = Math.PI / semitones;
     const colors = findColors(semitones);
+    const {chords} = MODES[mode];
 
     for (let i = 0; i < semitones; i++) {
       const pitch = pitchSequence[i];
@@ -61,8 +65,9 @@ export default class Display extends React.Component {
       const color = colors[i];
       const isActive = activePitches.indexOf(pitchSequence.indexOf(i)) >= 0;
       const radians = toRadianDirection(degrees);
+      const isInKey = !!chords[i];
 
-      fillSlice(this._buffer, color, diameter, radians - halfSlice, radians + halfSlice, isActive ? 1 : 0.95, isActive ? 0.12 : 0.1);
+      fillSlice(this._buffer, color, diameter, radians - halfSlice, radians + halfSlice, isActive ? 1 : 0.95, isActive ? 0.12 : 0.1, isInKey);
     }
   }
 
@@ -83,12 +88,12 @@ export default class Display extends React.Component {
   }
 }
 
-function fillSlice(canvas, color, diameter, startRadians, endRadians, outerRadius, holeRadius) {
+function fillSlice(canvas, color, diameter, startRadians, endRadians, outerRadius, holeRadius, isInKey) {
   const center = diameter / 2;
   const isCircle = modulo(startRadians, Math.PI * 2) === modulo(endRadians, Math.PI * 2);
 
   canvas.beginPath();
-  canvas.fillStyle = color;
+  canvas.fillStyle =`rgb(${color.r}, ${color.b}, ${color.g})`;
 
   if (isCircle) {
     canvas.arc(center, center, center * outerRadius, 0, 2 * Math.PI);
@@ -145,7 +150,7 @@ function directionalColor(direction) {
   const g = Math.round(cosG * 255 * 0.5 + 255 * 0.5);
   const b = Math.round(cosB * 255 * 0.5 + 255 * 0.5);
 
-  return `rgb(${r}, ${g}, ${b})`;
+  return {r, g, b};
 }
 
 function connectPitches(radianA, radianB, diameter, canvas, radius, frequencyA, frequencyB, colorA, colorB) {
@@ -194,7 +199,7 @@ function connectPitches(radianA, radianB, diameter, canvas, radius, frequencyA, 
     const radiusA = diff / interval[0] / 2;
     const radiusB = diff / interval[1] / 2;
 
-    canvas.strokeStyle = colorA;
+    canvas.strokeStyle = `rgb(${colorA.r}, ${colorA.g}, ${colorA.b})`;
     for (let i = 0; i < interval[0]; i++) {
       canvas.beginPath();
       const centerX = pointA.x + xDiff / interval[0] * (i + 0.5);
@@ -203,7 +208,7 @@ function connectPitches(radianA, radianB, diameter, canvas, radius, frequencyA, 
       canvas.stroke();
     }
 
-    canvas.strokeStyle = colorB;
+    canvas.strokeStyle = `rgb(${colorB.r}, ${colorB.g}, ${colorB.b})`;
     for (let i = 0; i < interval[1]; i++) {
       canvas.beginPath();
       const centerX = pointA.x + xDiff / interval[1] * (i + 0.5);

@@ -1,6 +1,6 @@
 import styles from './App.module.scss';
 import {useState, useEffect} from 'react';
-import {OSCILLATOR_TYPES, DEFAULT_SEMITONES, CHORD_NAMES} from '../constants';
+import {OSCILLATOR_TYPES, DEFAULT_SEMITONES} from '../constants';
 import findPitchSkipOptions from '../util/findPitchSkipOptions';
 import findPitchNames from '../util/findPitchNames';
 import transposeFrequency from '../util/transposeFrequency';
@@ -58,17 +58,10 @@ export default function App() {
   }, [pitchNames, pitchSkip]);
 
   const [mode, setMode] = useState(0);
-  // useEffect(function() {
-    //
-    // }, [])
 
   const [chordNamesSorted, setChordNamesSorted] = useState([]);
   useEffect(function(){
-    const chordNames = findChordNames(semitones);
-    for (let i = 0; i < mode; i++) {
-      chordNames.push(chordNames.shift());
-      // chordNames.unshift(chordNames.pop())
-    }
+    const chordNames = findChordNames(semitones, mode);
     setChordNamesSorted(sortPitchNames(chordNames, pitchSkip));
   }, [semitones, pitchSkip, mode]);
 
@@ -113,8 +106,9 @@ export default function App() {
               baseFrequencies={baseFrequencies}
               diameter={smallest}
               pitchSequence={pitchSequence}
+              mode={mode}
             />
-            <PitchLabel pitchNamesSorted={pitchNamesSorted} diameter={smallest} />
+            <PitchLabel pitchNamesSorted={pitchNamesSorted} diameter={smallest} mode={mode} />
             <ChordLabel chordNamesSorted={chordNamesSorted} diameter={smallest} />
             {hasInitializedAudio &&
               <TouchPad

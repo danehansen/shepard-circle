@@ -75,13 +75,10 @@ export default function Menu({
 
       <div className={styles.property}>
         <h2 className={styles.title}>Mode</h2>
-          {MODES.map(function(name, index) {
-            if (!name) {
-              return null;
-            }
-            return <label className={styles.label} key={name}>
+          {MODES.map(function(modeObj, index) {
+            return <label className={styles.label} key={modeObj.name}>
               <input className={styles.input} type="radio" value={index} name="mode" checked={mode === index} onChange={function({target:{value}}){setMode(parseInt(value))}} />
-              <div className={styles.labelText}>{name}</div>
+              <div className={styles.labelText}>{modeObj.name}</div>
             </label>
           })}
       </div>
