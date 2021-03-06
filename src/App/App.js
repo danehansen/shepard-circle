@@ -45,8 +45,8 @@ function useHook(urlParams, key, value, def) {
 export default function App() {
   const urlParams = queryString.parse(window.location.search, {parseNumbers: true});
 
-  const [a4, setA4] = useState(urlParams.a4 || A4);
-  useHook(urlParams, 'a4', a4, A4);
+  const [a4, setA4] = useState(urlParams.a4 || A4.DEFAULT);
+  useHook(urlParams, 'a4', a4, A4.DEFAULT);
 
   const [oscillator, setOscillator] = useState(urlParams.oscillator || OSCILLATOR_TYPES.SINE);
   useHook(urlParams, 'oscillator', oscillator, OSCILLATOR_TYPES.SINE);

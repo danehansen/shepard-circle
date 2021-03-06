@@ -1,5 +1,6 @@
 import styles from './Menu.module.scss';
-import {MIN_FREQ, MAX_FREQ, TEMPERMENT_TYPES, OSCILLATOR_TYPES, DEFAULT_SEMITONES, PITCH_NAMES, MODES} from '../../constants';
+import {TEMPERMENT_TYPES, OSCILLATOR_TYPES, DEFAULT_SEMITONES, PITCH_NAMES, MODES} from '../../constants';
+import {A4, MIN_FREQ, MAX_FREQ} from '../../util/music';
 
 function findIncrementLabel(increment, semitones) {
   let str = String(increment);
@@ -105,7 +106,7 @@ export default function Menu({
             step="1"
             onChange={function({target:{value}}){setA4(parseInt(value))}}
           />
-          <div className={styles.labelText}>{a4}</div>
+          <div className={styles.labelText}>{a4}{A4[a4] && ` (${A4[a4]})`}</div>
         </label>
       </div>
     </form>
