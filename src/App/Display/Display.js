@@ -63,7 +63,7 @@ export default class Display extends React.Component {
       const pitch = pitchSequence[i];
       const degrees = pitch / semitones * 360;
       const color = colors[i];
-      const isActive = activePitches.indexOf(pitchSequence.indexOf(i)) >= 0;
+      const isActive = activePitches.indexOf(i) >= 0;
       const radians = toRadianDirection(degrees);
       const isInKey = !!chords[i];
 
