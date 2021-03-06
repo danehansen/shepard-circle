@@ -1,6 +1,7 @@
 import styles from './App.module.scss';
 import {useState, useEffect} from 'react';
-import {OSCILLATOR_TYPES, DEFAULT_SEMITONES} from '../constants';
+import {OSCILLATOR_TYPES, DEFAULT_SEMITONES, DEFAULT_TRANSPOSITION} from '../constants';
+import {A4} from '../util/music';
 import findPitchSkipOptions from '../util/findPitchSkipOptions';
 import findPitchNames from '../util/findPitchNames';
 import transposeFrequency from '../util/transposeFrequency';
@@ -14,13 +15,47 @@ import PitchLabel from './PitchLabel/PitchLabel';
 import ChordLabel from './ChordLabel/ChordLabel';
 import TouchPad from './TouchPad/TouchPad';
 import ResizeListener from './ResizeListener/ResizeListener';
-import {initializaAudio, toggleNote} from '../util/shepardTone'
+import {initializaAudio, toggleNote} from '../util/shepardTone';
+import queryString from 'query-string';
+
+function hook(urlParams, key, value, def) {
+  if (urlParams[key] !== value) {
+    if (value === def && urlParams[key] !== undefined) {
+      delete urlParams[key];
+      window.location.search = queryString.stringify(urlParams);
+    } else if (value !== def) {
+      urlParams[key] = value;
+      window.location.search = queryString.stringify(urlParams);
+    }
+  }
+}
+
+function useHook(urlParams, key, value, def) {
+  useEffect(function() {
+    hook(urlParams, key, value, def);
+  }, [value]);
+}
+
+// function useStateHook(urlParams, key, value, def) {
+//   const result = useState(urlParams[key] || def);
+//   useHook(urlParams, key, value, def);
+//   return result;
+// }
 
 export default function App() {
-  const [a4, setA4] = useState(440);
-  const [oscillator, setOscillator] = useState(OSCILLATOR_TYPES.SINE);
-  const [semitones, setSemitones] = useState(DEFAULT_SEMITONES);
-  const [transposition, setTransposition] = useState(3);
+  const urlParams = queryString.parse(window.location.search, {parseNumbers: true});
+
+  const [a4, setA4] = useState(urlParams.a4 || A4);
+  useHook(urlParams, 'a4', a4, A4);
+
+  const [oscillator, setOscillator] = useState(urlParams.oscillator || OSCILLATOR_TYPES.SINE);
+  useHook(urlParams, 'oscillator', oscillator, OSCILLATOR_TYPES.SINE);
+
+  const [semitones, setSemitones] = useState(urlParams.semitones || DEFAULT_SEMITONES);
+  useHook(urlParams, 'semitones', semitones, DEFAULT_SEMITONES);
+
+  const [transposition, setTransposition] = useState(urlParams.transposition !== undefined ? urlParams.transposition : DEFAULT_TRANSPOSITION);
+  useHook(urlParams, 'transposition', transposition, DEFAULT_TRANSPOSITION);
 
   const [pitchNames, setPitchNames] = useState(findPitchNames(semitones, transposition));
   useEffect(function() {
@@ -32,10 +67,14 @@ export default function App() {
     setPitchSkipOptions(findPitchSkipOptions(semitones));
   }, [semitones]);
 
-  const [pitchSkip, setPitchSkip] = useState(pitchSkipOptions[0]);
+  const _ps = urlParams.pitchSkip ? urlParams.pitchSkip : pitchSkipOptions[0];
+  const [pitchSkip, setPitchSkip] = useState(_ps);
   useEffect(function() {
-    setPitchSkip(pitchSkipOptions[0]);
+    if (pitchSkipOptions.indexOf(pitchSkip) < 0) {
+      setPitchSkip(pitchSkipOptions[0]);
+    }
   }, [pitchSkipOptions]);
+  useHook(urlParams, 'pitchSkip', pitchSkip, _ps);
 
   const [rootFrequency, setRootFrequency] = useState(transposeFrequency(a4, transposition, DEFAULT_SEMITONES));
   useEffect(function() {
@@ -57,14 +96,14 @@ export default function App() {
     setPitchNamesSorted(sortPitchNames(pitchNames, pitchSkip));
   }, [pitchNames, pitchSkip]);
 
-  const [mode, setMode] = useState(0);
+  const [mode, setMode] = useState(urlParams.mode || 0);
+  useHook(urlParams, 'mode', mode, 0);
 
   const [chordNamesSorted, setChordNamesSorted] = useState([]);
   useEffect(function(){
     const chordNames = findChordNames(semitones, mode);
     setChordNamesSorted(sortPitchNames(chordNames, pitchSkip));
   }, [semitones, pitchSkip, mode]);
-
 
   const [activePitches, setActivePitches] = useState([]);
 
@@ -137,7 +176,7 @@ export default function App() {
         pitchSkipOptions={pitchSkipOptions}
       /></div>}
 
-      <button className={styles.menuButton} onClick={onMenuButtonClick}>{isMenuOpen ? 'close menu' : 'open menu'}</button>
+      <button className={styles.menuButton} onClick={onMenuButtonClick}>{isMenuOpen ? 'x' : 'menu'}</button>
     </div>
   );
 }
