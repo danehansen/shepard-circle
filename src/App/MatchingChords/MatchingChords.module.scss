@@ -1,0 +1,12 @@
+.root {
+
+}
+
+.chord {
+  font-size: 20px;
+
+  &.complete {
+    font-size: 24px;
+    font-weight: bold;
+  }
+}
