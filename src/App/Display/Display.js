@@ -82,7 +82,9 @@ export default class Display extends React.Component {
         const pitchB = activePitches[j];
         const degreesB = 360 / pitchSequence.length * pitchSequence.indexOf(pitchB);
         const frequencyB = baseFrequencies[pitchSequence.indexOf(pitchB)];
-        connectPitches(toRadianDirection(degreesA), toRadianDirection(degreesB), diameter, this._buffer, 0.4, frequencyA, frequencyB, colors[i], colors[j]);
+        const colorA = colors[pitchSequence.indexOf(pitchA)];
+        const colorB = colors[pitchSequence.indexOf(pitchB)]
+        connectPitches(toRadianDirection(degreesA), toRadianDirection(degreesB), diameter, this._buffer, 0.4, frequencyA, frequencyB, colorA, colorB);
       }
     }
   }
@@ -93,7 +95,7 @@ function fillSlice(canvas, color, diameter, startRadians, endRadians, outerRadiu
   const isCircle = modulo(startRadians, Math.PI * 2) === modulo(endRadians, Math.PI * 2);
 
   canvas.beginPath();
-  canvas.fillStyle =`rgb(${color.r}, ${color.b}, ${color.g})`;
+  canvas.fillStyle =`rgb(${color.r}, ${color.g}, ${color.b})`;
 
   if (isCircle) {
     canvas.arc(center, center, center * outerRadius, 0, 2 * Math.PI);
@@ -130,21 +132,22 @@ function fillSlice(canvas, color, diameter, startRadians, endRadians, outerRadiu
 
 function findColors(semitones) {
   const colors = [];
-  const buttonSlice = Math.PI * 2 / semitones;
+  const buttonSlice = 360 / semitones;
   for(let i = 0; i < semitones; i++) {
-    colors.push(directionalColor(i * buttonSlice));
+    colors.push(directionalColor(toRadianDirection(i * buttonSlice)));
   }
   return colors;
 }
 
 function directionalColor(direction) {
+  direction -= Math.PI * 0.5;
   const colorSlice = Math.PI * 2 / 3;
-  const cosR = Math.cos(direction);
-  const sinR = Math.sin(direction);
-  const cosG = Math.cos(direction - colorSlice);
-  const sinG = Math.sin(direction - colorSlice);
-  const cosB = Math.cos(direction + colorSlice);
-  const sinB = Math.sin(direction + colorSlice);
+  const cosR = Math.cos(-direction);
+  const sinR = Math.sin(-direction);
+  const cosG = Math.cos(-direction - colorSlice);
+  const sinG = Math.sin(-direction - colorSlice);
+  const cosB = Math.cos(-direction + colorSlice);
+  const sinB = Math.sin(-direction + colorSlice);
 
   const r = Math.round(cosR * 255 * 0.5 + 255 * 0.5);
   const g = Math.round(cosG * 255 * 0.5 + 255 * 0.5);
@@ -175,24 +178,6 @@ function connectPitches(radianA, radianB, diameter, canvas, radius, frequencyA, 
   const interval = findInterval(frequencyA, frequencyB);
   if (interval) {
     canvas.lineWidth = 1;
-    canvas.globalCompositeOperation = "lighten";
-
-    // canvas.globalCompositeOperation = "lighter";
-    // canvas.globalCompositeOperation = "multiply";
-    // canvas.globalCompositeOperation = "screen";
-    // canvas.globalCompositeOperation = "overlay";
-    // canvas.globalCompositeOperation = "darken";
-
-    // canvas.globalCompositeOperation = "color-dodge";
-    // canvas.globalCompositeOperation = "color-burn";
-    // canvas.globalCompositeOperation = "hard-light";
-    // canvas.globalCompositeOperation = "soft-light";
-    // canvas.globalCompositeOperation = "difference";
-    // canvas.globalCompositeOperation = "exclusion";
-    // canvas.globalCompositeOperation = "hue";
-    // canvas.globalCompositeOperation = "saturation";
-    // canvas.globalCompositeOperation = "color";
-    // canvas.globalCompositeOperation = "luminosity";
     const xDiff = pointB.x - pointA.x;
     const yDiff = pointB.y - pointA.y;
     const diff = Math.sqrt(Math.pow(xDiff, 2) + Math.pow(yDiff, 2));
