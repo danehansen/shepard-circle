@@ -1,35 +1,40 @@
 const CHORDS = [
   {
     name: 'major',
-    suffix: 'Δ',
+    suffix: '',
+    textTransform: 'uppercase',
     additionalPitches: [4, 7],
   },
   {
     name: 'minor',
-    suffix: '−',
+    suffix: '',
+    textTransform: 'lowercase',
     additionalPitches: [3, 7],
   },
   {
     name: 'augmented',
     suffix: '+',
+    textTransform: 'uppercase',
     additionalPitches: [4, 8],
   },
   {
     name: 'diminished',
-    suffix: 'o',
+    suffix: 'º',
+    textTransform: 'lowercase',
     additionalPitches: [3, 6],
   },
 ];
 
-export default function findChords(pitches) {
+export default function findChords(pitches, semitones, pitchNames) {
   const matchingChords = [];
-
-  const pitchSpelling = [...pitches];
+  const pitchSpelling = pitches.map(function(pitch){
+    return pitch / semitones * 12;
+  })
   for (let i = 0; i < pitches.length; i++) {
     for(const chord of CHORDS) {
       const matchAmount = comparePitchSpellingWithChord(pitchSpelling, chord);
       if (matchAmount) {
-        matchingChords.push({...chord, prefix: pitchSpelling[0], matchAmount});
+        matchingChords.push({...chord, prefix: pitchNames[i], matchAmount});
       }
     }
     pitchSpelling.push(pitchSpelling.shift());
@@ -39,7 +44,6 @@ export default function findChords(pitches) {
 
   return matchingChords;
 }
-
 
 function sortMatchingChords(chordA, chordB) {
   return chordA.matchAmount - chordB.matchAmount;

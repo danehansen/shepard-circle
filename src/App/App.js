@@ -153,7 +153,10 @@ export default function App() {
       }
     }
     setActivePitches(pitches);
-    setActiveChords(findChords(pitches));
+    const chords = findChords(pitches, semitones, pitchNames);
+
+    console.log(chords);
+    setActiveChords(chords);
   }
 
   return (

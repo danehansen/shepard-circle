@@ -10,7 +10,11 @@ export default function MatchingChords({chords, semitones}) {
   return (
     <div className={styles.root}>
     {chords.map(function(chord, i) {
-      return <div className={classnames(styles.chord, chord.matchAmount === 1 && styles.complete)} key={i}>{`${chord.prefix}${chord.suffix}`}</div>
+      let style;
+      if (chord.textTransform) {
+        style = {textTransform:chord.textTransform}
+      }
+      return <div className={classnames(styles.chord, chord.matchAmount === 1 && styles.complete)} key={i} style={style}>{`${chord.prefix}${chord.suffix}`}</div>
     })}
     </div>
   );
