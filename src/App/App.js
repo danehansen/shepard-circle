@@ -18,14 +18,19 @@ import ResizeListener from './ResizeListener/ResizeListener';
 import {initializaAudio, toggleNote} from '../util/shepardTone';
 import queryString from 'query-string';
 
+function changeParams(urlParams) {
+  // window.location.search = queryString.stringify(urlParams);
+  window.history.pushState(null, null, `${window.location.origin}?${queryString.stringify(urlParams)}`);
+}
+
 function hook(urlParams, key, value, def) {
   if (urlParams[key] !== value) {
     if (value === def && urlParams[key] !== undefined) {
       delete urlParams[key];
-      window.location.search = queryString.stringify(urlParams);
+      changeParams(urlParams);
     } else if (value !== def) {
       urlParams[key] = value;
-      window.location.search = queryString.stringify(urlParams);
+      changeParams(urlParams);
     }
   }
 }
