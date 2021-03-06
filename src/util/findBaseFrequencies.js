@@ -1,5 +1,5 @@
 import transposeFrequency from './transposeFrequency';
-import {MIN_FREQ} from '../constants';
+import {MIN_FREQ} from './music';
 
 export default function(semitones, rootFrequency) {
   const frequencies = [];
