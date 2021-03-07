@@ -18,17 +18,18 @@ import findChordNames from '../util/findChordNames';
 import sortPitchNames from '../util/sortPitchNames';
 import {initializaAudio, toggleNote} from '../util/shepardTone';
 import queryString from 'query-string';
+import {isEqual} from 'lodash';
 
 function changeParams(urlParams) {
-  window.history.pushState(null, null, `${window.location.origin}${window.location.pathname}?${queryString.stringify(urlParams)}`);
+  window.history.pushState(null, null, `${window.location.origin}${window.location.pathname}?${queryString.stringify(urlParams, {arrayFormat: 'comma'})}`);
 }
 
 function hook(urlParams, key, value, def) {
-  if (urlParams[key] !== value) {
-    if (value === def && urlParams[key] !== undefined) {
+  if (!isEqual(urlParams[key], value)) {
+    if (isEqual(def, value) && urlParams[key] !== undefined) {
       delete urlParams[key];
       changeParams(urlParams);
-    } else if (value !== def) {
+    } else if (!isEqual(def, value)) {
       urlParams[key] = value;
       changeParams(urlParams);
     }
@@ -42,7 +43,7 @@ function useHook(urlParams, key, value, def) {
 }
 
 export default function App() {
-  const urlParams = queryString.parse(window.location.search, {parseNumbers: true});
+  const urlParams = queryString.parse(window.location.search, {parseNumbers: true, arrayFormat: 'comma'});
 
   const [a4, setA4] = useState(urlParams.a4 || A4.DEFAULT);
   useHook(urlParams, 'a4', a4, A4.DEFAULT);
@@ -74,6 +75,10 @@ export default function App() {
     }
   }, [pitchSkipOptions]);
   useHook(urlParams, 'pitchSkip', pitchSkip, _ps);
+
+  const _eq = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
+  const [eq, setEq] = useState(urlParams.eq || _eq);
+  useHook(urlParams, 'eq', eq, _eq);
 
   const [rootFrequency, setRootFrequency] = useState(transposeFrequency(a4, transposition));
   useEffect(function() {
@@ -109,7 +114,7 @@ export default function App() {
   const [isMenuOpen, setMenuOpen] = useState(false);
   function onMenuButtonClick() {
     if (isMenuOpen) {
-      initializaAudio(baseFrequencies);
+      initializaAudio(baseFrequencies, eq);
     }
     setMenuOpen(!isMenuOpen);
   }
@@ -126,7 +131,7 @@ export default function App() {
   }
 
   return (
-    <FirstTouch className={styles.root} callback={ initializaAudio.bind(null, baseFrequencies)}>
+    <FirstTouch className={styles.root} callback={ initializaAudio.bind(null, baseFrequencies, eq)}>
       <div className={styles.contentHolder}>
       </div>
       <ResizeListener>
@@ -154,6 +159,8 @@ export default function App() {
       {isMenuOpen && <div className={styles.menuHolder}><Menu
         a4={a4}
         setA4={setA4}
+        eq={eq}
+        setEq={setEq}
         mode={mode}
         setMode={setMode}
         oscillator={oscillator}

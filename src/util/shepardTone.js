@@ -1,11 +1,11 @@
-import {MAX_FREQ} from './music';
+import {MAX_FREQ, MIN_FREQ} from './music';
 
 let frequencies;
 let currentOscillators;
 let audioCtx;
 let gainNode;
 
-export function initializaAudio(baseFrequencies) {
+export function initializaAudio(baseFrequencies, eq) {
   if (audioCtx) {
     audioCtx.close();
   }
@@ -16,6 +16,33 @@ export function initializaAudio(baseFrequencies) {
 
   // TODO: figure out this gain value
   gainNode.gain.value = 0.1;
+
+  const freqencyStep = (MAX_FREQ - MIN_FREQ) / (eq.length - 1);
+
+  // const eqNodes = [];
+  // const eqParams = [];
+  // let headNode = audioCtx.destination;
+  // for(let i = 0; i < eq.length; i++) {
+  //   const eqNode = audioCtx.createBiquadFilter();
+  //   eqNode.frequency.value = freqencyStep * i + MIN_FREQ;
+  //   // eqNode.type = 'lowshelf'
+  //   // eqNode.type = 'highshelf'
+  //   // eqNode.type = 'peaking'
+  //   eqNode.type = 'notch'
+  //   eqNode.connect(headNode)
+  //   eqNodes.push(eqNode)
+  //   eqParams.push({
+  //     frequency: eqNode.frequency, //hz
+  //     Q: eqNode.Q,
+  //     gain: eqNode.gain, // dB
+  //   });
+  //   headNode = eqNode;
+  // }
+  // gainNode.connect(headNode);
+  //
+  // for (let i = 0; i < eq.length; i++) {
+  //   eqNodes[i].gain.value = eq[i];
+  // }
 
   currentOscillators = [];
   frequencies = [];

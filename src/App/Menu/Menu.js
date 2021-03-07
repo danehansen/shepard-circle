@@ -1,6 +1,7 @@
 import styles from './Menu.module.scss';
 import {TEMPERMENT_TYPES, OSCILLATOR_TYPES, DEFAULT_SEMITONES, PITCH_NAMES, MODES} from '../../constants';
 import {A4, MIN_FREQ, MAX_FREQ, SEMITONES} from '../../util/music';
+import {useState, useEffect} from 'react';
 
 function findIncrementLabel(increment, semitones) {
   let str = String(increment);
@@ -17,6 +18,8 @@ function findIncrementLabel(increment, semitones) {
 export default function Menu({
     a4,
     setA4,
+    eq,
+    setEq,
     mode,
     setMode,
     oscillator,
@@ -32,6 +35,12 @@ export default function Menu({
 
   function onOscillatorChange({ target: { value }}) {
     setOscillator(value);
+  }
+
+  function onEQChange(index, {target: {value}}) {
+    const values = [...eq]
+    values[index] = value;
+    setEq(values);
   }
 
   return (
@@ -54,6 +63,17 @@ export default function Menu({
           <input className={styles.input} type="radio" checked={oscillator === OSCILLATOR_TYPES.TRIANGLE} value={OSCILLATOR_TYPES.TRIANGLE} onChange={onOscillatorChange} />
           <div className={styles.labelText}>{OSCILLATOR_TYPES.TRIANGLE}</div>
         </label>
+      </div>
+
+      <div className={styles.property}>
+        <h2 className={styles.title}>EQ</h2>
+        <div className={styles.verticalRangeHolderHolder}>
+          {eq.map(function(value, i) {
+            return <div className={styles.verticalRangeHolder} key={i}>
+              <input className={styles.verticalRange} type="range" min="0" max="1" step="0.01" value={value} onChange={onEQChange.bind(null, i)} />
+            </div>
+          })}
+        </div>
       </div>
 
       <div className={styles.property}>
