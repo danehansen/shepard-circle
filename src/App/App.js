@@ -20,7 +20,7 @@ import {initializaAudio, toggleNote} from '../util/shepardTone';
 import queryString from 'query-string';
 
 function changeParams(urlParams) {
-  window.history.pushState(null, null, `${window.location.origin}?${queryString.stringify(urlParams)}`);
+  window.history.pushState(null, null, `${window.location.origin}${window.location.pathname}?${queryString.stringify(urlParams)}`);
 }
 
 function hook(urlParams, key, value, def) {
