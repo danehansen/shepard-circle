@@ -2,7 +2,7 @@ import findInterval from './findInterval';
 import {round} from '@danehansen/math';
 import {toRadians, toDegrees, toRadianDirection, toDegreeDirection} from './math';
 
-describe.only('findInterval', function() {
+describe('findInterval', function() {
   // root note
   const A5 = 880;
   const A4 = A5 / 2;
@@ -26,12 +26,10 @@ describe.only('findInterval', function() {
 
   it('returns a perfect fifth when fifth is 2 higher after root', function() {
     const result = findInterval(A4, E6);
-    // console.log(result);
     expect(result[0]).toBe(2);
     expect(result[1]).toBe(3);
 
     const result2 = findInterval(E6, A4);
-    // console.log(result2);
     expect(result2[0]).toBe(3);
     expect(result2[1]).toBe(2);
   });

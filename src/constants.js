@@ -1,4 +1,3 @@
-export const DEFAULT_SEMITONES = 12;
 export const DEFAULT_TRANSPOSITION = 3;
 export const PITCH_NAMES = ['A', 'A♯/B♭', 'B', 'C', 'C♯/D♭', 'D', 'D♯/E♭', 'E', 'F', 'F♯/G♭', 'G', 'G♯/A♭'];
 export const MODES = [

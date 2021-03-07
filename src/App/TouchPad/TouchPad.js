@@ -11,23 +11,19 @@ export default function TouchPad({
   const rootNode = useRef(null);
 
   function onTouchMove(evt) {
-    // console.log('onTouchMove');
     anyTouch(evt);
   }
 
   function onTouchStart(evt) {
-    // console.log('onTouchStart');
     anyTouch(evt);
   }
 
   function onTouchEnd(evt) {
     const {targetTouches} = evt;
-    // console.log('onTouchEnd', targetTouches[0]);
     anyTouch(evt);
   }
 
   function onTouchCancel(evt) {
-    // console.log('onTouchCancel');
     anyTouch(evt);
   }
 

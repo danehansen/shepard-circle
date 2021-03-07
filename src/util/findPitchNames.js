@@ -1,9 +1,10 @@
 import {round} from '@danehansen/math';
-import {PITCH_NAMES, DEFAULT_SEMITONES} from '../constants';
+import {PITCH_NAMES} from '../constants';
+import {SEMITONES} from './music';
 
 export default function(semitones, transposition) {
   return [...Array(semitones).keys()].map(function(i) {
-    const nameIndexFloat = (i / semitones * DEFAULT_SEMITONES + transposition) % DEFAULT_SEMITONES;
+    const nameIndexFloat = (i / semitones * SEMITONES + transposition) % SEMITONES;
     const nameIndex = Math.floor(nameIndexFloat);
     const prefix = PITCH_NAMES[nameIndex];
     const remainder = nameIndexFloat % 1;

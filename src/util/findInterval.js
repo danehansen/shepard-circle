@@ -1,4 +1,4 @@
-import {findCents} from './music';
+import {findCents, SEMITONES} from './music';
 
 function findDifference(a, b) {
   return Math.abs(a - b);
@@ -6,7 +6,7 @@ function findDifference(a, b) {
 
 export default function(fRoot, fComparison) {
   const tolerance = 1;
-  const cents = findCents(fRoot, fComparison);
+  const cents = findCents(fRoot, fComparison) % (SEMITONES * 100);
 
   if (Math.abs(cents - 100) < tolerance || Math.abs(cents + 1100) < tolerance) {
     return [16, 15];

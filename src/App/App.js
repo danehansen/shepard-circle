@@ -1,7 +1,14 @@
 import styles from './App.module.scss';
+import Display from './Display/Display';
+import Menu from './Menu/Menu';
+import PitchLabel from './PitchLabel/PitchLabel';
+import ChordLabel from './ChordLabel/ChordLabel';
+import TouchPad from './TouchPad/TouchPad';
+import ResizeListener from './ResizeListener/ResizeListener';
+import FirstTouch from './FirstTouch/FirstTouch';
+import {OSCILLATOR_TYPES, DEFAULT_TRANSPOSITION} from '../constants';
+import {A4, SEMITONES} from '../util/music';
 import {useState, useEffect} from 'react';
-import {OSCILLATOR_TYPES, DEFAULT_SEMITONES, DEFAULT_TRANSPOSITION} from '../constants';
-import {A4} from '../util/music';
 import findPitchSkipOptions from '../util/findPitchSkipOptions';
 import findPitchNames from '../util/findPitchNames';
 import transposeFrequency from '../util/transposeFrequency';
@@ -9,17 +16,10 @@ import findBaseFrequencies from '../util/findBaseFrequencies';
 import findPitchSequence from '../util/findPitchSequence';
 import findChordNames from '../util/findChordNames';
 import sortPitchNames from '../util/sortPitchNames';
-import Display from './Display/Display';
-import Menu from './Menu/Menu';
-import PitchLabel from './PitchLabel/PitchLabel';
-import ChordLabel from './ChordLabel/ChordLabel';
-import TouchPad from './TouchPad/TouchPad';
-import ResizeListener from './ResizeListener/ResizeListener';
 import {initializaAudio, toggleNote} from '../util/shepardTone';
 import queryString from 'query-string';
 
 function changeParams(urlParams) {
-  // window.location.search = queryString.stringify(urlParams);
   window.history.pushState(null, null, `${window.location.origin}?${queryString.stringify(urlParams)}`);
 }
 
@@ -41,12 +41,6 @@ function useHook(urlParams, key, value, def) {
   }, [value]);
 }
 
-// function useStateHook(urlParams, key, value, def) {
-//   const result = useState(urlParams[key] || def);
-//   useHook(urlParams, key, value, def);
-//   return result;
-// }
-
 export default function App() {
   const urlParams = queryString.parse(window.location.search, {parseNumbers: true});
 
@@ -56,8 +50,8 @@ export default function App() {
   const [oscillator, setOscillator] = useState(urlParams.oscillator || OSCILLATOR_TYPES.SINE);
   useHook(urlParams, 'oscillator', oscillator, OSCILLATOR_TYPES.SINE);
 
-  const [semitones, setSemitones] = useState(urlParams.semitones || DEFAULT_SEMITONES);
-  useHook(urlParams, 'semitones', semitones, DEFAULT_SEMITONES);
+  const [semitones, setSemitones] = useState(urlParams.semitones || SEMITONES);
+  useHook(urlParams, 'semitones', semitones, SEMITONES);
 
   const [transposition, setTransposition] = useState(urlParams.transposition !== undefined ? urlParams.transposition : DEFAULT_TRANSPOSITION);
   useHook(urlParams, 'transposition', transposition, DEFAULT_TRANSPOSITION);
@@ -81,9 +75,9 @@ export default function App() {
   }, [pitchSkipOptions]);
   useHook(urlParams, 'pitchSkip', pitchSkip, _ps);
 
-  const [rootFrequency, setRootFrequency] = useState(transposeFrequency(a4, transposition, DEFAULT_SEMITONES));
+  const [rootFrequency, setRootFrequency] = useState(transposeFrequency(a4, transposition));
   useEffect(function() {
-    setRootFrequency(transposeFrequency(a4, transposition, DEFAULT_SEMITONES));
+    setRootFrequency(transposeFrequency(a4, transposition));
   }, [transposition, a4]);
 
   const [baseFrequencies, setBaseFrequencies] = useState(findBaseFrequencies(semitones, rootFrequency));
@@ -112,12 +106,6 @@ export default function App() {
 
   const [activePitches, setActivePitches] = useState([]);
 
-  const [hasInitializedAudio, setHasInitializedAudio] = useState(false);
-  function onInitialClick() {
-    initializaAudio(baseFrequencies);
-    setHasInitializedAudio(true);
-  }
-
   const [isMenuOpen, setMenuOpen] = useState(false);
   function onMenuButtonClick() {
     if (isMenuOpen) {
@@ -138,7 +126,7 @@ export default function App() {
   }
 
   return (
-    <div className={styles.root} onClick={hasInitializedAudio ? null : onInitialClick}>
+    <FirstTouch className={styles.root} callback={ initializaAudio.bind(null, baseFrequencies)}>
       <div className={styles.contentHolder}>
       </div>
       <ResizeListener>
@@ -154,13 +142,11 @@ export default function App() {
             />
             <PitchLabel pitchNamesSorted={pitchNamesSorted} diameter={smallest} mode={mode} />
             <ChordLabel chordNamesSorted={chordNamesSorted} diameter={smallest} />
-            {hasInitializedAudio &&
-              <TouchPad
-                callback={onTouchCallback}
-                diameter={smallest}
-                pitchSequence={pitchSequence}
-              />
-            }
+            <TouchPad
+              callback={onTouchCallback}
+              diameter={smallest}
+              pitchSequence={pitchSequence}
+            />
           </div>
         }}
       </ResizeListener>
@@ -182,6 +168,6 @@ export default function App() {
       /></div>}
 
       <button className={styles.menuButton} onClick={onMenuButtonClick}>{isMenuOpen ? 'x' : 'menu'}</button>
-    </div>
+    </FirstTouch>
   );
 }

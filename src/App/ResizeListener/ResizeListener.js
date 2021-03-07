@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import {useState, useEffect} from 'react';
 
 const PLACEHOLDER_WINDOW = {
   addEventListener() {},
@@ -8,42 +8,26 @@ const PLACEHOLDER_WINDOW = {
   removeEventListener() {},
 };
 
-export default class ResizeListener extends React.Component {
-  static propTypes = {
-    children: PropTypes.func.isRequired,
-    win: PropTypes.object,
+export default function ResizeListener({children, win = typeof window !== 'undefined' ? window : PLACEHOLDER_WINDOW}) {
+  const [innerHeight, setInnerHeight] = useState(win.innerHeight);
+  const [innerWidth, setInnerWidth] = useState(win.innerWidth);
+
+  useEffect(function() {
+    win.addEventListener('resize', onResize);
+    return function() {
+      win.removeEventListener('resize', onResize);
+    }
+  }, []);
+
+  function onResize() {
+    setInnerHeight(win.innerHeight);
+    setInnerWidth(win.innerWidth);
   };
 
-  static defaultProps = {
-    win: typeof window !== 'undefined' ? window : PLACEHOLDER_WINDOW,
-  };
-
-  constructor(props) {
-    super(props);
-    const { win } = props;
-    this.state = {
-      innerHeight: win.innerHeight,
-      innerWidth: win.innerWidth,
-    };
-    win.addEventListener('resize', this._onResize);
-  }
-
-  componentWillUnmount() {
-    const { win } = this.props;
-    win.removeEventListener('resize', this._onResize);
-  }
-
-  _onResize = () => {
-    const { win } = this.props;
-    this.setState({
-      innerHeight: win.innerHeight,
-      innerWidth: win.innerWidth,
-    });
-  };
-
-  render() {
-    const { innerHeight, innerWidth } = this.state;
-    const { children } = this.props;
-    return children(innerWidth, innerHeight);
-  }
+  return children(innerWidth, innerHeight);
 }
+
+ResizeListener.propTypes = {
+  children: PropTypes.func.isRequired,
+  win: PropTypes.object,
+};

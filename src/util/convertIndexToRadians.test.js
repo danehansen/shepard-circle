@@ -1,6 +1,6 @@
-import { render, screen } from '@testing-library/react';
 import convertIndexToRadians from './convertIndexToRadians';
 import {round} from '@danehansen/math';
+import {SEMITONES} from './music';
 
 describe('convertIndexToRadians', function() {
   const CIRC = Math.PI * 2;
@@ -20,7 +20,7 @@ describe('convertIndexToRadians', function() {
   const OCLOCK_11 = 4 * CIRC / 12; // 2.094
 
   it('correctly postions chromatic scale starting with A', function() {
-    const semitones = 12;
+    const semitones = SEMITONES;
     const pitchSkip = 1;
     const rootPitch = 0;
     const expectedResults = [
@@ -48,7 +48,7 @@ describe('convertIndexToRadians', function() {
   });
 
   it('correctly postions chromatic scale starting with C', function() {
-    const semitones = 12;
+    const semitones = SEMITONES;
     const pitchSkip = 1;
     const rootPitch = 3;
     const expectedResults = [
@@ -76,7 +76,7 @@ describe('convertIndexToRadians', function() {
   });
 
   it('correctly postions circle of fifths starting with A', function() {
-    const semitones = 12;
+    const semitones = SEMITONES;
     const pitchSkip = 7;
     const rootPitch = 0;
     const expectedResults = [
@@ -104,7 +104,7 @@ describe('convertIndexToRadians', function() {
   });
 
   it('correctly postions circle of fifths starting with C', function() {
-    const semitones = 12;
+    const semitones = SEMITONES;
     const pitchSkip = 7;
     const rootPitch = 3;
     const expectedResults = [

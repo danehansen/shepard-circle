@@ -54,6 +54,9 @@ function stopNote(index) {
 }
 
 export function toggleNote(note, isPlaying, type) {
+  if (!currentOscillators) {
+    return;
+  }
   if (isPlaying && !currentOscillators[note]) {
     startNote(note, type);
   } else if (!isPlaying && currentOscillators[note]) {

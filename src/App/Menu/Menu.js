@@ -1,6 +1,6 @@
 import styles from './Menu.module.scss';
 import {TEMPERMENT_TYPES, OSCILLATOR_TYPES, DEFAULT_SEMITONES, PITCH_NAMES, MODES} from '../../constants';
-import {A4, MIN_FREQ, MAX_FREQ} from '../../util/music';
+import {A4, MIN_FREQ, MAX_FREQ, SEMITONES} from '../../util/music';
 
 function findIncrementLabel(increment, semitones) {
   let str = String(increment);
@@ -8,7 +8,7 @@ function findIncrementLabel(increment, semitones) {
     str += ` (chromatic)`;
   } else if (increment === semitones - 1) {
     str += ` (reverse chromatic)`;
-  } else if (semitones === 12 && increment === 7) {
+  } else if (semitones === SEMITONES && increment === 7) {
     str += ` (circle of fifths)`;
   }
   return str;
