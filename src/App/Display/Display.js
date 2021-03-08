@@ -39,6 +39,11 @@ export default class Display extends React.Component {
 
   componentDidUpdate(prevProps, prevState) {
     if (prevProps !== this.props) {
+      const {diameter} = this.props;
+      if (prevProps.diameter !== diameter) {
+        this._root.resize(diameter, diameter);
+        this._buffer.resize(diameter, diameter);
+      }
       this._root.clearRect();
       this._buffer.clearRect();
       this._drawSlices();
