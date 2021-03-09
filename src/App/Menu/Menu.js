@@ -1,5 +1,5 @@
 import styles from './Menu.module.scss';
-import {TEMPERMENT_TYPES, OSCILLATOR_TYPES, DEFAULT_SEMITONES, PITCH_NAMES, MODES} from '../../constants';
+import {TEMPERMENT_TYPES, OSCILLATOR_TYPES, PITCH_NAMES, MODES} from '../../constants';
 import {A4, MIN_FREQ, MAX_FREQ, SEMITONES} from '../../util/music';
 import {useState, useEffect} from 'react';
 import classnames from 'classnames';
@@ -67,7 +67,7 @@ export default function Menu({
       </div>
 
       <div className={styles.property}>
-        <h2 className={styles.title}>EQ</h2>
+        <h2 className={styles.title}>EQ<button className={styles.reset} onClick={function(){setEq([0,0,0,0,0,0,0,0,0,0])}}>reset</button></h2>
         <div className={styles.verticalRangeHolder}>
           {eq.map(function(value, i) {
             return <input
@@ -77,7 +77,7 @@ export default function Menu({
       </div>
 
       <div className={styles.property}>
-        <h2 className={styles.title}>Semitones</h2>
+        <h2 className={styles.title}>Semitones<button className={styles.reset} onClick={function(){setSemitones(SEMITONES)}}>reset</button></h2>
         <label className={classnames(styles.label, styles.wide)}>
           <input className={styles.input} type="range" min={1} max={120} value={semitones} step="1" onChange={function({target: {value}}){setSemitones(parseInt(value))}} />
           <div className={styles.labelText}>{semitones}</div>
@@ -115,7 +115,7 @@ export default function Menu({
       </div>
 
       <div className={styles.property}>
-        <h2 className={styles.title}>A4</h2>
+        <h2 className={styles.title}>A4<button className={styles.reset} onClick={function(){setA4(A4.DEFAULT)}}>reset</button></h2>
         <label className={classnames(styles.label, styles.wide)}>
           <input
             className={styles.input}
