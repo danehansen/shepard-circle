@@ -4,7 +4,6 @@ import Menu from './Menu/Menu';
 import PitchLabel from './PitchLabel/PitchLabel';
 import ChordLabel from './ChordLabel/ChordLabel';
 import TouchPad from './TouchPad/TouchPad';
-import ResizeListener from './ResizeListener/ResizeListener';
 import FirstTouch from './FirstTouch/FirstTouch';
 import {OSCILLATOR_TYPES, DEFAULT_TRANSPOSITION} from '../constants';
 import {A4, SEMITONES, EQ_FREQUENCIES} from '../util/music';
@@ -19,101 +18,98 @@ import sortPitchNames from '../util/sortPitchNames';
 import {initializaAudio, toggleNote} from '../util/shepardTone';
 import queryString from 'query-string';
 import {isEqual} from 'lodash';
-
-function changeParams(urlParams) {
-  window.history.pushState(null, null, `${window.location.origin}${window.location.pathname}?${queryString.stringify(urlParams, {arrayFormat: 'comma'})}`);
-}
-
-function hook(urlParams, key, value, def) {
-  if (!isEqual(urlParams[key], value)) {
-    if (isEqual(def, value) && urlParams[key] !== undefined) {
-      delete urlParams[key];
-      changeParams(urlParams);
-    } else if (!isEqual(def, value)) {
-      urlParams[key] = value;
-      changeParams(urlParams);
-    }
-  }
-}
-
-function useHook(urlParams, key, value, def) {
-  useEffect(function() {
-    hook(urlParams, key, value, def);
-  }, [value]);
-}
+import {useViewportDimensions} from '../util/react';
 
 export default function App() {
   const urlParams = queryString.parse(window.location.search, {parseNumbers: true, arrayFormat: 'comma'});
+  function useURLParams(key, value, def) {
+    useEffect(() => {
+      function changeParams() {
+        window.history.pushState(null, null, `${window.location.origin}${window.location.pathname}?${queryString.stringify(urlParams, {arrayFormat: 'comma'})}`);
+      }
+
+      if (!isEqual(urlParams[key], value)) {
+        if (isEqual(def, value) && urlParams[key] !== undefined) {
+          delete urlParams[key];
+          changeParams();
+        } else if (!isEqual(def, value)) {
+          urlParams[key] = value;
+          changeParams();
+        }
+      }
+    }, [value]);
+  }
 
   const [a4, setA4] = useState(urlParams.a4 || A4.DEFAULT);
-  useHook(urlParams, 'a4', a4, A4.DEFAULT);
+  useURLParams('a4', a4, A4.DEFAULT);
 
   const [oscillator, setOscillator] = useState(urlParams.oscillator || OSCILLATOR_TYPES.SINE);
-  useHook(urlParams, 'oscillator', oscillator, OSCILLATOR_TYPES.SINE);
+  useURLParams('oscillator', oscillator, OSCILLATOR_TYPES.SINE);
 
   const [semitones, setSemitones] = useState(urlParams.semitones || SEMITONES);
-  useHook(urlParams, 'semitones', semitones, SEMITONES);
+  useURLParams('semitones', semitones, SEMITONES);
 
   const [transposition, setTransposition] = useState(urlParams.transposition !== undefined ? urlParams.transposition : DEFAULT_TRANSPOSITION);
-  useHook(urlParams, 'transposition', transposition, DEFAULT_TRANSPOSITION);
+  useURLParams('transposition', transposition, DEFAULT_TRANSPOSITION);
 
   const [pitchNames, setPitchNames] = useState(findPitchNames(semitones, transposition));
-  useEffect(function() {
+  useEffect(() => {
     setPitchNames(findPitchNames(semitones, transposition));
   }, [semitones, transposition]);
 
   const [pitchSkipOptions, setPitchSkipOptions] = useState(findPitchSkipOptions(semitones));
-  useEffect(function() {
+  useEffect(() => {
     setPitchSkipOptions(findPitchSkipOptions(semitones));
   }, [semitones]);
 
   const _ps = urlParams.pitchSkip ? urlParams.pitchSkip : pitchSkipOptions[0];
   const [pitchSkip, setPitchSkip] = useState(_ps);
-  useEffect(function() {
+  useEffect(() => {
     if (pitchSkipOptions.indexOf(pitchSkip) < 0) {
       setPitchSkip(pitchSkipOptions[0]);
     }
   }, [pitchSkipOptions]);
-  useHook(urlParams, 'pitchSkip', pitchSkip, _ps);
-
+  useURLParams('pitchSkip', pitchSkip, _ps);
 
   const _eq = [];
   for (const f of EQ_FREQUENCIES) {
     _eq.push(0);
   }
   const [eq, setEq] = useState(urlParams.eq || _eq);
-  useHook(urlParams, 'eq', eq, _eq);
+  useURLParams('eq', eq, _eq);
 
   const [rootFrequency, setRootFrequency] = useState(transposeFrequency(a4, transposition));
-  useEffect(function() {
+  useEffect(() => {
     setRootFrequency(transposeFrequency(a4, transposition));
   }, [transposition, a4]);
 
   const [baseFrequencies, setBaseFrequencies] = useState(findBaseFrequencies(semitones, rootFrequency));
-  useEffect(function() {
+  useEffect(() => {
     setBaseFrequencies(findBaseFrequencies(semitones, rootFrequency));
   }, [semitones, rootFrequency]);
 
   const [pitchSequence, setPitchSequence] = useState(findPitchSequence(semitones, pitchSkip));
-  useEffect(function() {
+  useEffect(() => {
     setPitchSequence(findPitchSequence(semitones, pitchSkip));
   }, [semitones, pitchSkip]);
 
   const [pitchNamesSorted, setPitchNamesSorted] = useState(sortPitchNames(pitchNames, transposition, pitchSkip));
-  useEffect(function() {
+  useEffect(() => {
     setPitchNamesSorted(sortPitchNames(pitchNames, pitchSkip));
   }, [pitchNames, pitchSkip]);
 
   const [mode, setMode] = useState(urlParams.mode || 0);
-  useHook(urlParams, 'mode', mode, 0);
+  useURLParams('mode', mode, 0);
 
   const [chordNamesSorted, setChordNamesSorted] = useState([]);
-  useEffect(function(){
+  useEffect(() => {
     const chordNames = findChordNames(semitones, mode);
     setChordNamesSorted(sortPitchNames(chordNames, pitchSkip));
   }, [semitones, pitchSkip, mode]);
 
   const [activePitches, setActivePitches] = useState([]);
+
+  const diameter = Math.min(...useViewportDimensions());
 
   const [isMenuOpen, setMenuOpen] = useState(false);
   function onMenuButtonClick() {
@@ -138,27 +134,22 @@ export default function App() {
     <FirstTouch className={styles.root} callback={ initializaAudio.bind(null, baseFrequencies, eq)}>
       <div className={styles.contentHolder}>
       </div>
-      <ResizeListener>
-        {function(innerWidth, innerHeight) {
-          const smallest = Math.min(innerWidth, innerHeight);
-          return <div className={styles.wheelHolder} style={{width: `${smallest}px`, height: `${smallest}px`}}>
-            <Display
-              activePitches={activePitches}
-              baseFrequencies={baseFrequencies}
-              diameter={smallest}
-              pitchSequence={pitchSequence}
-              mode={mode}
-            />
-            <PitchLabel pitchNamesSorted={pitchNamesSorted} diameter={smallest} mode={mode} />
-            <ChordLabel chordNamesSorted={chordNamesSorted} diameter={smallest} />
-            <TouchPad
-              callback={onTouchCallback}
-              diameter={smallest}
-              pitchSequence={pitchSequence}
-            />
-          </div>
-        }}
-      </ResizeListener>
+      <div className={styles.wheelHolder} style={{width: `${diameter}px`, height: `${diameter}px`}}>
+        <Display
+          activePitches={activePitches}
+          baseFrequencies={baseFrequencies}
+          diameter={diameter}
+          pitchSequence={pitchSequence}
+          mode={mode}
+        />
+        <PitchLabel pitchNamesSorted={pitchNamesSorted} diameter={diameter} mode={mode} />
+        <ChordLabel chordNamesSorted={chordNamesSorted} diameter={diameter} />
+        <TouchPad
+          callback={onTouchCallback}
+          diameter={diameter}
+          pitchSequence={pitchSequence}
+        />
+      </div>
 
       {isMenuOpen && <div className={styles.menuHolder}><Menu
         a4={a4}
