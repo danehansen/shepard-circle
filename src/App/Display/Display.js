@@ -7,58 +7,45 @@ import {modulo} from '@danehansen/math';
 import findInterval from '../../util/findInterval';
 import PropTypes from 'prop-types';
 import {MODES} from '../../constants';
+import {useState, useEffect, useRef} from 'react';
 
 function flipRadiansVertically(radians) {
   return Math.atan2(-Math.sin(radians), Math.cos(radians));
 }
 
-export default class Display extends React.Component {
-  static propTypes = {
-    activePitches: PropTypes.arrayOf(PropTypes.number).isRequired,
-    baseFrequencies: PropTypes.arrayOf(PropTypes.number).isRequired,
-    diameter: PropTypes.number.isRequired,
-    mode: PropTypes.number.isRequired,
-    pitchSequence: PropTypes.arrayOf(PropTypes.number).isRequired,
-  };
+export default function Display({className, activePitches, baseFrequencies, diameter, mode, pitchSequence}) {
+  const rootNode = useRef();
 
-  constructor(props) {
-    super(props);
-    this._rootNode = React.createRef();
-  }
-
-  componentDidMount() {
-    const {current} = this._rootNode;
-    const {diameter} = this.props;
-    this._root = new Canvas(current);
-    this._root.globalCompositeOperation = 'copy';
-    this._buffer = new Canvas(undefined, diameter, diameter);
-
-    this._drawSlices();
-    this._root.drawImage(this._buffer);
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    if (prevProps !== this.props) {
-      const {diameter} = this.props;
-      if (prevProps.diameter !== diameter) {
-        this._root.resize(diameter, diameter);
-        this._buffer.resize(diameter, diameter);
-      }
-      this._root.clearRect();
-      this._buffer.clearRect();
-      this._drawSlices();
-      this._connectPitches();
-      this._root.drawImage(this._buffer);
+  const [root, setRoot] = useState(null);
+  const [buffer, setBuffer] = useState(null);
+  useEffect(() => {
+    if (!rootNode.current) {
+      return;
     }
-  }
+    setRoot(new Canvas(rootNode.current));
+    setBuffer(new Canvas(undefined, diameter, diameter));
+  }, [rootNode]);
 
-  render() {
-    const {className} = this.props;
-    return <canvas className={classnames(styles.root, className)} ref={this._rootNode} />;
-  }
+  useEffect(() => {
+    if (!root) {
+      return;
+    }
+    root.resize(diameter, diameter);
+    buffer.resize(diameter, diameter);
+  }, [diameter]);
 
-  _drawSlices() {
-    const {activePitches, diameter, pitchSequence, mode} = this.props;
+  useEffect(() => {
+    if (!root) {
+      return;
+    }
+    root.clearRect();
+    buffer.clearRect();
+    drawSlices();
+    connectPitches();
+    root.drawImage(buffer);
+  }, [activePitches, baseFrequencies, diameter, mode, pitchSequence]);
+
+  function drawSlices() {
     const semitones = pitchSequence.length;
     const halfSlice = Math.PI / semitones;
     const colors = findColors(semitones);
@@ -72,12 +59,11 @@ export default class Display extends React.Component {
       const radians = toRadianDirection(degrees);
       const isInKey = !!chords[i];
 
-      fillSlice(this._buffer, color, diameter, radians - halfSlice, radians + halfSlice, isActive ? 1 : 0.95, isActive ? 0.12 : 0.1, isInKey);
+      fillSlice(buffer, color, diameter, radians - halfSlice, radians + halfSlice, isActive ? 1 : 0.95, isActive ? 0.12 : 0.1, isInKey);
     }
   }
 
-  _connectPitches() {
-    const {activePitches, baseFrequencies, diameter, pitchSequence} = this.props;
+  function connectPitches() {
     const colors = findColors(pitchSequence.length);
     for (let i = 0; i < activePitches.length; i++) {
       const pitchA = activePitches[i];
@@ -89,10 +75,12 @@ export default class Display extends React.Component {
         const frequencyB = baseFrequencies[pitchSequence.indexOf(pitchB)];
         const colorA = colors[pitchSequence.indexOf(pitchA)];
         const colorB = colors[pitchSequence.indexOf(pitchB)]
-        connectPitches(toRadianDirection(degreesA), toRadianDirection(degreesB), diameter, this._buffer, 0.4, frequencyA, frequencyB, colorA, colorB);
+        connectPitches(toRadianDirection(degreesA), toRadianDirection(degreesB), diameter, buffer, 0.4, frequencyA, frequencyB, colorA, colorB);
       }
     }
   }
+
+  return <canvas className={classnames(styles.root, className)} ref={rootNode} />;
 }
 
 function fillSlice(canvas, color, diameter, startRadians, endRadians, outerRadius, holeRadius, isInKey) {
