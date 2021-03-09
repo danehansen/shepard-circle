@@ -1,51 +1,42 @@
-import {MAX_FREQ, MIN_FREQ} from './music';
+import {MAX_FREQ, MIN_FREQ, EQ_FREQUENCIES} from './music';
 
 let frequencies;
 let currentOscillators;
-let audioCtx;
+let audioContext;
 let gainNode;
+let headNode;
 
 export function initializaAudio(baseFrequencies, eq) {
-  if (audioCtx) {
-    audioCtx.close();
+  if (audioContext) {
+    audioContext.close();
   }
-  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  gainNode = audioCtx.createGain();
-
-  gainNode.connect(audioCtx.destination);
+  audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  gainNode = audioContext.createGain();
+  gainNode.connect(audioContext.destination);
 
   // TODO: figure out this gain value
   gainNode.gain.value = 0.1;
 
-  const freqencyStep = (MAX_FREQ - MIN_FREQ) / (eq.length - 1);
+  headNode = gainNode;
+  for(let i = 0; i < eq.length; i++) {
+    const eqNode = audioContext.createBiquadFilter();
 
-  // const eqNodes = [];
-  // const eqParams = [];
-  // let headNode = audioCtx.destination;
-  // for(let i = 0; i < eq.length; i++) {
-  //   const eqNode = audioCtx.createBiquadFilter();
-  //   eqNode.frequency.value = freqencyStep * i + MIN_FREQ;
-  //   // eqNode.type = 'lowshelf'
-  //   // eqNode.type = 'highshelf'
-  //   // eqNode.type = 'peaking'
-  //   eqNode.type = 'notch'
-  //   eqNode.connect(headNode)
-  //   eqNodes.push(eqNode)
-  //   eqParams.push({
-  //     frequency: eqNode.frequency, //hz
-  //     Q: eqNode.Q,
-  //     gain: eqNode.gain, // dB
-  //   });
-  //   headNode = eqNode;
-  // }
-  // gainNode.connect(headNode);
-  //
-  // for (let i = 0; i < eq.length; i++) {
-  //   eqNodes[i].gain.value = eq[i];
-  // }
+    if (i == 0) {
+      eqNode.type = 'lowshelf'
+    } else if (i === eq.length - 1) {
+      eqNode.type = 'highshelf'
+    } else {
+      eqNode.type = 'peaking'
+      // eqNode.Q.value = 1; // 0.0001 to 1000
+    }
+    eqNode.frequency.value = EQ_FREQUENCIES[i];
+    eqNode.gain.value = eq[i] * 40;
+    eqNode.connect(headNode)
+    headNode = eqNode;
+  }
+  gainNode.connect(headNode);
 
   currentOscillators = [];
-  frequencies = [];
   frequencies = baseFrequencies.map(function(frequency) {
     return findAudibleOctaves(frequency);
   })
@@ -64,12 +55,12 @@ function startNote(index, type) {
   const oscillators = [];
   currentOscillators[index] = oscillators;
   for(const frequency of frequencies[index]) {
-    const oscillator = audioCtx.createOscillator();
-    oscillator.frequency.value = frequency;
-    oscillator.type = type;
-    oscillator.connect(gainNode);
-    oscillator.start();
-    oscillators.push(oscillator);
+    const oscillatorNode = audioContext.createOscillator();
+    oscillatorNode.frequency.value = frequency;
+    oscillatorNode.type = type;
+    oscillatorNode.connect(headNode);
+    oscillatorNode.start();
+    oscillators.push(oscillatorNode);
   }
 }
 

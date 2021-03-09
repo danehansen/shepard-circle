@@ -2,6 +2,7 @@ import styles from './Menu.module.scss';
 import {TEMPERMENT_TYPES, OSCILLATOR_TYPES, DEFAULT_SEMITONES, PITCH_NAMES, MODES} from '../../constants';
 import {A4, MIN_FREQ, MAX_FREQ, SEMITONES} from '../../util/music';
 import {useState, useEffect} from 'react';
+import classnames from 'classnames';
 
 function findIncrementLabel(increment, semitones) {
   let str = String(increment);
@@ -67,18 +68,17 @@ export default function Menu({
 
       <div className={styles.property}>
         <h2 className={styles.title}>EQ</h2>
-        <div className={styles.verticalRangeHolderHolder}>
+        <div className={styles.verticalRangeHolder}>
           {eq.map(function(value, i) {
-            return <div className={styles.verticalRangeHolder} key={i}>
-              <input className={styles.verticalRange} type="range" min="0" max="1" step="0.01" value={value} onChange={onEQChange.bind(null, i)} />
-            </div>
+            return <input
+              key={i} className={styles.verticalRange} type="range" min="-1" max={1 * 0.27} step="0.01" value={value} onChange={onEQChange.bind(null, i)} />
           })}
         </div>
       </div>
 
       <div className={styles.property}>
         <h2 className={styles.title}>Semitones</h2>
-        <label className={styles.label}>
+        <label className={classnames(styles.label, styles.wide)}>
           <input className={styles.input} type="range" min={1} max={120} value={semitones} step="1" onChange={function({target: {value}}){setSemitones(parseInt(value))}} />
           <div className={styles.labelText}>{semitones}</div>
         </label>
@@ -116,7 +116,7 @@ export default function Menu({
 
       <div className={styles.property}>
         <h2 className={styles.title}>A4</h2>
-        <label className={styles.label}>
+        <label className={classnames(styles.label, styles.wide)}>
           <input
             className={styles.input}
             type="range"

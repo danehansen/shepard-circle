@@ -7,7 +7,7 @@ import TouchPad from './TouchPad/TouchPad';
 import ResizeListener from './ResizeListener/ResizeListener';
 import FirstTouch from './FirstTouch/FirstTouch';
 import {OSCILLATOR_TYPES, DEFAULT_TRANSPOSITION} from '../constants';
-import {A4, SEMITONES} from '../util/music';
+import {A4, SEMITONES, EQ_FREQUENCIES} from '../util/music';
 import {useState, useEffect} from 'react';
 import findPitchSkipOptions from '../util/findPitchSkipOptions';
 import findPitchNames from '../util/findPitchNames';
@@ -76,7 +76,11 @@ export default function App() {
   }, [pitchSkipOptions]);
   useHook(urlParams, 'pitchSkip', pitchSkip, _ps);
 
-  const _eq = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
+
+  const _eq = [];
+  for (const f of EQ_FREQUENCIES) {
+    _eq.push(0);
+  }
   const [eq, setEq] = useState(urlParams.eq || _eq);
   useHook(urlParams, 'eq', eq, _eq);
 
