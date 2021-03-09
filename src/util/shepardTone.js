@@ -1,4 +1,4 @@
-import {MAX_FREQ, MIN_FREQ, EQ_FREQUENCIES} from './music';
+import {MAX_FREQ, EQ_FREQUENCIES} from './music';
 
 let frequencies;
 let currentOscillators;
@@ -21,7 +21,7 @@ export function initializaAudio(baseFrequencies, eq) {
   for(let i = 0; i < eq.length; i++) {
     const eqNode = audioContext.createBiquadFilter();
 
-    if (i == 0) {
+    if (i === 0) {
       eqNode.type = 'lowshelf'
     } else if (i === eq.length - 1) {
       eqNode.type = 'highshelf'

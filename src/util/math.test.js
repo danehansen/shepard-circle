@@ -1,4 +1,3 @@
-import convertIndexToRadians from './convertIndexToRadians';
 import {round} from '@danehansen/math';
 import {toRadians, toDegrees, toRadianDirection, toDegreeDirection} from './math';
 

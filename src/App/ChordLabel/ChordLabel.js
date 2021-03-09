@@ -1,6 +1,4 @@
 import styles from './ChordLabel.module.scss';
-import convertIndexToRadians from '../../util/convertIndexToRadians';
-import {toRadianDirection} from '../../util/math';
 
 export default function ChordLabel({chordNamesSorted, diameter}) {
   const semitones = chordNamesSorted.length;

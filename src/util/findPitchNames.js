@@ -2,7 +2,7 @@ import {round} from '@danehansen/math';
 import {PITCH_NAMES} from '../constants';
 import {SEMITONES} from './music';
 
-export default function(semitones, transposition) {
+export default function findPitchNames(semitones, transposition) {
   return [...Array(semitones).keys()].map(function(i) {
     const nameIndexFloat = (i / semitones * SEMITONES + transposition) % SEMITONES;
     const nameIndex = Math.floor(nameIndexFloat);

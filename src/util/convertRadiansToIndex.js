@@ -1,9 +1,7 @@
-import { modulo, round } from '@danehansen/math';
-import convertIndexToRadians from './convertIndexToRadians';
+import { modulo } from '@danehansen/math';
 import {toRadianDirection} from './math';
 
 export default function convertRadiansToIndex(rad, semitones, rootPitch, pitchSkip) {
-  const ROUND = 0.001;
   const CIRC = Math.PI * 2;
   const RADIANS_IN_SLICE = CIRC / semitones;
   const DEGREES_IN_SLICE = 360 / semitones;

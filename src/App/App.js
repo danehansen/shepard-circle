@@ -18,7 +18,7 @@ import sortPitchNames from '../util/sortPitchNames';
 import {initializaAudio, toggleNote} from '../util/shepardTone';
 import queryString from 'query-string';
 import {isEqual} from 'lodash';
-import {useViewportDimensions} from '../util/react';
+import {useViewportDimensions} from '../util/hooks';
 
 export default function App() {
   const urlParams = queryString.parse(window.location.search, {parseNumbers: true, arrayFormat: 'comma'});
@@ -37,7 +37,7 @@ export default function App() {
           changeParams();
         }
       }
-    }, [value]);
+    }, [value, key, def]);
   }
 
   const [a4, setA4] = useState(urlParams.a4 || A4.DEFAULT);
@@ -68,11 +68,11 @@ export default function App() {
     if (pitchSkipOptions.indexOf(pitchSkip) < 0) {
       setPitchSkip(pitchSkipOptions[0]);
     }
-  }, [pitchSkipOptions]);
+  }, [pitchSkipOptions, pitchSkip]);
   useURLParams('pitchSkip', pitchSkip, _ps);
 
   const _eq = [];
-  for (const f of EQ_FREQUENCIES) {
+  for (let i = 0; i < EQ_FREQUENCIES.length; i++) {
     _eq.push(0);
   }
   const [eq, setEq] = useState(urlParams.eq || _eq);

@@ -1,7 +1,5 @@
 import styles from './PitchLabel.module.scss';
 import classnames from 'classnames';
-import convertIndexToRadians from '../../util/convertIndexToRadians';
-import {toRadianDirection} from '../../util/math';
 import {MODES} from '../../constants';
 
 export default function PitchLabel({pitchNamesSorted, diameter, mode}) {

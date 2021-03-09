@@ -1,7 +1,6 @@
 import styles from './Menu.module.scss';
-import {TEMPERMENT_TYPES, OSCILLATOR_TYPES, PITCH_NAMES, MODES} from '../../constants';
-import {A4, MIN_FREQ, MAX_FREQ, SEMITONES} from '../../util/music';
-import {useState, useEffect} from 'react';
+import {OSCILLATOR_TYPES, PITCH_NAMES, MODES} from '../../constants';
+import {A4, SEMITONES} from '../../util/music';
 import classnames from 'classnames';
 
 function findIncrementLabel(increment, semitones) {

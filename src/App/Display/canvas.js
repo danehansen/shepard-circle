@@ -84,11 +84,11 @@ export default class Canvas {
     * @type {ImageDataHandler}
   */
   get imageDataHandler() {
-    if (!this._imageDataHandler) {
-      const width = this._width * this._devicePixelRatio;
-      const height = this._height * this._devicePixelRatio;
+    // if (!this._imageDataHandler) {
+      // const width = this._width * this._devicePixelRatio;
+      // const height = this._height * this._devicePixelRatio;
       // this._imageDataHandler = new ImageDataHandler(this._context, 0, 0, width, height);
-    }
+    // }
     return this._imageDataHandler;
   }
 

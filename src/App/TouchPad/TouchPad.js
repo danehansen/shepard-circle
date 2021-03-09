@@ -19,7 +19,6 @@ export default function TouchPad({
   }
 
   function onTouchEnd(evt) {
-    const {targetTouches} = evt;
     anyTouch(evt);
   }
 

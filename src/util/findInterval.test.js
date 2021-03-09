@@ -1,12 +1,10 @@
 import findInterval from './findInterval';
-import {round} from '@danehansen/math';
-import {toRadians, toDegrees, toRadianDirection, toDegreeDirection} from './math';
 
 describe('findInterval', function() {
   // root note
   const A5 = 880;
   const A4 = A5 / 2;
-  const A3 = A4 / 2;
+  // const A3 = A4 / 2;
 
   // perfect fifth of A
   const E6 = 1318.51; // 1320
@@ -15,9 +13,9 @@ describe('findInterval', function() {
   const E3 = E4 / 2; // 165
 
   // A is perfect fifth of D
-  const D5 = 587.33; // 586.67
-  const D4 = D5 / 2; // 293.33
-  const D3 = D4 / 2; // 146.67
+  // const D5 = 587.33; // 586.67
+  // const D4 = D5 / 2; // 293.33
+  // const D3 = D4 / 2; // 146.67
 
 // a perfect fifth is
 // 2 / 3

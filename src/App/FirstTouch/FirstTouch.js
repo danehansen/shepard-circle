@@ -5,6 +5,7 @@ export default function FirstTouch({component: Component = 'div', callback, ...r
   const [hasCalledCallback, setHasCalledCallback] = useState(false);
 
   function onClick() {
+    setHasCalledCallback(true);
     callback();
   }
 

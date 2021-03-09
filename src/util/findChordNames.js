@@ -1,6 +1,6 @@
 import {MODES} from '../constants';
 
-export default function(semitones, modeIndex) {
+export default function findChordNames(semitones, modeIndex) {
   const {chords} = MODES[modeIndex]
   const {length} = chords;
   return chords.map(function(name, index) {

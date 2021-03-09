@@ -1,4 +1,4 @@
-export default function(semitones) {
+export default function findPitchSkipOptions(semitones) {
   const increments = [1];
   for(let i = 2; i < semitones; i++) {
     if (findIncrementsOfSemitone(semitones, i)) {
@@ -9,7 +9,6 @@ export default function(semitones) {
 }
 
 function findIncrementsOfSemitone(semitones, increment) {
-  const allSemitones = [...Array(semitones).keys()];
   const semitoneIndexes = [];
   for(let i = 0; i < semitones; i++) {
     const semitoneIndex = (i * increment) % semitones;
