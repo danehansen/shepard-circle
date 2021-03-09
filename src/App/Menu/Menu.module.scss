@@ -6,6 +6,9 @@
 
 .property {
   margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 .title {
@@ -16,6 +19,10 @@
 
 .label {
   display: block;
+
+  &.wide {
+    width: 100%;
+  }
 }
 
 .labelText {
@@ -26,4 +33,17 @@
   &[type="range"] {
     width: 100%;
   }
+}
+
+.verticalRangeHolder {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  height: 100px;
+}
+
+.verticalRange {
+  appearance: slider-vertical;
+  flex-shrink: 1;
+  width: 20px;
 }
