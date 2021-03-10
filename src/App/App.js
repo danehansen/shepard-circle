@@ -18,6 +18,7 @@ import {initializaAudio, toggleNote} from '../util/shepardTone';
 import queryString from 'query-string';
 import {isEqual} from 'lodash';
 import {useViewportDimensions} from '../util/hooks';
+// import {random} from '@danehansen/math';
 
 export default function App() {
   const urlParams = queryString.parse(window.location.search, {parseNumbers: true, arrayFormat: 'comma'});
@@ -119,14 +120,30 @@ export default function App() {
   }
 
   function onTouchCallback(pitches) {
+
+    const randomPitches = [];
+    // if (pitches.length) {
+    //   const numRandomPitches = random(1, 3, true);
+    //   for (let i = 0; i < numRandomPitches; i++) {
+    //     let randomPitch;
+    //     do {
+    //       randomPitch = random(0, 12, true);
+    //     } while (pitches.indexOf(randomPitch) >= 0)
+    //     randomPitches.push(randomPitch);
+    //   }
+    // }
+
+    const newPitches = [...pitches, ...randomPitches]
+
     for(let i = 0; i < semitones; i++) {
-      if (pitches.indexOf(i) >= 0) {
+      if (newPitches.indexOf(i) >= 0) {
         toggleNote(i, true, oscillator)
       } else {
         toggleNote(i, false, oscillator)
       }
     }
-    setActivePitches(pitches);
+
+    setActivePitches(newPitches);
   }
 
   return (

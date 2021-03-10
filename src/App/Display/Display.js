@@ -35,27 +35,27 @@ export default function Display({className, activePitches, baseFrequencies, diam
       return;
     }
 
+    const semitones = pitchSequence.length;
+    const colors = findColors(semitones);
+
     function connectPitches() {
-      const colors = findColors(pitchSequence.length);
       for (let i = 0; i < activePitches.length; i++) {
         const pitchA = activePitches[i];
-        const degreesA = 360 / pitchSequence.length * pitchSequence.indexOf(pitchA);
+        const degreesA = 360 / semitones * pitchSequence.indexOf(pitchA);
         const frequencyA = baseFrequencies[pitchSequence.indexOf(pitchA)];
         for (let j = i + 1; j < activePitches.length; j++) {
           const pitchB = activePitches[j];
-          const degreesB = 360 / pitchSequence.length * pitchSequence.indexOf(pitchB);
+          const degreesB = 360 / semitones * pitchSequence.indexOf(pitchB);
           const frequencyB = baseFrequencies[pitchSequence.indexOf(pitchB)];
-          const colorA = colors[pitchSequence.indexOf(pitchA)];
-          const colorB = colors[pitchSequence.indexOf(pitchB)]
+          const colorA = colors[pitchA];
+          const colorB = colors[pitchB]
           drawInterval(toRadianDirection(degreesA), toRadianDirection(degreesB), diameter, buffer, 0.4, frequencyA, frequencyB, colorA, colorB);
         }
       }
     }
 
     function drawSlices() {
-      const semitones = pitchSequence.length;
       const halfSlice = RADIANS_IN_CIRCLE / semitones / 2;
-      const colors = findColors(semitones);
       const {chords} = MODES[mode];
 
       for (let i = 0; i < semitones; i++) {
