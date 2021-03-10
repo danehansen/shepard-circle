@@ -162,7 +162,7 @@ export default function App() {
   return (
     <FirstTouch className={styles.root} callback={ initializaAudio.bind(null, baseFrequencies, eq)}>
       <div className={styles.contentHolder}>
-        <MatchingChords chords={activeChords} semitones={semitones} />
+        <MatchingChords chords={activeChords} />
       </div>
       <div className={styles.wheelHolder} style={{width: `${diameter}px`, height: `${diameter}px`}}>
         <Display

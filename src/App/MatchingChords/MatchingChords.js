@@ -2,7 +2,7 @@ import styles from './MatchingChords.module.scss';
 import classnames from 'classnames';
 // import findPitchNames from '../../util/findPitchNames';
 
-export default function MatchingChords({chords, semitones}) {
+export default function MatchingChords({chords}) {
 
   // const pitchNames = findPitchNames(semitones);
 
