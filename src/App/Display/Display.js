@@ -3,7 +3,7 @@ import classnames from 'classnames';
 import React from 'react';
 import Canvas from './canvas';
 import {toRadianDirection} from '../../util/math';
-import {MODES} from '../../util/constants';
+import {MODES, RADIANS_IN_CIRCLE} from '../../util/constants';
 import {useState, useEffect, useRef} from 'react';
 import findColors from './findColors';
 import fillSlice from './fillSlice';
@@ -54,7 +54,7 @@ export default function Display({className, activePitches, baseFrequencies, diam
 
     function drawSlices() {
       const semitones = pitchSequence.length;
-      const halfSlice = Math.PI / semitones;
+      const halfSlice = RADIANS_IN_CIRCLE / semitones / 2;
       const colors = findColors(semitones);
       const {chords} = MODES[mode];
 

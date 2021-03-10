@@ -1,4 +1,5 @@
 import findIntervalRatio from '../../util/findIntervalRatio';
+import {RADIANS_IN_CIRCLE} from '../../util/constants';
 
 export default function drawInterval(radianA, radianB, diameter, canvas, radius, frequencyA, frequencyB, colorA, colorB) {
   const center = diameter / 2;
@@ -33,7 +34,7 @@ export default function drawInterval(radianA, radianB, diameter, canvas, radius,
       canvas.beginPath();
       const centerX = pointA.x + xDiff / interval[0] * (i + 0.5);
       const centerY = pointA.y + yDiff / interval[0] * (i + 0.5);
-      canvas.arc(centerX, centerY, radiusA, 0, Math.PI * 2);
+      canvas.arc(centerX, centerY, radiusA, 0, RADIANS_IN_CIRCLE);
       canvas.stroke();
     }
 
@@ -42,7 +43,7 @@ export default function drawInterval(radianA, radianB, diameter, canvas, radius,
       canvas.beginPath();
       const centerX = pointA.x + xDiff / interval[1] * (i + 0.5);
       const centerY = pointA.y + yDiff / interval[1] * (i + 0.5);
-      canvas.arc(centerX, centerY, radiusB, 0, Math.PI * 2);
+      canvas.arc(centerX, centerY, radiusB, 0, RADIANS_IN_CIRCLE);
       canvas.stroke();
     }
   }

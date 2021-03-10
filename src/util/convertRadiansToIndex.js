@@ -1,9 +1,9 @@
 import { modulo } from '@danehansen/math';
 import {toRadianDirection} from './math';
+import {RADIANS_IN_CIRCLE} from './constants';
 
 export default function convertRadiansToIndex(rad, semitones, rootPitch, pitchSkip) {
-  const CIRC = Math.PI * 2;
-  const RADIANS_IN_SLICE = CIRC / semitones;
+  const RADIANS_IN_SLICE = RADIANS_IN_CIRCLE / semitones;
   const DEGREES_IN_SLICE = 360 / semitones;
 
   for(let i = 0; i < semitones; i++) {
@@ -18,9 +18,9 @@ export default function convertRadiansToIndex(rad, semitones, rootPitch, pitchSk
     }
 
     if (lowerLimit < 0 && upperLimit > 0) {
-      adjustedRad -= CIRC;
-    } else if (lowerLimit < CIRC && upperLimit > CIRC) {
-      adjustedRad += CIRC;
+      adjustedRad -= RADIANS_IN_CIRCLE;
+    } else if (lowerLimit < RADIANS_IN_CIRCLE && upperLimit > RADIANS_IN_CIRCLE) {
+      adjustedRad += RADIANS_IN_CIRCLE;
     }
 
     if (lowerLimit <= adjustedRad && upperLimit >= adjustedRad) {

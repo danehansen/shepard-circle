@@ -1,4 +1,5 @@
 import {modulo} from '@danehansen/math';
+import {RADIANS_IN_CIRCLE} from '../../util/constants';
 
 function flipRadiansVertically(radians) {
   return Math.atan2(-Math.sin(radians), Math.cos(radians));
@@ -6,13 +7,13 @@ function flipRadiansVertically(radians) {
 
 export default function fillSlice(canvas, color, diameter, startRadians, endRadians, outerRadius, holeRadius, isInKey) {
   const center = diameter / 2;
-  const isCircle = modulo(startRadians, Math.PI * 2) === modulo(endRadians, Math.PI * 2);
+  const isCircle = modulo(startRadians, RADIANS_IN_CIRCLE) === modulo(endRadians, RADIANS_IN_CIRCLE);
 
   canvas.beginPath();
   canvas.fillStyle =`rgb(${color.r}, ${color.g}, ${color.b})`;
 
   if (isCircle) {
-    canvas.arc(center, center, center * outerRadius, 0, 2 * Math.PI);
+    canvas.arc(center, center, center * outerRadius, 0, RADIANS_IN_CIRCLE);
   } else {
     // clockwise straight edge
     let cos = Math.cos(startRadians);
@@ -38,7 +39,7 @@ export default function fillSlice(canvas, color, diameter, startRadians, endRadi
   if (isCircle) {
     canvas.beginPath();
     canvas.globalCompositeOperation = 'destination-out';
-    canvas.arc(center, center, center * holeRadius, 0, 2 * Math.PI);
+    canvas.arc(center, center, center * holeRadius, 0, RADIANS_IN_CIRCLE);
     canvas.fill();
     canvas.globalCompositeOperation = 'source-over';
   }

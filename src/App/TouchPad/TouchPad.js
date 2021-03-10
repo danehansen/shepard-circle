@@ -2,6 +2,7 @@ import {useRef} from 'react';
 import {modulo} from '@danehansen/math';
 import {toDegreeDirection} from '../../util/math';
 import styles from './TouchPad.module.scss';
+import {RADIANS_IN_CIRCLE} from '../../util/constants';
 
 export default function TouchPad({
   pitchSequence,
@@ -33,7 +34,7 @@ export default function TouchPad({
       callback([]);
     }
     const rect = rootNode.current.getBoundingClientRect();
-    const halfSlice = Math.PI / pitchSequence.length;
+    const halfSlice = RADIANS_IN_CIRCLE / pitchSequence.length / 2;
     const pitches = []
     for (let i = 0; i < targetTouches.length; i++) {
       const {clientX, clientY} = targetTouches[i];
@@ -42,7 +43,7 @@ export default function TouchPad({
       const length = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
 
       if (length <= diameter / 2) {
-        const rad = modulo(Math.atan2(y, x), Math.PI * 2);
+        const rad = modulo(Math.atan2(y, x), RADIANS_IN_CIRCLE);
         const degrees = toDegreeDirection(rad - halfSlice);
         const index = Math.floor(degrees / 360 * pitchSequence.length);
         pitches.push(pitchSequence[index]);

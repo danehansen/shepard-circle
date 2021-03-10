@@ -1,5 +1,6 @@
 export const DEFAULT_TRANSPOSITION = 300;
 export const EQ_FREQUENCIES = [32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384];
+export const RADIANS_IN_CIRCLE = Math.PI * 2;
 
 export const MODES = [
   {

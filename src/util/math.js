@@ -9,9 +9,9 @@ export function toDegrees(radians) {
 }
 
 export function toRadianDirection(degrees) {
-  const radians = toRadians(-degrees);
   const circ = Math.PI * 2;
-  const offset = radians + Math.PI * 0.5;
+  const radians = toRadians(-degrees);
+  const offset = radians + circ * 0.25;
   return modulo(offset, circ);
 }
 

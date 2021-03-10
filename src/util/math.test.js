@@ -1,21 +1,21 @@
 import {round} from '@danehansen/math';
 import {toRadians, toDegrees, toRadianDirection, toDegreeDirection} from './math';
+import {RADIANS_IN_CIRCLE} from './constants';
 
-const CIRC = Math.PI * 2;
 const ROUND = 0.001;
 
-const OCLOCK_12 = 3 * CIRC / 12; // 1.571
-const OCLOCK_01 = 2 * CIRC / 12; // 1.047
-const OCLOCK_02 = 1 * CIRC / 12; // 0.524
-const OCLOCK_03 = 0 * CIRC / 12; // 0.000
-const OCLOCK_04 = 11 * CIRC / 12; // 5.760
-const OCLOCK_05 = 10 * CIRC / 12; // 5.236
-const OCLOCK_06 = 9 * CIRC / 12; // 4.712
-const OCLOCK_07 = 8 * CIRC / 12; // 4.189
-const OCLOCK_08 = 7 * CIRC / 12; // 3.665
-const OCLOCK_09 = 6 * CIRC / 12; // 3.142
-const OCLOCK_10 = 5 * CIRC / 12; // 2.618
-const OCLOCK_11 = 4 * CIRC / 12; // 2.094
+const OCLOCK_12 = 3 * RADIANS_IN_CIRCLE / 12; // 1.571
+const OCLOCK_01 = 2 * RADIANS_IN_CIRCLE / 12; // 1.047
+const OCLOCK_02 = 1 * RADIANS_IN_CIRCLE / 12; // 0.524
+const OCLOCK_03 = 0 * RADIANS_IN_CIRCLE / 12; // 0.000
+const OCLOCK_04 = 11 * RADIANS_IN_CIRCLE / 12; // 5.760
+const OCLOCK_05 = 10 * RADIANS_IN_CIRCLE / 12; // 5.236
+const OCLOCK_06 = 9 * RADIANS_IN_CIRCLE / 12; // 4.712
+const OCLOCK_07 = 8 * RADIANS_IN_CIRCLE / 12; // 4.189
+const OCLOCK_08 = 7 * RADIANS_IN_CIRCLE / 12; // 3.665
+const OCLOCK_09 = 6 * RADIANS_IN_CIRCLE / 12; // 3.142
+const OCLOCK_10 = 5 * RADIANS_IN_CIRCLE / 12; // 2.618
+const OCLOCK_11 = 4 * RADIANS_IN_CIRCLE / 12; // 2.094
 
 describe('toRadians', function() {
   it('converts an amount of degrees to radians', function() {
