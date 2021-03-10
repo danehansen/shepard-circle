@@ -26,10 +26,12 @@ const CHORDS = [
 ];
 
 export default function findChords(pitches, semitones, pitchNames) {
+  console.log('findChords', {pitches, semitones});
   const matchingChords = [];
   const pitchSpelling = pitches.map(function(pitch){
     return pitch / semitones * 12;
   })
+  console.log('findChords', {pitchSpelling});
   for (let i = 0; i < pitches.length; i++) {
     for(const chord of CHORDS) {
       const matchAmount = comparePitchSpellingWithChord(pitchSpelling, chord);
@@ -41,6 +43,7 @@ export default function findChords(pitches, semitones, pitchNames) {
   }
 
   matchingChords.sort(sortMatchingChords);
+  // console.log('findChords', matchingChords);
 
   return matchingChords;
 }

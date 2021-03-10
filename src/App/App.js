@@ -23,6 +23,7 @@ import {isEqual} from 'lodash';
 import {useViewportDimensions} from '../util/hooks';
 // import {random} from '@danehansen/math';
 import findChords from '../util/findChords';
+import {random} from '@danehansen/math';
 
 export default function App() {
   const urlParams = queryString.parse(window.location.search, {parseNumbers: true, arrayFormat: 'comma'});
@@ -152,11 +153,9 @@ export default function App() {
         toggleNote(i, false, oscillator)
       }
     }
-    setActivePitches(pitches);
-    const chords = findChords(pitches, semitones, pitchNames);
 
-    console.log(chords);
-    setActiveChords(chords);
+    setActivePitches(newPitches);
+    setActiveChords(findChords(newPitches, semitones, pitchNames));
   }
 
   return (
