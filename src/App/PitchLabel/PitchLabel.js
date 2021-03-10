@@ -5,9 +5,6 @@ export default function PitchLabel({pitchNamesSorted, diameter, chordNamesSorted
   const semitones = pitchNamesSorted.length;
 
   return <div className={styles.root}>{pitchNamesSorted.map(function(name, index) {
-    if (!chordNamesSorted[index]) {
-      return null;
-    }
     const degrees = 360 / semitones * index;
     const isSmall = name.length > 1;
     let transform;
@@ -23,7 +20,7 @@ export default function PitchLabel({pitchNamesSorted, diameter, chordNamesSorted
     }
 
     return <div
-      className={classnames(styles.button, isSmall && styles.small)}
+      className={classnames(styles.button, isSmall && styles.small, !chordNamesSorted[index] && styles.deemphesized)}
       key={index}
       style={{transform, transformOrigin}}
     >{name}</div>

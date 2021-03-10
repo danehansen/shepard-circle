@@ -17,4 +17,9 @@
     font-weight: normal;
     font-size: 6vw;
   }
+
+  &.deemphesized {
+    mix-blend-mode: overlay;
+    font-weight: 100;
+  }
 }
