@@ -103,8 +103,7 @@ export default function App() {
 
   const [chordNamesSorted, setChordNamesSorted] = useState([]);
   useEffect(() => {
-    const chordNames = findChordNames(semitones, mode);
-    setChordNamesSorted(sortPitchNames(chordNames, pitchSkip));
+    setChordNamesSorted(findChordNames(semitones, mode, pitchSkip));
   }, [semitones, pitchSkip, mode]);
 
   const [activePitches, setActivePitches] = useState([]);

@@ -1,13 +1,17 @@
 import {MODES} from './constants';
 
-export default function findChordNames(semitones, modeIndex) {
-  const {chords} = MODES[modeIndex]
-  const {length} = chords;
-  return chords.map(function(name, index) {
-    const nameIndex = (index / semitones * length) % length;
-    if (!(nameIndex % 1)) {
-      return chords[nameIndex];
-    }
-    return null;
-  })
+export default function findChordNames(semitones, modeIndex, pitchSkip) {
+  const twelveChordsInMode = [...MODES[modeIndex].chords];
+  const semitonesChordsInMode = [];
+  for (let i = 0; i < semitones; i++) {
+    const index = i / semitones * twelveChordsInMode.length;
+    semitonesChordsInMode.push(twelveChordsInMode[index] || null);
+  }
+
+  const semitonesChordsInModeSorted = semitonesChordsInMode.map((chord, i) => {
+    const index = (i * pitchSkip) % semitones;
+    return semitonesChordsInMode[index];
+  });
+
+  return semitonesChordsInModeSorted;
 }
