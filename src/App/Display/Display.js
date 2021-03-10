@@ -7,6 +7,7 @@ import {MODES} from '../../util/constants';
 import {useState, useEffect, useRef} from 'react';
 import findColors from './findColors';
 import fillSlice from './fillSlice';
+import drawInterval from './drawInterval';
 
 export default function Display({className, activePitches, baseFrequencies, diameter, mode, pitchSequence}) {
   const rootNode = useRef();
@@ -19,7 +20,7 @@ export default function Display({className, activePitches, baseFrequencies, diam
     }
     setRoot(new Canvas(rootNode.current));
     setBuffer(new Canvas(undefined, diameter, diameter));
-  }, [rootNode, diameter]);
+  }, [rootNode]);
 
   useEffect(() => {
     if (!root) {
@@ -27,7 +28,7 @@ export default function Display({className, activePitches, baseFrequencies, diam
     }
     root.resize(diameter, diameter);
     buffer.resize(diameter, diameter);
-  }, [diameter, root, buffer]);
+  }, [root]);
 
   useEffect(() => {
     if (!root) {
@@ -46,7 +47,7 @@ export default function Display({className, activePitches, baseFrequencies, diam
           const frequencyB = baseFrequencies[pitchSequence.indexOf(pitchB)];
           const colorA = colors[pitchSequence.indexOf(pitchA)];
           const colorB = colors[pitchSequence.indexOf(pitchB)]
-          connectPitches(toRadianDirection(degreesA), toRadianDirection(degreesB), diameter, buffer, 0.4, frequencyA, frequencyB, colorA, colorB);
+          drawInterval(toRadianDirection(degreesA), toRadianDirection(degreesB), diameter, buffer, 0.4, frequencyA, frequencyB, colorA, colorB);
         }
       }
     }
@@ -74,7 +75,7 @@ export default function Display({className, activePitches, baseFrequencies, diam
     drawSlices();
     connectPitches();
     root.drawImage(buffer);
-  }, [activePitches, baseFrequencies, diameter, mode, pitchSequence, root, buffer]);
+  }, [activePitches, baseFrequencies, diameter, mode, pitchSequence]);
 
   return <canvas className={classnames(styles.root, className)} ref={rootNode} />;
 }

@@ -1,6 +1,6 @@
 import findIntervalRatio from '../../util/findIntervalRatio';
 
-export default function connectPitches(radianA, radianB, diameter, canvas, radius, frequencyA, frequencyB, colorA, colorB) {
+export default function drawInterval(radianA, radianB, diameter, canvas, radius, frequencyA, frequencyB, colorA, colorB) {
   const center = diameter / 2;
 
   const cosA = Math.cos(radianA);
