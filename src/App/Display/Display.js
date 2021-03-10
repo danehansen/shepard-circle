@@ -20,7 +20,7 @@ export default function Display({className, activePitches, baseFrequencies, diam
     }
     setRoot(new Canvas(rootNode.current));
     setBuffer(new Canvas(undefined, diameter, diameter));
-  }, [rootNode]);
+  }, [rootNode, diameter]);
 
   useEffect(() => {
     if (!root) {
@@ -28,7 +28,7 @@ export default function Display({className, activePitches, baseFrequencies, diam
     }
     root.resize(diameter, diameter);
     buffer.resize(diameter, diameter);
-  }, [root]);
+  }, [root, buffer, diameter]);
 
   useEffect(() => {
     if (!root) {
@@ -75,7 +75,7 @@ export default function Display({className, activePitches, baseFrequencies, diam
     drawSlices();
     connectPitches();
     root.drawImage(buffer);
-  }, [activePitches, baseFrequencies, diameter, mode, pitchSequence]);
+  }, [activePitches, baseFrequencies, diameter, mode, pitchSequence, buffer, root]);
 
   return <canvas className={classnames(styles.root, className)} ref={rootNode} />;
 }

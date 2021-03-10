@@ -82,9 +82,9 @@ export default function App() {
     setRootFrequency(transposeFrequency(a4, transposition));
   }, [transposition, a4]);
 
-  const [baseFrequencies, setBaseFrequencies] = useState(findBaseFrequencies(semitones * 100, rootFrequency));
+  const [baseFrequencies, setBaseFrequencies] = useState(findBaseFrequencies(semitones, rootFrequency));
   useEffect(() => {
-    setBaseFrequencies(findBaseFrequencies(semitones * 100, rootFrequency));
+    setBaseFrequencies(findBaseFrequencies(semitones, rootFrequency));
   }, [semitones, rootFrequency]);
 
   const [pitchSequence, setPitchSequence] = useState(findPitchSequence(semitones, pitchSkip));

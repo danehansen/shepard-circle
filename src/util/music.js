@@ -8,8 +8,8 @@ export function findInterval(fA, fB) {
   return cents;
 }
 
-export function transposeFrequency(frequency, cents, semitones = SEMITONES) {
-  return frequency * Math.pow(Math.pow(2, 1 / semitones), cents);
+export function transposeFrequency(frequency, cents) {
+  return frequency * Math.pow(Math.pow(2, 1 / SEMITONES), (cents / 100));
 }
 
 export const A4 = {
