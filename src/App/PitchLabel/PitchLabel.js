@@ -1,6 +1,6 @@
 import styles from './PitchLabel.module.scss';
 import classnames from 'classnames';
-import {MODES} from '../../constants';
+import {MODES} from '../../util/constants';
 
 export default function PitchLabel({pitchNamesSorted, diameter, mode}) {
   const semitones = pitchNamesSorted.length;

@@ -1,5 +1,6 @@
-export const DEFAULT_TRANSPOSITION = 3;
-export const PITCH_NAMES = ['A', 'A♯/B♭', 'B', 'C', 'C♯/D♭', 'D', 'D♯/E♭', 'E', 'F', 'F♯/G♭', 'G', 'G♯/A♭'];
+export const DEFAULT_TRANSPOSITION = 300;
+export const EQ_FREQUENCIES = [32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384];
+
 export const MODES = [
   {
     name: 'I ionian (major)',

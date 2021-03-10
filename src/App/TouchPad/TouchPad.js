@@ -8,7 +8,7 @@ export default function TouchPad({
   callback,
   diameter,
 }) {
-  const rootNode = useRef(null);
+  const rootNode = useRef();
 
   function onTouchMove(evt) {
     anyTouch(evt);

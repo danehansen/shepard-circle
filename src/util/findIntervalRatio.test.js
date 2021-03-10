@@ -1,6 +1,6 @@
-import findInterval from './findInterval';
+import findIntervalRatio from './findIntervalRatio';
 
-describe('findInterval', function() {
+describe('findIntervalRatio', function() {
   // root note
   const A5 = 880;
   const A4 = A5 / 2;
@@ -23,41 +23,41 @@ describe('findInterval', function() {
 // small / large
 
   it('returns a perfect fifth when fifth is 2 higher after root', function() {
-    const result = findInterval(A4, E6);
+    const result = findIntervalRatio(A4, E6);
     expect(result[0]).toBe(2);
     expect(result[1]).toBe(3);
 
-    const result2 = findInterval(E6, A4);
+    const result2 = findIntervalRatio(E6, A4);
     expect(result2[0]).toBe(3);
     expect(result2[1]).toBe(2);
   });
 
   it('returns a perfect fifth when fifth is next highest after root', function() {
-    const result = findInterval(A4, E5);
+    const result = findIntervalRatio(A4, E5);
     expect(result[0]).toBe(2);
     expect(result[1]).toBe(3);
 
-    const result2 = findInterval(E5, A4);
+    const result2 = findIntervalRatio(E5, A4);
     expect(result2[0]).toBe(3);
     expect(result2[1]).toBe(2);
   });
 
   it('returns a perfect fifth when fifth is next lowest after root', function() {
-    const result = findInterval(A4, E4);
+    const result = findIntervalRatio(A4, E4);
     expect(result[0]).toBe(2);
     expect(result[1]).toBe(3);
 
-    const result2 = findInterval(E4, A4);
+    const result2 = findIntervalRatio(E4, A4);
     expect(result2[0]).toBe(3);
     expect(result2[1]).toBe(2);
   });
 
   it('returns a perfect fifth when fifth is 2 lower after root', function() {
-    const result = findInterval(A4, E3);
+    const result = findIntervalRatio(A4, E3);
     expect(result[0]).toBe(2);
     expect(result[1]).toBe(3);
 
-    const result2 = findInterval(E3, A4);
+    const result2 = findIntervalRatio(E3, A4);
     expect(result2[0]).toBe(3);
     expect(result2[1]).toBe(2);
   });

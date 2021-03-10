@@ -1,10 +1,15 @@
 export const MIN_FREQ = 20;
 export const MAX_FREQ = 20000;
 export const SEMITONES = 12;
-export const EQ_FREQUENCIES = [32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384];
+export const PITCH_NAMES = ['A', 'A♯/B♭', 'B', 'C', 'C♯/D♭', 'D', 'D♯/E♭', 'E', 'F', 'F♯/G♭', 'G', 'G♯/A♭'];
 
-export function findCents(fA, fB) {
-  return 1200 * Math.log2(fB / fA);
+export function findInterval(fA, fB) {
+  const cents = SEMITONES * 100 * Math.log2(fB / fA);
+  return cents;
+}
+
+export function transposeFrequency(frequency, cents, semitones = SEMITONES) {
+  return frequency * Math.pow(Math.pow(2, 1 / semitones), cents);
 }
 
 export const A4 = {

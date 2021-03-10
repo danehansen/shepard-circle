@@ -5,12 +5,11 @@ import PitchLabel from './PitchLabel/PitchLabel';
 import ChordLabel from './ChordLabel/ChordLabel';
 import TouchPad from './TouchPad/TouchPad';
 import FirstTouch from './FirstTouch/FirstTouch';
-import {OSCILLATOR_TYPES, DEFAULT_TRANSPOSITION} from '../constants';
-import {A4, SEMITONES, EQ_FREQUENCIES} from '../util/music';
+import {OSCILLATOR_TYPES, DEFAULT_TRANSPOSITION, EQ_FREQUENCIES} from '../util/constants';
+import {A4, SEMITONES, transposeFrequency} from '../util/music';
 import {useState, useEffect} from 'react';
 import findPitchSkipOptions from '../util/findPitchSkipOptions';
 import findPitchNames from '../util/findPitchNames';
-import transposeFrequency from '../util/transposeFrequency';
 import findBaseFrequencies from '../util/findBaseFrequencies';
 import findPitchSequence from '../util/findPitchSequence';
 import findChordNames from '../util/findChordNames';
@@ -83,9 +82,9 @@ export default function App() {
     setRootFrequency(transposeFrequency(a4, transposition));
   }, [transposition, a4]);
 
-  const [baseFrequencies, setBaseFrequencies] = useState(findBaseFrequencies(semitones, rootFrequency));
+  const [baseFrequencies, setBaseFrequencies] = useState(findBaseFrequencies(semitones * 100, rootFrequency));
   useEffect(() => {
-    setBaseFrequencies(findBaseFrequencies(semitones, rootFrequency));
+    setBaseFrequencies(findBaseFrequencies(semitones * 100, rootFrequency));
   }, [semitones, rootFrequency]);
 
   const [pitchSequence, setPitchSequence] = useState(findPitchSequence(semitones, pitchSkip));
@@ -93,7 +92,7 @@ export default function App() {
     setPitchSequence(findPitchSequence(semitones, pitchSkip));
   }, [semitones, pitchSkip]);
 
-  const [pitchNamesSorted, setPitchNamesSorted] = useState(sortPitchNames(pitchNames, transposition, pitchSkip));
+  const [pitchNamesSorted, setPitchNamesSorted] = useState(sortPitchNames(pitchNames, pitchSkip));
   useEffect(() => {
     setPitchNamesSorted(sortPitchNames(pitchNames, pitchSkip));
   }, [pitchNames, pitchSkip]);

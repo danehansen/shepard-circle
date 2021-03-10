@@ -1,4 +1,4 @@
-import findInterval from '../../util/findInterval';
+import findIntervalRatio from '../../util/findIntervalRatio';
 
 export default function connectPitches(radianA, radianB, diameter, canvas, radius, frequencyA, frequencyB, colorA, colorB) {
   const center = diameter / 2;
@@ -19,7 +19,7 @@ export default function connectPitches(radianA, radianB, diameter, canvas, radiu
     y: center + sinB * center * radius,
   };
 
-  const interval = findInterval(frequencyA, frequencyB);
+  const interval = findIntervalRatio(frequencyA, frequencyB);
   if (interval) {
     canvas.lineWidth = 1;
     const xDiff = pointB.x - pointA.x;

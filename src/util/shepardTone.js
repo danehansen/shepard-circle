@@ -1,4 +1,5 @@
-import {MAX_FREQ, EQ_FREQUENCIES} from './music';
+import {MAX_FREQ} from './music';
+import {EQ_FREQUENCIES} from './constants';
 
 let frequencies;
 let currentOscillators;

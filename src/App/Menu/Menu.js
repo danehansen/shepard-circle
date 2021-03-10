@@ -1,6 +1,6 @@
 import styles from './Menu.module.scss';
-import {OSCILLATOR_TYPES, PITCH_NAMES, MODES} from '../../constants';
-import {A4, SEMITONES} from '../../util/music';
+import {OSCILLATOR_TYPES, MODES} from '../../util/constants';
+import {A4, SEMITONES, PITCH_NAMES} from '../../util/music';
 import classnames from 'classnames';
 
 function findIncrementLabel(increment, semitones) {
@@ -87,7 +87,7 @@ export default function Menu({
         <h2 className={styles.title}>Transposition</h2>
           {PITCH_NAMES.map(function(name, index) {
             return <label className={styles.label} key={name}>
-              <input className={styles.input} type="radio" value={index} name="transposition" checked={transposition === index} onChange={function({target:{value}}){setTransposition(parseInt(value))}} />
+              <input className={styles.input} type="radio" value={index * 100} name="transposition" checked={transposition === index * 100} onChange={function({target:{value}}){setTransposition(parseInt(value))}} />
               <div className={styles.labelText}>{name}</div>
             </label>
           })}

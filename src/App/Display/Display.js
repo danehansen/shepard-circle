@@ -3,7 +3,7 @@ import classnames from 'classnames';
 import React from 'react';
 import Canvas from './canvas';
 import {toRadianDirection} from '../../util/math';
-import {MODES} from '../../constants';
+import {MODES} from '../../util/constants';
 import {useState, useEffect, useRef} from 'react';
 import findColors from './findColors';
 import fillSlice from './fillSlice';
