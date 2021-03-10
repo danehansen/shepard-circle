@@ -1,10 +1,9 @@
 import convertIndexToRadians from './convertIndexToRadians';
-import {round} from '@danehansen/math';
 import {SEMITONES} from './music';
 import {RADIANS_IN_CIRCLE} from './constants';
 
 describe('convertIndexToRadians', function() {
-  const ROUND = 0.001;
+  const DIGITS = 3;
 
   const OCLOCK_12 = 3 * RADIANS_IN_CIRCLE / 12; // 1.571
   const OCLOCK_01 = 2 * RADIANS_IN_CIRCLE / 12; // 1.047
@@ -40,10 +39,8 @@ describe('convertIndexToRadians', function() {
 
     for (let i = 0; i < expectedResults.length; i++) {
       const result = convertIndexToRadians(i, semitones, rootPitch, pitchSkip);
-      const resultRounded = round(result, ROUND);
       const expectedResult = expectedResults[i];
-      const expectedResultRounded = round(expectedResult, ROUND);
-      expect(resultRounded).toBe(expectedResultRounded);
+      expect(result).toBeCloseTo(expectedResult, DIGITS);
     }
   });
 
@@ -68,10 +65,8 @@ describe('convertIndexToRadians', function() {
 
     for (let i = 0; i < expectedResults.length; i++) {
       const result = convertIndexToRadians(i, semitones, rootPitch, pitchSkip);
-      const resultRounded = round(result, ROUND);
       const expectedResult = expectedResults[i];
-      const expectedResultRounded = round(expectedResult, ROUND);
-      expect(resultRounded).toBe(expectedResultRounded);
+      expect(result).toBeCloseTo(expectedResult, DIGITS);
     }
   });
 
@@ -96,10 +91,8 @@ describe('convertIndexToRadians', function() {
 
     for (let i = 0; i < expectedResults.length; i++) {
       const result = convertIndexToRadians(i, semitones, rootPitch, pitchSkip);
-      const resultRounded = round(result, ROUND);
       const expectedResult = expectedResults[i];
-      const expectedResultRounded = round(expectedResult, ROUND);
-      expect(resultRounded).toBe(expectedResultRounded);
+      expect(result).toBeCloseTo(expectedResult, DIGITS);
     }
   });
 
@@ -124,10 +117,8 @@ describe('convertIndexToRadians', function() {
 
     for (let i = 0; i < expectedResults.length; i++) {
       const result = convertIndexToRadians(i, semitones, rootPitch, pitchSkip);
-      const resultRounded = round(result, ROUND);
       const expectedResult = expectedResults[i];
-      const expectedResultRounded = round(expectedResult, ROUND);
-      expect(resultRounded).toBe(expectedResultRounded);
+      expect(result).toBeCloseTo(expectedResult, DIGITS);
     }
   });
 });

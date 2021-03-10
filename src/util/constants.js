@@ -4,6 +4,10 @@ export const RADIANS_IN_CIRCLE = Math.PI * 2;
 
 export const MODES = [
   {
+    name: '(none)',
+    chords: [],
+  },
+  {
     name: 'I ionian (major)',
     chords: ['I', null, 'ii', null, 'iii', 'IV', null, 'V', null, 'vi', null, 'viiº'],
   },
