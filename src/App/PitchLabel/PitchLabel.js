@@ -1,13 +1,11 @@
 import styles from './PitchLabel.module.scss';
 import classnames from 'classnames';
-import {MODES} from '../../util/constants';
 
-export default function PitchLabel({pitchNamesSorted, diameter, mode}) {
+export default function PitchLabel({pitchNamesSorted, diameter, chordNamesSorted}) {
   const semitones = pitchNamesSorted.length;
-  const {chords} = MODES[mode];
 
   return <div className={styles.root}>{pitchNamesSorted.map(function(name, index) {
-    if (!chords[index]) {
+    if (!chordNamesSorted[index]) {
       return null;
     }
     const degrees = 360 / semitones * index;

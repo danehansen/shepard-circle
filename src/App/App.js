@@ -141,7 +141,7 @@ export default function App() {
           pitchSequence={pitchSequence}
           mode={mode}
         />
-        <PitchLabel pitchNamesSorted={pitchNamesSorted} diameter={diameter} mode={mode} />
+        <PitchLabel pitchNamesSorted={pitchNamesSorted} diameter={diameter} chordNamesSorted={chordNamesSorted} />
         <ChordLabel chordNamesSorted={chordNamesSorted} diameter={diameter} />
         <TouchPad
           callback={onTouchCallback}
