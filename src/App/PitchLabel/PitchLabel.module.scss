@@ -19,7 +19,7 @@
   }
 
   &.deemphesized {
-    mix-blend-mode: overlay;
-    font-weight: 100;
+    font-weight: 200;
+    opacity: 0.2;
   }
 }
