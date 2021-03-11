@@ -1,11 +1,12 @@
 import styles from './PitchLabel.module.scss';
 import classnames from 'classnames';
+import { DEGREES_IN_CIRCLE } from '../../util/constants';
 
 export default function PitchLabel({pitchNamesSorted, diameter, chordNamesSorted}) {
   const semitones = pitchNamesSorted.length;
 
   return <div className={styles.root}>{pitchNamesSorted.map(function(name, index) {
-    const degrees = 360 / semitones * index;
+    const degrees = DEGREES_IN_CIRCLE / semitones * index;
     const isSmall = name.length > 1;
     let transform;
     let transformOrigin;

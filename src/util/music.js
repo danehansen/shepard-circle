@@ -30,3 +30,7 @@ export function findInterval(fA, fB) {
 export function transposeFrequency(frequency, cents) {
   return frequency * Math.pow(Math.pow(2, 1 / STANDARD_SEMITONES), (cents / CENTS_PER_STANDARD_SEMITONE));
 }
+
+export function findFrequency(str) {
+  // TODO
+}

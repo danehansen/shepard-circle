@@ -2,7 +2,7 @@ import convertRadiansToIndex from './convertRadiansToIndex';
 import { modulo} from '@danehansen/math';
 import {toRadianDirection} from './math';
 import {STANDARD_SEMITONES} from './music';
-import {RADIANS_IN_CIRCLE} from './constants';
+import {RADIANS_IN_CIRCLE, DEGREES_IN_CIRCLE} from './constants';
 
 describe('convertRadiansToIndex', function() {
   it('correctly identifies indexes of chromatic scale starting with A', function() {
@@ -115,7 +115,7 @@ describe('convertRadiansToIndex', function() {
 
   it('correctly identifies indexes of 11 pitch scale starting with A', function() {
     const semitones = 11;
-    const DEGREES_IN_SLICE = 360 / semitones;
+    const DEGREES_IN_SLICE = DEGREES_IN_CIRCLE / semitones;
     const pitchSkip = 1;
     const rootPitch = 0;
     const expectedResults = [
@@ -143,7 +143,7 @@ describe('convertRadiansToIndex', function() {
 
   it('correctly identifies indexes of 11 pitch scale starting with D', function() {
     const semitones = 11;
-    const DEGREES_IN_SLICE = 360 / semitones;
+    const DEGREES_IN_SLICE = DEGREES_IN_CIRCLE / semitones;
     const pitchSkip = 1;
     const rootPitch = 3;
     const expectedResults = [
@@ -171,7 +171,7 @@ describe('convertRadiansToIndex', function() {
 
   it.skip('correctly identifies indexes of 11 pitch scale starting with D incrementing by 3', function() {
     const semitones = 11;
-    const DEGREES_IN_SLICE = 360 / semitones;
+    const DEGREES_IN_SLICE = DEGREES_IN_CIRCLE / semitones;
     const pitchSkip = 3;
     const rootPitch = 3;
     const expectedResults = [
@@ -189,7 +189,7 @@ describe('convertRadiansToIndex', function() {
     ];
 
     for (let i = 0; i < expectedResults.length; i++) {
-      const degrees = modulo(DEGREES_IN_SLICE * (i - rootPitch) * pitchSkip, 360);
+      const degrees = modulo(DEGREES_IN_SLICE * (i - rootPitch) * pitchSkip, DEGREES_IN_CIRCLE);
       const radians = toRadianDirection(degrees);
       const result = convertRadiansToIndex(radians, semitones, rootPitch, pitchSkip);
       const expectedResult = expectedResults[i];

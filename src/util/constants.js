@@ -1,6 +1,17 @@
-export const DEFAULT_TRANSPOSITION = 300;
-export const EQ_FREQUENCIES = [32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384];
+import {CENTS_PER_STANDARD_SEMITONE, HUMAN_MAX_FREQ, HUMAN_MIN_FREQ} from './music';
+
+export const DEFAULT_TRANSPOSITION = 3 * CENTS_PER_STANDARD_SEMITONE;
+export const DEGREES_IN_CIRCLE = 360;
 export const RADIANS_IN_CIRCLE = Math.PI * 2;
+
+export const EQ_FREQUENCIES = [];
+let frequency = 2;
+while(frequency < HUMAN_MAX_FREQ) {
+  frequency *= 2;
+  if (frequency >= HUMAN_MIN_FREQ && frequency <= HUMAN_MAX_FREQ) {
+    EQ_FREQUENCIES.push(frequency);
+  }
+}
 
 export const MODES = [
   {

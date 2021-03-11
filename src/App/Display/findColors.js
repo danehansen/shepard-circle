@@ -1,5 +1,5 @@
 import {toRadianDirection} from '../../util/math';
-import {RADIANS_IN_CIRCLE} from '../../util/constants';
+import {RADIANS_IN_CIRCLE, DEGREES_IN_CIRCLE} from '../../util/constants';
 
 function findDirectionalColor(direction) {
   direction -= RADIANS_IN_CIRCLE * 0.25;
@@ -17,7 +17,7 @@ function findDirectionalColor(direction) {
 
 export default function findColors(semitones) {
   const colors = [];
-  const buttonSlice = 360 / semitones;
+  const buttonSlice = DEGREES_IN_CIRCLE / semitones;
   for(let i = 0; i < semitones; i++) {
     colors.push(findDirectionalColor(toRadianDirection(i * buttonSlice)));
   }

@@ -1,5 +1,5 @@
 import styles from './Menu.module.scss';
-import {OSCILLATOR_TYPES, MODES} from '../../util/constants';
+import {OSCILLATOR_TYPES, MODES, EQ_FREQUENCIES} from '../../util/constants';
 import {STANDARD_A4, A4, STANDARD_SEMITONES, STANDARD_PITCH_NAMES, HUMAN_CENT_THRESHOLD, CENTS_PER_STANDARD_SEMITONE, CENTS_PER_OCTAVE} from '../../util/music';
 import classnames from 'classnames';
 
@@ -66,7 +66,7 @@ export default function Menu({
       </div>
 
       <div className={styles.property}>
-        <h2 className={styles.title}>EQ<button className={styles.reset} onClick={function(){setEq([0,0,0,0,0,0,0,0,0,0])}}>reset</button></h2>
+        <h2 className={styles.title}>EQ<button className={styles.reset} onClick={function(){setEq([...Array(EQ_FREQUENCIES.length).keys()])}}>reset</button></h2>
         <div className={styles.verticalRangeHolder}>
           {eq.map(function(value, i) {
             return <input

@@ -1,4 +1,5 @@
 import styles from './ChordLabel.module.scss';
+import {DEGREES_IN_CIRCLE} from '../../util/constants';
 
 export default function ChordLabel({chordNamesSorted, diameter}) {
   const semitones = chordNamesSorted.length;
@@ -7,7 +8,7 @@ export default function ChordLabel({chordNamesSorted, diameter}) {
     if (!name) {
       return null;
     }
-    const degrees = 360 / semitones * index;
+    const degrees = DEGREES_IN_CIRCLE / semitones * index;
 
     return <div
       className={styles.button}

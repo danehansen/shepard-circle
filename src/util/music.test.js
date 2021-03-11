@@ -9,7 +9,7 @@ describe('findInterval', function() {
     const E5 = 659.26;
     const F5 = 698.46;
     const G5 = 783.99;
-    const A5 = 880;
+    const A5 = A4 * 2;
 
     expect(Math.abs(findInterval(A4, B4) - 200)).toBeLessThan(0.1);
     expect(Math.abs(findInterval(A4, C5) - 300)).toBeLessThan(0.1);

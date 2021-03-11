@@ -3,7 +3,7 @@ import classnames from 'classnames';
 import React from 'react';
 import Canvas from './canvas';
 import {toRadianDirection} from '../../util/math';
-import {MODES, RADIANS_IN_CIRCLE} from '../../util/constants';
+import {MODES, RADIANS_IN_CIRCLE, DEGREES_IN_CIRCLE} from '../../util/constants';
 import {useState, useEffect, useRef} from 'react';
 import findColors from './findColors';
 import fillSlice from './fillSlice';
@@ -41,11 +41,11 @@ export default function Display({className, activePitches, baseFrequencies, diam
     function connectPitches() {
       for (let i = 0; i < activePitches.length; i++) {
         const pitchA = activePitches[i];
-        const degreesA = 360 / semitones * pitchSequence.indexOf(pitchA);
+        const degreesA = DEGREES_IN_CIRCLE / semitones * pitchSequence.indexOf(pitchA);
         const frequencyA = baseFrequencies[pitchSequence.indexOf(pitchA)];
         for (let j = i + 1; j < activePitches.length; j++) {
           const pitchB = activePitches[j];
-          const degreesB = 360 / semitones * pitchSequence.indexOf(pitchB);
+          const degreesB = DEGREES_IN_CIRCLE / semitones * pitchSequence.indexOf(pitchB);
           const frequencyB = baseFrequencies[pitchSequence.indexOf(pitchB)];
           const colorA = colors[pitchA];
           const colorB = colors[pitchB]
@@ -60,7 +60,7 @@ export default function Display({className, activePitches, baseFrequencies, diam
 
       for (let i = 0; i < semitones; i++) {
         const pitch = pitchSequence[i];
-        const degrees = pitch / semitones * 360;
+        const degrees = pitch / semitones * DEGREES_IN_CIRCLE;
         const color = colors[i];
         const isActive = activePitches.indexOf(i) >= 0;
         const radians = toRadianDirection(degrees);
