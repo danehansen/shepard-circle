@@ -1,6 +1,6 @@
 import styles from './Menu.module.scss';
 import {OSCILLATOR_TYPES, MODES} from '../../util/constants';
-import {A4, SEMITONES, PITCH_NAMES} from '../../util/music';
+import {STANDARD_A4, A4, STANDARD_SEMITONES, STANDARD_PITCH_NAMES, HUMAN_CENT_THRESHOLD, CENTS_PER_STANDARD_SEMITONE, CENTS_PER_OCTAVE} from '../../util/music';
 import classnames from 'classnames';
 
 function findIncrementLabel(increment, semitones) {
@@ -9,7 +9,7 @@ function findIncrementLabel(increment, semitones) {
     str += ` (chromatic)`;
   } else if (increment === semitones - 1) {
     str += ` (reverse chromatic)`;
-  } else if (semitones === SEMITONES && increment === 7) {
+  } else if (semitones === STANDARD_SEMITONES && increment === 7) {
     str += ` (circle of fifths)`;
   }
   return str;
@@ -76,18 +76,18 @@ export default function Menu({
       </div>
 
       <div className={styles.property}>
-        <h2 className={styles.title}>Semitones<button className={styles.reset} onClick={function(){setSemitones(SEMITONES)}}>reset</button></h2>
+        <h2 className={styles.title}>Semitones<button className={styles.reset} onClick={function(){setSemitones(STANDARD_SEMITONES)}}>reset</button></h2>
         <label className={classnames(styles.label, styles.wide)}>
-          <input className={styles.input} type="range" min={1} max={120} value={semitones} step="1" onChange={function({target: {value}}){setSemitones(parseInt(value))}} />
+          <input className={styles.input} type="range" min={1} max={CENTS_PER_OCTAVE / HUMAN_CENT_THRESHOLD} value={semitones} step="1" onChange={function({target: {value}}){setSemitones(parseInt(value))}} />
           <div className={styles.labelText}>{semitones}</div>
         </label>
       </div>
 
       <div className={styles.property}>
         <h2 className={styles.title}>Transposition</h2>
-          {PITCH_NAMES.map(function(name, index) {
+          {STANDARD_PITCH_NAMES.map(function(name, index) {
             return <label className={styles.label} key={name}>
-              <input className={styles.input} type="radio" value={index * 100} name="transposition" checked={transposition === index * 100} onChange={function({target:{value}}){setTransposition(parseInt(value))}} />
+              <input className={styles.input} type="radio" value={index * CENTS_PER_STANDARD_SEMITONE} name="transposition" checked={transposition === index * CENTS_PER_STANDARD_SEMITONE} onChange={function({target:{value}}){setTransposition(parseInt(value))}} />
               <div className={styles.labelText}>{name}</div>
             </label>
           })}
@@ -114,7 +114,7 @@ export default function Menu({
       </div>
 
       <div className={styles.property}>
-        <h2 className={styles.title}>A4<button className={styles.reset} onClick={function(){setA4(A4.DEFAULT)}}>reset</button></h2>
+        <h2 className={styles.title}>A4<button className={styles.reset} onClick={function(){setA4(STANDARD_A4)}}>reset</button></h2>
         <label className={classnames(styles.label, styles.wide)}>
           <input
             className={styles.input}

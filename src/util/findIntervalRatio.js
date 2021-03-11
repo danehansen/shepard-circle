@@ -1,8 +1,8 @@
-import {findInterval, SEMITONES} from './music';
+import {findInterval, CENTS_PER_OCTAVE} from './music';
 
 export default function findIntervalRatio(fRoot, fComparison) {
   const tolerance = 1;
-  const cents = findInterval(fRoot, fComparison) % (SEMITONES * 100);
+  const cents = findInterval(fRoot, fComparison) % CENTS_PER_OCTAVE;
 
   if (Math.abs(cents - 100) < tolerance || Math.abs(cents + 1100) < tolerance) {
     return [16, 15];

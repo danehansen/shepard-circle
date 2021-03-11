@@ -6,7 +6,7 @@ import ChordLabel from './ChordLabel/ChordLabel';
 import TouchPad from './TouchPad/TouchPad';
 import FirstTouch from './FirstTouch/FirstTouch';
 import {OSCILLATOR_TYPES, DEFAULT_TRANSPOSITION, EQ_FREQUENCIES} from '../util/constants';
-import {A4, SEMITONES, transposeFrequency} from '../util/music';
+import {STANDARD_A4, STANDARD_SEMITONES, transposeFrequency} from '../util/music';
 import {useState, useEffect} from 'react';
 import findPitchSkipOptions from '../util/findPitchSkipOptions';
 import findPitchNames from '../util/findPitchNames';
@@ -40,14 +40,14 @@ export default function App() {
     }, [value, key, def]);
   }
 
-  const [a4, setA4] = useState(urlParams.a4 || A4.DEFAULT);
-  useURLParams('a4', a4, A4.DEFAULT);
+  const [a4, setA4] = useState(urlParams.a4 || STANDARD_A4);
+  useURLParams('a4', a4, STANDARD_A4);
 
   const [oscillator, setOscillator] = useState(urlParams.oscillator || OSCILLATOR_TYPES.SINE);
   useURLParams('oscillator', oscillator, OSCILLATOR_TYPES.SINE);
 
-  const [semitones, setSemitones] = useState(urlParams.semitones || SEMITONES);
-  useURLParams('semitones', semitones, SEMITONES);
+  const [semitones, setSemitones] = useState(urlParams.semitones || STANDARD_SEMITONES);
+  useURLParams('semitones', semitones, STANDARD_SEMITONES);
 
   const [transposition, setTransposition] = useState(urlParams.transposition !== undefined ? urlParams.transposition : DEFAULT_TRANSPOSITION);
   useURLParams('transposition', transposition, DEFAULT_TRANSPOSITION);

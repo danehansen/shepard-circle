@@ -1,4 +1,4 @@
-import {MAX_FREQ} from './music';
+import {HUMAN_MAX_FREQ} from './music';
 import {EQ_FREQUENCIES} from './constants';
 
 let frequencies;
@@ -45,7 +45,7 @@ export function initializaAudio(baseFrequencies, eq) {
 
 function findAudibleOctaves(frequency) {
   const frequencies = [];
-  while(frequency < MAX_FREQ) {
+  while(frequency < HUMAN_MAX_FREQ) {
     frequencies.push(frequency);
     frequency *= 2;
   }

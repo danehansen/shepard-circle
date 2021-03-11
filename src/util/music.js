@@ -1,16 +1,11 @@
-export const MIN_FREQ = 20;
-export const MAX_FREQ = 20000;
-export const SEMITONES = 12;
-export const PITCH_NAMES = ['A', 'A♯/B♭', 'B', 'C', 'C♯/D♭', 'D', 'D♯/E♭', 'E', 'F', 'F♯/G♭', 'G', 'G♯/A♭'];
-
-export function findInterval(fA, fB) {
-  const cents = SEMITONES * 100 * Math.log2(fB / fA);
-  return cents;
-}
-
-export function transposeFrequency(frequency, cents) {
-  return frequency * Math.pow(Math.pow(2, 1 / SEMITONES), (cents / 100));
-}
+export const HUMAN_CENT_THRESHOLD = 5;
+export const HUMAN_MIN_FREQ = 20;
+export const HUMAN_MAX_FREQ = 20000;
+export const STANDARD_SEMITONES = 12;
+export const STANDARD_A4 = 440;
+export const STANDARD_PITCH_NAMES = ['A', 'A♯/B♭', 'B', 'C', 'C♯/D♭', 'D', 'D♯/E♭', 'E', 'F', 'F♯/G♭', 'G', 'G♯/A♭'];
+export const CENTS_PER_STANDARD_SEMITONE = 100;
+export const CENTS_PER_OCTAVE = STANDARD_SEMITONES * CENTS_PER_STANDARD_SEMITONE;
 
 export const A4 = {
   415: 'baroque',
@@ -22,8 +17,16 @@ export const A4 = {
   432: '“frequency of the universe”',
   435: 'diapson normal',
   439: 'new philharmonic',
-  440: 'stuttgart',
+  [STANDARD_A4]: 'stuttgart',
   452: 'old philharmonic',
   466: 'chorton',
-  DEFAULT: 440,
 };
+
+export function findInterval(fA, fB) {
+  const cents = CENTS_PER_OCTAVE * Math.log2(fB / fA);
+  return cents;
+}
+
+export function transposeFrequency(frequency, cents) {
+  return frequency * Math.pow(Math.pow(2, 1 / STANDARD_SEMITONES), (cents / CENTS_PER_STANDARD_SEMITONE));
+}

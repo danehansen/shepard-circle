@@ -1,9 +1,10 @@
 import findIntervalRatio from './findIntervalRatio';
+import {STANDARD_A4} from './music';
 
 describe('findIntervalRatio', function() {
   // root note
-  const A5 = 880;
-  const A4 = A5 / 2;
+  const A4 = STANDARD_A4;
+  // const A5 = A4 * 2;
   // const A3 = A4 / 2;
 
   // perfect fifth of A

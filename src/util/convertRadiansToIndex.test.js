@@ -1,12 +1,12 @@
 import convertRadiansToIndex from './convertRadiansToIndex';
 import { modulo} from '@danehansen/math';
 import {toRadianDirection} from './math';
-import {SEMITONES} from './music';
+import {STANDARD_SEMITONES} from './music';
 import {RADIANS_IN_CIRCLE} from './constants';
 
 describe('convertRadiansToIndex', function() {
   it('correctly identifies indexes of chromatic scale starting with A', function() {
-    const semitones = SEMITONES;
+    const semitones = STANDARD_SEMITONES;
     const RADIANS_IN_SLICE = RADIANS_IN_CIRCLE / semitones;
     const pitchSkip = 1;
     const rootPitch = 0;
@@ -33,7 +33,7 @@ describe('convertRadiansToIndex', function() {
   });
 
   it('correctly idendifies indexes of chromatic scale starting with C', function() {
-    const semitones = SEMITONES;
+    const semitones = STANDARD_SEMITONES;
     const RADIANS_IN_SLICE = RADIANS_IN_CIRCLE / semitones;
     const pitchSkip = 1;
     const rootPitch = 3;
@@ -60,7 +60,7 @@ describe('convertRadiansToIndex', function() {
   });
 
   it('correctly idendifies indexes of circle of fifths starting with A', function() {
-    const semitones = SEMITONES;
+    const semitones = STANDARD_SEMITONES;
     const RADIANS_IN_SLICE = RADIANS_IN_CIRCLE / semitones;
     const pitchSkip = 7;
     const rootPitch = 0;
@@ -87,7 +87,7 @@ describe('convertRadiansToIndex', function() {
   });
 
   it('correctly idendifies indexes of circle of fifths starting with C', function() {
-    const semitones = SEMITONES;
+    const semitones = STANDARD_SEMITONES;
     const RADIANS_IN_SLICE = RADIANS_IN_CIRCLE / semitones;
     const pitchSkip = 7;
     const rootPitch = 3;
