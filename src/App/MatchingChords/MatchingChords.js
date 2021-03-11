@@ -1,20 +1,29 @@
 import styles from './MatchingChords.module.scss';
 import classnames from 'classnames';
-// import findPitchNames from '../../util/findPitchNames';
 
 export default function MatchingChords({chords}) {
-
-  // const pitchNames = findPitchNames(semitones);
-
 
   return (
     <div className={styles.root}>
     {chords.map(function(chord, i) {
-      let style;
-      if (chord.textTransform) {
-        style = {textTransform:chord.textTransform}
+      const {name, matchAmount} = chord;
+
+      let className;
+      if (matchAmount === 1) {
+        className = 'a';
+      } else if (matchAmount > 0.9) {
+        className = 'b';
+      } else if (matchAmount > 0.8) {
+        className = 'c';
+      } else if (matchAmount > 0.7) {
+        className = 'd';
+      } else if (matchAmount > 0.6) {
+        className = 'e';
+      } else {
+        className = 'f';
       }
-      return <div className={classnames(styles.chord, chord.matchAmount === 1 && styles.complete)} key={i} style={style}>{`${chord.prefix}${chord.suffix}`}</div>
+
+      return <div className={classnames(styles.chord, styles[className])} key={i}>{name}</div>
     })}
     </div>
   );

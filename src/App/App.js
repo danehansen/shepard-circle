@@ -21,9 +21,8 @@ import {initializaAudio, toggleNote} from '../util/shepardTone';
 import queryString from 'query-string';
 import {isEqual} from 'lodash';
 import {useViewportDimensions} from '../util/hooks';
-// import {random} from '@danehansen/math';
-import findChords from '../util/findChords';
 import {random} from '@danehansen/math';
+import findChords from '../util/findChords';
 
 export default function App() {
   const urlParams = queryString.parse(window.location.search, {parseNumbers: true, arrayFormat: 'comma'});
@@ -131,20 +130,25 @@ export default function App() {
   }
 
   function onTouchCallback(pitches) {
+    function addRandomPitches(low, high) {
+      if (!pitches.length || (low === 0 && high === 0)) {
+        return pitches;
+      }
 
-    const randomPitches = [];
-    // if (pitches.length) {
-    //   const numRandomPitches = random(1, 3, true);
-    //   for (let i = 0; i < numRandomPitches; i++) {
-    //     let randomPitch;
-    //     do {
-    //       randomPitch = random(0, 12, true);
-    //     } while (pitches.indexOf(randomPitch) >= 0)
-    //     randomPitches.push(randomPitch);
-    //   }
-    // }
+      const randomAmount = random(low, high, true);
+      const randomPitches = [];
+      for (let i = 0; i < randomAmount; i++) {
+        let randomPitch;
+        do {
+          randomPitch = random(0, 12, true);
+        } while (pitches.indexOf(randomPitch) >= 0)
+        randomPitches.push(randomPitch);
+      }
 
-    const newPitches = [...pitches, ...randomPitches]
+      return [...pitches, ...randomPitches];
+    }
+
+    const newPitches = addRandomPitches(1, 3);
 
     for(let i = 0; i < semitones; i++) {
       if (newPitches.indexOf(i) >= 0) {

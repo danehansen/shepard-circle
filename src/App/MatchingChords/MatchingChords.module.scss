@@ -1,12 +1,33 @@
 .root {
-  color: white;
 }
 
 .chord {
+  color: #ddd;
   font-size: 20px;
+  display: block;
 
-  &.complete {
-    font-size: 24px;
-    font-weight: bold;
+  &.a {
+    font-weight: 600;
+    color: white;
+  }
+
+  &.b {
+    font-weight: 600;
+  }
+
+  &.c {
+    font-weight: 500;
+  }
+
+  &.d {
+    font-weight: 400;
+  }
+
+  &.e {
+    font-weight: 200;
+  }
+
+  &.f {
+    font-weight: 100;
   }
 }
