@@ -25,7 +25,7 @@ export default function App() {
   function useURLParams(key, value, def) {
     useEffect(() => {
       function changeParams() {
-        window.history.pushState(null, null, `${window.location.origin}${window.location.pathname}?${queryString.stringify(urlParams, {arrayFormat: 'comma'})}`);
+        window.history.replaceState(null, null, `${window.location.origin}${window.location.pathname}?${queryString.stringify(urlParams, {arrayFormat: 'comma'})}`);
       }
 
       if (!isEqual(urlParams[key], value)) {
