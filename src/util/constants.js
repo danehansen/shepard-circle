@@ -71,7 +71,7 @@ export const MODES = [
 export const OSCILLATOR_TYPES = {
   SINE: 'sine',
   SQUARE: 'square',
-  SAWTOOTH: 'sawtooth',
+  // SAWTOOTH: 'sawtooth',
   TRIANGLE: 'triangle',
 };
 

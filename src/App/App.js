@@ -75,8 +75,9 @@ export default function App() {
   for (let i = 0; i < EQ_FREQUENCIES.length; i++) {
     _eq.push(0);
   }
-  const [eq, setEq] = useState(urlParams.eq || _eq);
-  useURLParams('eq', eq, _eq);
+
+  const [eq, setEq] = useState(urlParams.eq || EQ_FREQUENCIES.map(() => 0));
+  useURLParams('eq', eq, EQ_FREQUENCIES.map(() => 0));
 
   const [rootFrequency, setRootFrequency] = useState(transposeFrequency(a4, transposition));
   useEffect(() => {

@@ -25,6 +25,12 @@
   padding: 2px;
 }
 
+.columns {
+  column-gap: 10px;
+  width: 100%;
+  columns: auto 150px;
+}
+
 .label {
   display: block;
 
