@@ -1,6 +1,7 @@
 import styles from './Menu.module.scss';
 import {OSCILLATOR_TYPES, MODES, EQ_FREQUENCIES} from '../../util/constants';
 import {STANDARD_A4, A4, STANDARD_SEMITONES, STANDARD_PITCH_NAMES, HUMAN_CENT_THRESHOLD, CENTS_PER_STANDARD_SEMITONE, CENTS_PER_OCTAVE} from '../../util/music';
+import LogscaleInput from './LogscaleInput/LogscaleInput';
 import classnames from 'classnames';
 
 function findIncrementLabel(increment, semitones) {
@@ -69,7 +70,7 @@ export default function Menu({
         <h2 className={styles.title}>EQ<button className={styles.reset} onClick={function(){setEq([...Array(EQ_FREQUENCIES.length).keys()])}}>reset</button></h2>
         <div className={styles.verticalRangeHolder}>
           {eq.map(function(value, i) {
-            return <input
+            return <LogscaleInput
               key={i} className={styles.verticalRange} type="range" min="-1" max={1 * 0.27} step="0.01" value={value} onChange={onEQChange.bind(null, i)} />
           })}
         </div>
@@ -78,7 +79,7 @@ export default function Menu({
       <div className={styles.property}>
         <h2 className={styles.title}>Semitones<button className={styles.reset} onClick={function(){setSemitones(STANDARD_SEMITONES)}}>reset</button></h2>
         <label className={classnames(styles.label, styles.wide)}>
-          <input className={styles.input} type="range" min={1} max={CENTS_PER_OCTAVE / HUMAN_CENT_THRESHOLD} value={semitones} step="1" onChange={function({target: {value}}){setSemitones(parseInt(value))}} />
+          <LogscaleInput className={styles.input} type="range" min={1} max={CENTS_PER_OCTAVE / HUMAN_CENT_THRESHOLD} value={semitones} step="1" onChange={function({target: {value}}){setSemitones(parseInt(value))}} />
           <div className={styles.labelText}>{semitones}</div>
         </label>
       </div>
