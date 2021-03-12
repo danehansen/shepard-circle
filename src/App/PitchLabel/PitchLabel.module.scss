@@ -13,6 +13,10 @@
   left: 50%;
   top: 50%;
 
+  &.hasIncidental {
+    font-size: 10vw;
+  }
+
   &.small {
     font-weight: normal;
     font-size: 6vw;

@@ -1,6 +1,6 @@
 import styles from './Menu.module.scss';
 import {OSCILLATOR_TYPES, MODES, EQ_FREQUENCIES} from '../../util/constants';
-import {STANDARD_A4, A4, STANDARD_SEMITONES, STANDARD_PITCH_NAMES, HUMAN_CENT_THRESHOLD, CENTS_PER_STANDARD_SEMITONE, CENTS_PER_OCTAVE} from '../../util/music';
+import {STANDARD_A4, A4, STANDARD_SEMITONES, HUMAN_CENT_THRESHOLD, CENTS_PER_STANDARD_SEMITONE, CENTS_PER_OCTAVE} from '../../util/music';
 import classnames from 'classnames';
 import Input from './Input/Input';
 import Button from '../Button/Button';
@@ -24,6 +24,7 @@ function findIncrementLabel(increment, semitones) {
 export default function Menu({
     a4,
     setA4,
+    allPitchNames,
     eq,
     setEq,
     mode,
@@ -74,7 +75,7 @@ export default function Menu({
       <div className={styles.property}>
         <h2 className={styles.title}>Transposition</h2>
         <div className={styles.columns}>
-          {STANDARD_PITCH_NAMES.map((name, index) => {
+          {allPitchNames.map((name, index) => {
             return <label className={styles.label} key={name}>
               <Input className={styles.input} type="radio" value={index * CENTS_PER_STANDARD_SEMITONE} name="transposition" checked={transposition === index * CENTS_PER_STANDARD_SEMITONE} onChange={({target:{value}}) => {setTransposition(parseInt(value))}} />
               <div className={styles.labelText}>{name}</div>
