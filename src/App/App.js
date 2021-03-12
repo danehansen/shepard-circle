@@ -10,6 +10,7 @@ import {OSCILLATOR_TYPES, DEFAULT_TRANSPOSITION, EQ_FREQUENCIES} from '../util/c
 import {STANDARD_A4, STANDARD_SEMITONES, transposeFrequency} from '../util/music';
 import {useState, useEffect} from 'react';
 import findPitchSkipOptions from '../util/findPitchSkipOptions';
+import findAllPitchNames from '../util/findAllPitchNames';
 import findPitchNames from '../util/findPitchNames';
 import findBaseFrequencies from '../util/findBaseFrequencies';
 import findPitchSequence from '../util/findPitchSequence';
@@ -53,10 +54,18 @@ export default function App() {
   const [transposition, setTransposition] = useState(urlParams.transposition !== undefined ? urlParams.transposition : DEFAULT_TRANSPOSITION);
   useURLParams('transposition', transposition, DEFAULT_TRANSPOSITION);
 
-  const [pitchNames, setPitchNames] = useState(findPitchNames(semitones, transposition));
+  const [mode, setMode] = useState(urlParams.mode || 0);
+  useURLParams('mode', mode, 0);
+
+  const [allPitchNames, setAllPitchNames] = useState(findAllPitchNames(transposition, mode));
   useEffect(() => {
-    setPitchNames(findPitchNames(semitones, transposition));
-  }, [semitones, transposition]);
+    setAllPitchNames(findAllPitchNames(transposition, mode));
+  }, [mode, transposition]);
+
+  const [pitchNames, setPitchNames] = useState(findPitchNames(semitones, transposition, allPitchNames));
+  useEffect(() => {
+    setPitchNames(findPitchNames(semitones, transposition, allPitchNames));
+  }, [semitones, transposition, allPitchNames]);
 
   const [pitchSkipOptions, setPitchSkipOptions] = useState(findPitchSkipOptions(semitones));
   useEffect(() => {
@@ -99,9 +108,6 @@ export default function App() {
   useEffect(() => {
     setPitchNamesSorted(sortPitchNames(pitchNames, pitchSkip));
   }, [pitchNames, pitchSkip]);
-
-  const [mode, setMode] = useState(urlParams.mode || 0);
-  useURLParams('mode', mode, 0);
 
   const [chordNamesSorted, setChordNamesSorted] = useState([]);
   useEffect(() => {
@@ -171,6 +177,7 @@ export default function App() {
       {isMenuOpen && <div className={styles.menuHolder}><Menu
         a4={a4}
         setA4={setA4}
+        allPitchNames={allPitchNames}
         eq={eq}
         setEq={setEq}
         mode={mode}

@@ -3,7 +3,6 @@ export const HUMAN_MIN_FREQ = 20;
 export const HUMAN_MAX_FREQ = 20000;
 export const STANDARD_SEMITONES = 12;
 export const STANDARD_A4 = 440;
-export const STANDARD_PITCH_NAMES = ['A', 'A♯/B♭', 'B', 'C', 'C♯/D♭', 'D', 'D♯/E♭', 'E', 'F', 'F♯/G♭', 'G', 'G♯/A♭'];
 export const CENTS_PER_STANDARD_SEMITONE = 100;
 export const CENTS_PER_OCTAVE = STANDARD_SEMITONES * CENTS_PER_STANDARD_SEMITONE;
 
