@@ -7,8 +7,8 @@ export default function PitchLabel({pitchNamesSorted, diameter, chordNamesSorted
 
   return <div className={styles.root}>{pitchNamesSorted.map(function(name, index) {
     const degrees = DEGREES_IN_CIRCLE / semitones * index;
-    const hasAccidental = name?.length === 2;
-    const isSmall = name?.length > 2;
+    const hasAccidental = name?.length === 2 || name?.length === 3;
+    const isSmall = name?.length > 3;
     let transform;
     let transformOrigin;
     const radius = -0.475;

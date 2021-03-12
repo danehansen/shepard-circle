@@ -8,7 +8,24 @@ function m(num) {
   return modulo(num, STANDARD_SEMITONES);
 }
 
+// TODO: rewrite this so entire key uses either ♭ or ♯  
 export default function findAllPitchNames(transposition, mode) {
+  if (mode === 1 && transposition === 900) {
+    return ['A', 'B♭', 'C♭', 'C', 'D♭', 'D', 'E♭', 'E', 'F', 'G♭♭', 'G', 'A♭'];
+  } else if (mode === 2 && transposition === 1100) {
+    return ['A', 'A♯', 'B', 'C', 'C♯', 'D', 'D♯', 'E', 'E♯', 'F♯', 'G', 'G♯'];
+  } else if (mode === 3 && transposition === 100) {
+    return ['A', 'A♯', 'B', 'C', 'C♯', 'D', 'D♯', 'E', 'E♯', 'F♯', 'G', 'G♯'];
+  } else if (mode === 4 && transposition === 200) {
+    return ['A', 'A♯', 'B', 'C', 'C♯', 'D', 'D♯', 'E', 'E♯', 'F♯', 'G', 'G♯'];
+  } else if (mode === 5 && transposition === 400) {
+    return ['A', 'A♯', 'B', 'C', 'C♯', 'D', 'D♯', 'E', 'E♯', 'F♯', 'G', 'G♯'];
+  } else if (mode === 6 && transposition === 600) {
+    return ['A', 'A♯', 'B', 'C', 'C♯', 'D', 'D♯', 'E', 'E♯', 'F♯', 'G', 'G♯'];
+  } else if (mode === 7 && transposition === 800) {
+    return ['A', 'A♯', 'B', 'C', 'C♯', 'D', 'D♯', 'E', 'E♯', 'F♯', 'G', 'G♯'];
+  }
+
   const chords = [...MODES[mode].chords];
   const end = PITCH_NAMES.map((name, i) => {
     if (!Array.isArray(name)) {

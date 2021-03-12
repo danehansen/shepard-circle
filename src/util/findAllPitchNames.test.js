@@ -14,17 +14,6 @@ describe('findAllPitchNames', function() {
     for (let transposition = startingTransposition; transposition <= endingTransposition; transposition += CENTS_PER_STANDARD_SEMITONE) {
       for (let mode = startingMode; mode <= endingMode; mode++) {
         const {chords} = MODES[mode];
-        // TODO: real life exceptions to this rule, circle back to implement double sharps and double flats
-        if ((mode === 1 && transposition === 900) ||
-          (mode === 2 && transposition === 1100) ||
-          (mode === 3 && transposition === 100) ||
-          (mode === 4 && transposition === 200) ||
-          (mode === 5 && transposition === 400) ||
-          (mode === 6 && transposition === 600) ||
-          (mode === 7 && transposition === 800)) {
-          continue;
-        }
-
         const chordsInKey = chords.filter((chord) => !!chord);
         if (chordsInKey.length !== 7) {
           continue;
