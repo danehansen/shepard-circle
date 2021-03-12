@@ -1,0 +1,25 @@
+.root {
+  text-transform: uppercase;
+  font-weight: normal;
+  $size: 14px;
+  font-size: $size;
+  $padding: 8px;
+  padding: $padding;
+  line-height: $size;
+  min-width: $size + $padding + $padding + 2px;
+  box-sizing: border-box;
+  background: #ff0;
+  border-width: 1px;
+  border-style: solid;
+  $dark: #444;
+  $light: #bbb;
+  border-color: $light $dark $dark $light;
+  outline: none;
+  // box-shadow: 1px 1px 0px black;
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+
+  &:active {
+    border-color: $dark $light $light $dark;
+    transform: translate(1px, 1px);
+  }
+}

@@ -4,6 +4,7 @@ import Menu from './Menu/Menu';
 import PitchLabel from './PitchLabel/PitchLabel';
 import ChordLabel from './ChordLabel/ChordLabel';
 import TouchPad from './TouchPad/TouchPad';
+import Button from './Button/Button';
 import FirstTouch from './FirstTouch/FirstTouch';
 import {OSCILLATOR_TYPES, DEFAULT_TRANSPOSITION, EQ_FREQUENCIES} from '../util/constants';
 import {STANDARD_A4, STANDARD_SEMITONES, transposeFrequency} from '../util/music';
@@ -185,7 +186,7 @@ export default function App() {
         pitchSkipOptions={pitchSkipOptions}
       /></div>}
 
-      <button className={styles.menuButton} onClick={onMenuButtonClick}>{isMenuOpen ? 'x' : 'menu'}</button>
+      <Button className={styles.menuButton} onClick={onMenuButtonClick}>{isMenuOpen ? 'x' : 'menu'}</Button>
     </FirstTouch>
   );
 }
