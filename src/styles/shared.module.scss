@@ -31,4 +31,5 @@ $fontFamilySerif: 'Arvo', serif;
 @mixin textBold {
   font-weight: $fontWeightBody * 3;
   font-size: $fontSizeBody * 0.9;
+  text-transform: uppercase;
 }

@@ -6,7 +6,7 @@
 }
 
 .property {
-  margin-bottom: $margin;
+  margin-bottom: $margin * 2;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -14,6 +14,7 @@
 
 .title {
   @include textBold();
+  height: 36px;
 }
 
 .reset {
@@ -23,7 +24,7 @@
 .columns {
   column-gap: $padding * 0.5;
   width: 100%;
-  columns: auto 150px;
+  columns: auto 160px;
 }
 
 .label {
@@ -36,6 +37,7 @@
 
 .labelText {
   display: inline-block;
+  text-transform: capitalize;
 }
 
 .valueText {

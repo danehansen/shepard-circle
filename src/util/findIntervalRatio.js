@@ -1,7 +1,7 @@
 import {findInterval, CENTS_PER_OCTAVE} from './music';
 
 export default function findIntervalRatio(fRoot, fComparison) {
-  const tolerance = 1;
+  const tolerance = 2;
   const cents = findInterval(fRoot, fComparison) % CENTS_PER_OCTAVE;
 
   if (Math.abs(cents - 100) < tolerance || Math.abs(cents + 1100) < tolerance) {
@@ -41,5 +41,9 @@ export default function findIntervalRatio(fRoot, fComparison) {
 
   if (Math.abs(cents - 600) < tolerance || Math.abs(cents + 600) < tolerance) {
     return [13, 9];
+  }
+
+  if (Math.abs(cents - 1200) < tolerance || Math.abs(cents + 1200) < tolerance || Math.abs(cents) < tolerance) {
+    return [1, 1];
   }
 }

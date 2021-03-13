@@ -7,15 +7,15 @@ import Button from '../Button/Button';
 
 function findIncrementLabel(increment, semitones) {
   if (increment === 1) {
-    return 'clockwise';
+    return 'Clockwise';
   } else if (increment === semitones - 1) {
-    return 'counterclockwise';
+    return 'Anticlockwise';
   }
   if (semitones % STANDARD_SEMITONES === 0) {
     if (increment === 7) {
-      return 'circle of fifths';
+      return 'Circle of Fifths';
     } else if (increment === semitones - 7) {
-      return 'circle of fourths';
+      return 'Circle of Fourths';
     }
   }
   return `skip ${increment - 1}`;

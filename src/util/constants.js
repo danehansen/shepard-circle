@@ -20,50 +20,50 @@ export const MODES = [
     useModeForNaming: 1,
   },
   {
-    name: 'I ionian (major)',
+    name: 'I Ionian (Major)',
     chords: ['I', null, 'ii', null, 'iii', 'IV', null, 'V', null, 'vi', null, 'viiº'],
   },
   {
-    name: 'II dorian',
+    name: 'II Dorian',
     chords: ['i', null, 'ii', 'III', null, 'IV', null, 'v', null, 'viº', 'VII', null],
   },
   {
-    name: 'III phrygian',
+    name: 'III Phrygian',
     chords: ['i', 'II', null, 'III', null, 'iv', null, 'vº', 'VI', null, 'vii', null],
   },
   {
-    name: 'IV lydian',
+    name: 'IV Lydian',
     chords: ['I', null, 'II', null, 'iii', null, 'ivº ', 'V', null, 'vi', null, 'vii'],
   },
   {
-    name: 'V mixolydian',
+    name: 'V Mixolydian',
     chords: ['I', null, 'ii', null, 'iiiº', 'IV', null, 'v', null, 'vi', 'VII', null],
   },
   {
-    name: 'VI aeolian (minor)',
+    name: 'VI Aeolian (Minor)',
     chords: ['i', null, 'iiº', 'III', null, 'iv', null, 'v', 'VI', null, 'VII', null],
   },
   {
-    name: 'VII locrian',
+    name: 'VII Locrian',
     chords: ['iº', 'II', null, 'iii', null, 'iv', 'V',  null, 'VI', null, 'vii', null],
   },
   {
-    name: 'major pentatonic',
+    name: 'Major Pentatonic',
     chords: ['I', null, 'ii', null, 'iii', null, null, 'V', null, 'vi', null, null],
     useModeForNaming: 1,
   },
   {
-    name: 'minor pentatonic',
+    name: 'Minor Pentatonic',
     chords: ['i', null, null, 'III', null, 'iv', null, 'v', null, null, 'VII', null],
     useModeForNaming: 6,
   },
   {
-    name: 'blues major',
+    name: 'Blues Major',
     chords: ['I', null, 'ii', null, null, 'IV', null, 'v', null, 'vi', null, null],
     useModeForNaming: 1,
   },
   {
-    name: 'blues minor',
+    name: 'Blues Minor',
     chords: ['i', null, null, 'III', null, 'iv', null, null, 'VI', null, 'vii', null],
     useModeForNaming: 6,
   },
