@@ -56,7 +56,7 @@ export default function Menu({
         <h2 className={styles.title}>Oscillator</h2>
         {Object.values(OSCILLATOR_TYPES).map((value) => {
           return <label className={styles.label} key={value}>
-            <Input className={styles.input} type="radio" checked={oscillator === value} value={value} onChange={onOscillatorChange} />
+            <Input type="radio" checked={oscillator === value} value={value} onChange={onOscillatorChange} />
             <div className={styles.labelText}>{value}</div>
           </label>
         })}
@@ -77,7 +77,7 @@ export default function Menu({
         <div className={styles.columns}>
           {allPitchNames.map((name, index) => {
             return <label className={styles.label} key={name}>
-              <Input className={styles.input} type="radio" value={index * CENTS_PER_STANDARD_SEMITONE} name="transposition" checked={transposition === index * CENTS_PER_STANDARD_SEMITONE} onChange={({target:{value}}) => {setTransposition(parseInt(value))}} />
+              <Input type="radio" value={index * CENTS_PER_STANDARD_SEMITONE} name="transposition" checked={transposition === index * CENTS_PER_STANDARD_SEMITONE} onChange={({target:{value}}) => {setTransposition(parseInt(value))}} />
               <div className={styles.labelText}>{name}</div>
             </label>
           })}
@@ -89,7 +89,7 @@ export default function Menu({
         <div className={styles.columns}>
           {MODES.map((modeObj, index) => {
             return <label className={styles.label} key={modeObj.name}>
-              <Input className={styles.input} type="radio" value={index} name="mode" checked={mode === index} onChange={({target:{value}}) => {setMode(parseInt(value))}} />
+              <Input type="radio" value={index} name="mode" checked={mode === index} onChange={({target:{value}}) => {setMode(parseInt(value))}} />
               <div className={styles.labelText}>{modeObj.name}</div>
             </label>
           })}
@@ -99,7 +99,7 @@ export default function Menu({
       <div className={styles.property}>
         <h2 className={styles.title}>Semitones<Button className={styles.reset} onClick={(evt) => {evt.preventDefault(); setSemitones(STANDARD_SEMITONES)}}>reset</Button><div className={styles.valueText}>{semitones}</div></h2>
         <label className={classnames(styles.label, styles.wide)}>
-          <Input className={styles.input} type="range" min={1} max={CENTS_PER_OCTAVE / HUMAN_CENT_THRESHOLD} value={semitones} onChange={({target: {value}}) => {setSemitones(parseInt(value))}} />
+          <Input type="range" min={1} max={CENTS_PER_OCTAVE / HUMAN_CENT_THRESHOLD} value={semitones} onChange={({target: {value}}) => {setSemitones(parseInt(value))}} />
         </label>
       </div>
 
@@ -107,7 +107,6 @@ export default function Menu({
         <h2 className={styles.title}>A4<Button className={styles.reset} onClick={(evt) => {evt.preventDefault(); setA4(STANDARD_A4)}}>reset</Button><div className={styles.valueText}>{a4}{A4[a4] && ` (${A4[a4]})`}</div></h2>
         <label className={classnames(styles.label, styles.wide)}>
           <Input
-            className={styles.input}
             type="range"
             min={Math.min(...Object.keys(A4))}
             max={Math.max(...Object.keys(A4))}
@@ -122,7 +121,7 @@ export default function Menu({
         <div className={styles.columns}>
         {pitchSkipOptions.map((num) => {
           return <label className={styles.label} key={num}>
-            <Input className={styles.input} type="radio" value={num} name="pitchSkip" checked={pitchSkip === num} onChange={({target:{value}}) => {setPitchSkip(parseInt(value))}} />
+            <Input type="radio" value={num} name="pitchSkip" checked={pitchSkip === num} onChange={({target:{value}}) => {setPitchSkip(parseInt(value))}} />
             <div className={styles.labelText}>{findIncrementLabel(num, semitones)}</div>
           </label>
         })}

@@ -1,0 +1,34 @@
+$margin: 20px;
+$padding: $margin;
+$borderWidth: 1px;
+
+$colorC: #0ff;
+$colorM: #f0f;
+$colorY: #ff0;
+$colorK: #000;
+$colorR: #f00;
+$colorG: #0f0;
+$colorB: #00f;
+$colorW: #fff;
+
+$colorGray1: #1a1a1a;
+$colorGray2: #333;
+$colorGray3: #4d4d4d;
+$colorGray4: #666;
+$colorGray5: #808080;
+$colorGray6: #999;
+$colorGray7: #b3b3b3;
+$colorGray8: #ccc;
+$colorGray9: #e5e5e5;
+
+$fontSizeBody: 16px;
+$fontSizeHeadline: 14px;
+$fontWeightBody: 300;
+$fontFamily: 'Helvetica Neue', sans-serif;
+$textTransform: uppercase;
+$fontFamilySerif: 'Arvo', serif;
+
+@mixin textBold {
+  font-weight: $fontWeightBody * 3;
+  font-size: $fontSizeBody * 0.9;
+}

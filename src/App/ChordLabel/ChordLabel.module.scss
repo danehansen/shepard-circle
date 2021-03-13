@@ -1,3 +1,5 @@
+@import 'styles/shared.module.scss';
+
 .root {
   pointer-events: none;
   position: absolute;
@@ -6,9 +8,8 @@
 }
 
 .button {
-  font-family: 'Arvo', serif;
+  font-family: $fontFamilySerif;
   font-size: 6vw;
-  color: white;
   opacity: 0.5;
   position: absolute;
   left: 50%;

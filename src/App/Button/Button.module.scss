@@ -1,25 +1,22 @@
+@import 'styles/shared.module.scss';
+
 .root {
-  text-transform: uppercase;
-  font-weight: normal;
-  $size: 14px;
-  font-size: $size;
-  $padding: 8px;
-  padding: $padding;
-  line-height: $size;
-  min-width: $size + $padding + $padding + 2px;
+  font-weight: $fontWeightBody * 4 / 3;
+  font-size: $fontSizeHeadline;
+  padding: $padding * 0.4;
+  line-height: $fontSizeHeadline;
+  min-width: $fontSizeHeadline + $padding + 2px;
   box-sizing: border-box;
-  background: #ff0;
-  border-width: 1px;
+  background: $colorY;
+  border-width: $borderWidth;
   border-style: solid;
-  $dark: #444;
-  $light: #bbb;
-  border-color: $light $dark $dark $light;
+  border-color: $colorGray7 $colorGray3 $colorGray3 $colorGray7;
   outline: none;
-  // box-shadow: 1px 1px 0px black;
+  // box-shadow: 1px 1px 0px $colorK;
   -webkit-tap-highlight-color: rgba(0,0,0,0);
 
   &:active {
-    border-color: $dark $light $light $dark;
+    border-color: $colorGray3 $colorGray7 $colorGray7 $colorGray3;
     transform: translate(1px, 1px);
   }
 }

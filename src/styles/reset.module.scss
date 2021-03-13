@@ -11,4 +11,9 @@ body {
 
 button, input {
   font: inherit;
+  text-transform: inherit;
+}
+
+h1, h2, h3 {
+  margin: 0;
 }
