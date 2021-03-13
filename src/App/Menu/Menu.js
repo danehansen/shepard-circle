@@ -127,6 +127,11 @@ export default function Menu({
         })}
         </div>
       </div>
+
+      <Button
+        className={styles.issue}
+        href="https://github.com/danehansen/shepard-wheel/issues"
+      >submit issue</Button>
     </form>
   );
 }
