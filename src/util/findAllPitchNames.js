@@ -8,57 +8,73 @@ function m(num) {
   return modulo(num, STANDARD_SEMITONES);
 }
 
-// TODO: rewrite this so entire key uses either ♭ or ♯  
 export default function findAllPitchNames(transposition, mode) {
-  if (mode === 1 && transposition === 900) {
-    return ['A', 'B♭', 'C♭', 'C', 'D♭', 'D', 'E♭', 'E', 'F', 'G♭♭', 'G', 'A♭'];
-  } else if (mode === 2 && transposition === 1100) {
-    return ['A', 'A♯', 'B', 'C', 'C♯', 'D', 'D♯', 'E', 'E♯', 'F♯', 'G', 'G♯'];
-  } else if (mode === 3 && transposition === 100) {
-    return ['A', 'A♯', 'B', 'C', 'C♯', 'D', 'D♯', 'E', 'E♯', 'F♯', 'G', 'G♯'];
-  } else if (mode === 4 && transposition === 200) {
-    return ['A', 'A♯', 'B', 'C', 'C♯', 'D', 'D♯', 'E', 'E♯', 'F♯', 'G', 'G♯'];
-  } else if (mode === 5 && transposition === 400) {
-    return ['A', 'A♯', 'B', 'C', 'C♯', 'D', 'D♯', 'E', 'E♯', 'F♯', 'G', 'G♯'];
-  } else if (mode === 6 && transposition === 600) {
-    return ['A', 'A♯', 'B', 'C', 'C♯', 'D', 'D♯', 'E', 'E♯', 'F♯', 'G', 'G♯'];
-  } else if (mode === 7 && transposition === 800) {
-    return ['A', 'A♯', 'B', 'C', 'C♯', 'D', 'D♯', 'E', 'E♯', 'F♯', 'G', 'G♯'];
+  const {useModeForNaming} = MODES[mode];
+  if (typeof useModeForNaming === 'number') {
+    return findAllPitchNames(transposition, useModeForNaming);
   }
 
-  const chords = [...MODES[mode].chords];
-  const end = PITCH_NAMES.map((name, i) => {
-    if (!Array.isArray(name)) {
-      return name;
-    }
-
-    let result;
-    for (let j = 1; j <= STANDARD_SEMITONES / 2; j++) {
-      const lastName = PITCH_NAMES[m(i - j)];
-      const nextName = PITCH_NAMES[m(i + j)];
-      const lastChord = chords[m(i - j - (transposition / CENTS_PER_STANDARD_SEMITONE))];
-      const nextChord = chords[m(i + j - (transposition / CENTS_PER_STANDARD_SEMITONE))];
-      const lastNameIsArray = Array.isArray(lastName);
-      const nextNameIsArray = Array.isArray(nextName);
-
-      if (!lastChord && nextChord) {
-        result = name[0];
-      } else if (lastChord && !nextChord) {
-        result = name[1];
+  function makeArrayWithNakedLettersInKeySpots(array) {
+    const letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
+    const {chords} = MODES[mode];
+    let lastLetterIndex = 0;
+    for (let i = 0; i < STANDARD_SEMITONES; i++) {
+      const chordIndex = m(i - transposition / CENTS_PER_STANDARD_SEMITONE);
+      const chord = chords[chordIndex];
+      if (chord) {
+        array[i] = letters[lastLetterIndex];
+        lastLetterIndex++;
       }
+    }
+    return array;
+  }
 
-      if (lastChord && nextChord) {
-        if (!lastNameIsArray && nextNameIsArray) {
-          result = name[0];
-        } else if (lastNameIsArray && !nextNameIsArray) {
-          result = name[1];
+  function addAccidentalsToKeySpots(array) {
+    for (let i = 0; i < STANDARD_SEMITONES; i++) {
+      const pitchName = PITCH_NAMES[i];
+      const lastPitchName = PITCH_NAMES[m(i - 1)]
+      const nextPitchName = PITCH_NAMES[m(i + 1)]
+      if (array[i]) {
+        if (!Array.isArray(pitchName)) {
+          if (lastPitchName === array[i]) {
+            array[i] = `${array[i]}♯`;
+          } else if (nextPitchName === array[i]) {
+            array[i] = `${array[i]}♭`;
+          }
+        } else {
+          const index = pitchName.findIndex((node) => node.indexOf(array[i]) >= 0)
+          array[i] = pitchName[index];
         }
       }
-      if (result) {
-        return result;
+    }
+  }
+
+  function fillInEmptySpots(array) {
+    const hasFlats = array.join('').indexOf('♭') >= 0;
+    const hasSharps = array.join('').indexOf('♯') >= 0;
+    for (let i = 0; i < 12; i++) {
+      if (array[i]) {
+        continue;
+      }
+      const pitchName = PITCH_NAMES[i];
+      if (Array.isArray(pitchName)) {
+        if (hasFlats && !hasSharps) {
+          array[i] = pitchName[1];
+        } else if (!hasFlats && hasSharps) {
+          array[i] = pitchName[0];
+        } else {
+          // defaulting to sharps for C major
+          array[i] = pitchName[0];
+        }
+      } else {
+        array[i] = pitchName;
       }
     }
-    return name[0];
-  })
-  return end;
+  }
+
+  const allNames = [];
+  makeArrayWithNakedLettersInKeySpots(allNames);
+  addAccidentalsToKeySpots(allNames);
+  fillInEmptySpots(allNames);
+  return allNames;
 }

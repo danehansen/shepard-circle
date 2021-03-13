@@ -30,7 +30,7 @@ describe('findAllPitchNames', function() {
           const regex = new RegExp(`${letter}`,'gi');
           const match = resultsInKeyString.match(regex);
           const length = match?.length;
-          expect(length).toBe(1);
+          expect(length).toBeLessThan(2);
         }
       }
     }

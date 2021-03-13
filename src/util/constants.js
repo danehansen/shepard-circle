@@ -17,6 +17,7 @@ export const MODES = [
   {
     name: '(none)',
     chords: [],
+    useModeForNaming: 1,
   },
   {
     name: 'I ionian (major)',
@@ -49,22 +50,22 @@ export const MODES = [
   {
     name: 'major pentatonic',
     chords: ['I', null, 'ii', null, 'iii', null, null, 'V', null, 'vi', null, null],
+    useModeForNaming: 1,
   },
   {
     name: 'minor pentatonic',
     chords: ['i', null, null, 'III', null, 'iv', null, 'v', null, null, 'VII', null],
+    useModeForNaming: 6,
   },
   {
     name: 'blues major',
     chords: ['I', null, 'ii', null, null, 'IV', null, 'v', null, 'vi', null, null],
+    useModeForNaming: 1,
   },
   {
     name: 'blues minor',
     chords: ['i', null, null, 'III', null, 'iv', null, null, 'VI', null, 'vii', null],
-  },
-  {
-    name: 'egyptian',
-    chords: ['i', null, 'ii', null, null, 'IV', null, 'v', null, null, 'VII', null],
+    useModeForNaming: 6,
   },
 ];
 
