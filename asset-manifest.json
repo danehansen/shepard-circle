@@ -1,8 +1,8 @@
 {
   "files": {
-    "main.css": "/shepard-wheel/static/css/main.9f7da2a2.chunk.css",
-    "main.js": "/shepard-wheel/static/js/main.a1043b21.chunk.js",
-    "main.js.map": "/shepard-wheel/static/js/main.a1043b21.chunk.js.map",
+    "main.css": "/shepard-wheel/static/css/main.6a90a1b8.chunk.css",
+    "main.js": "/shepard-wheel/static/js/main.da7b0719.chunk.js",
+    "main.js.map": "/shepard-wheel/static/js/main.da7b0719.chunk.js.map",
     "runtime-main.js": "/shepard-wheel/static/js/runtime-main.932e37d1.js",
     "runtime-main.js.map": "/shepard-wheel/static/js/runtime-main.932e37d1.js.map",
     "static/js/2.58624c19.chunk.js": "/shepard-wheel/static/js/2.58624c19.chunk.js",
@@ -10,13 +10,13 @@
     "static/js/3.c25f0abe.chunk.js": "/shepard-wheel/static/js/3.c25f0abe.chunk.js",
     "static/js/3.c25f0abe.chunk.js.map": "/shepard-wheel/static/js/3.c25f0abe.chunk.js.map",
     "index.html": "/shepard-wheel/index.html",
-    "static/css/main.9f7da2a2.chunk.css.map": "/shepard-wheel/static/css/main.9f7da2a2.chunk.css.map",
+    "static/css/main.6a90a1b8.chunk.css.map": "/shepard-wheel/static/css/main.6a90a1b8.chunk.css.map",
     "static/js/2.58624c19.chunk.js.LICENSE.txt": "/shepard-wheel/static/js/2.58624c19.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.932e37d1.js",
     "static/js/2.58624c19.chunk.js",
-    "static/css/main.9f7da2a2.chunk.css",
-    "static/js/main.a1043b21.chunk.js"
+    "static/css/main.6a90a1b8.chunk.css",
+    "static/js/main.da7b0719.chunk.js"
   ]
 }
