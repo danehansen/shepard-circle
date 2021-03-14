@@ -131,7 +131,7 @@ export default function App() {
 
   function onTouchCallback(pitches) {
     function addRandomPitches(low, high) {
-      if (!pitches.length || (low === 0 && high === 0)) {
+      if (!pitches.length || (!low && !high)) {
         return pitches;
       }
 
@@ -148,7 +148,8 @@ export default function App() {
       return [...pitches, ...randomPitches];
     }
 
-    const newPitches = addRandomPitches(1, 3);
+    // const newPitches = addRandomPitches(1, 2);
+    const newPitches = addRandomPitches();
 
     for(let i = 0; i < semitones; i++) {
       if (newPitches.indexOf(i) >= 0) {
