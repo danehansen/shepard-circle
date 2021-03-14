@@ -6,6 +6,7 @@ import ChordLabel from './ChordLabel/ChordLabel';
 import TouchPad from './TouchPad/TouchPad';
 import Button from './Button/Button';
 import FirstTouch from './FirstTouch/FirstTouch';
+import MatchingChords from './MatchingChords/MatchingChords';
 import {OSCILLATOR_TYPES, DEFAULT_TRANSPOSITION, EQ_FREQUENCIES} from '../util/constants';
 import {STANDARD_A4, STANDARD_SEMITONES, transposeFrequency} from '../util/music';
 import {useState, useEffect} from 'react';
@@ -20,7 +21,8 @@ import {initializaAudio, toggleNote} from '../util/shepardTone';
 import queryString from 'query-string';
 import {isEqual} from 'lodash';
 import {useViewportDimensions} from '../util/hooks';
-// import {random} from '@danehansen/math';
+import {random} from '@danehansen/math';
+import findChords from '../util/findChords';
 
 export default function App() {
   const urlParams = queryString.parse(window.location.search, {parseNumbers: true, arrayFormat: 'comma'});
@@ -109,12 +111,13 @@ export default function App() {
     setPitchNamesSorted(sortPitchNames(pitchNames, pitchSkip));
   }, [pitchNames, pitchSkip]);
 
-  const [chordNamesSorted, setChordNamesSorted] = useState([]);
+  const [chordNamesSorted, setChordNamesSorted] = useState(findChordNames(semitones, mode, pitchSkip));
   useEffect(() => {
     setChordNamesSorted(findChordNames(semitones, mode, pitchSkip));
   }, [semitones, pitchSkip, mode]);
 
   const [activePitches, setActivePitches] = useState([]);
+  const [activeChords, setActiveChords] = useState([]);
 
   const diameter = Math.min(...useViewportDimensions());
 
@@ -127,20 +130,26 @@ export default function App() {
   }
 
   function onTouchCallback(pitches) {
+    function addRandomPitches(low, high) {
+      if (!pitches.length || (!low && !high)) {
+        return pitches;
+      }
 
-    const randomPitches = [];
-    // if (pitches.length) {
-    //   const numRandomPitches = random(1, 3, true);
-    //   for (let i = 0; i < numRandomPitches; i++) {
-    //     let randomPitch;
-    //     do {
-    //       randomPitch = random(0, 12, true);
-    //     } while (pitches.indexOf(randomPitch) >= 0)
-    //     randomPitches.push(randomPitch);
-    //   }
-    // }
+      const randomAmount = random(low, high, true);
+      const randomPitches = [];
+      for (let i = 0; i < randomAmount; i++) {
+        let randomPitch;
+        do {
+          randomPitch = random(0, 12, true);
+        } while (pitches.indexOf(randomPitch) >= 0)
+        randomPitches.push(randomPitch);
+      }
 
-    const newPitches = [...pitches, ...randomPitches]
+      return [...pitches, ...randomPitches];
+    }
+
+    // const newPitches = addRandomPitches(1, 2);
+    const newPitches = addRandomPitches();
 
     for(let i = 0; i < semitones; i++) {
       if (newPitches.indexOf(i) >= 0) {
@@ -151,11 +160,13 @@ export default function App() {
     }
 
     setActivePitches(newPitches);
+    setActiveChords(findChords(newPitches, semitones, pitchNames));
   }
 
   return (
     <FirstTouch className={styles.root} callback={ initializaAudio.bind(null, baseFrequencies, eq)}>
       <div className={styles.contentHolder}>
+        <MatchingChords chords={activeChords} />
       </div>
       <div className={styles.wheelHolder} style={{width: `${diameter}px`, height: `${diameter}px`}}>
         <Display

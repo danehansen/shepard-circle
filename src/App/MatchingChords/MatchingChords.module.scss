@@ -1,0 +1,62 @@
+@import 'styles/shared.module.scss';
+
+.root {
+  display: flex;
+  flex-direction: column-reverse;
+}
+
+.chordHolder {
+  font-size: 20px;
+  color: $colorK;
+  margin-bottom: $margin / 2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  &.fingersNeeded0 {
+    font-weight: 600;
+
+    > .chord {
+      background: $colorY;
+    }
+  }
+
+  &.fingersNeeded1 {
+    font-weight: 500;
+
+    > .chord {
+      background: $colorGray8;
+    }
+  }
+
+  &.fingersNeeded2 {
+    font-weight: 400;
+
+    > .chord {
+      background: $colorGray6;
+    }
+  }
+
+  &.fingersNeeded3 {
+    font-weight: 200;
+
+    > .chord {
+      background: $colorGray4;
+    }
+  }
+
+  &.fingersNeeded4 {
+    font-weight: 100;
+
+    > .chord {
+      background: $colorGray2;
+    }
+  }
+}
+
+.chord {
+  margin-right: $margin / 2;
+  display: inline-block;
+  text-align: center;
+  height: 30px;
+  padding: 0 5px;
+}
