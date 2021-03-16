@@ -11,7 +11,7 @@ import {OSCILLATOR_TYPES, DEFAULT_TRANSPOSITION, EQ_FREQUENCIES} from '../util/c
 import {STANDARD_A4, STANDARD_SEMITONES, transposeFrequency} from '../util/music';
 import {useState, useEffect} from 'react';
 import findPitchSkipOptions from '../util/findPitchSkipOptions';
-import findAllPitchNames from '../util/findAllPitchNames';
+import findBestPitchNames from '../util/findBestPitchNames';
 import findPitchNames from '../util/findPitchNames';
 import findBaseFrequencies from '../util/findBaseFrequencies';
 import findPitchSequence from '../util/findPitchSequence';
@@ -116,9 +116,9 @@ export default function App() {
   const [mode, setMode] = useState(urlParams.mode || 0);
   useURLParams('mode', mode, 0);
 
-  const [allPitchNames, setAllPitchNames] = useState(findAllPitchNames(transposition, mode));
+  const [allPitchNames, setAllPitchNames] = useState(findBestPitchNames(transposition, mode));
   useEffect(() => {
-    setAllPitchNames(findAllPitchNames(transposition, mode));
+    setAllPitchNames(findBestPitchNames(transposition, mode));
   }, [mode, transposition]);
 
   const [pitchNames, setPitchNames] = useState(findPitchNames(semitones, transposition, allPitchNames));
