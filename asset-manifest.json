@@ -1,8 +1,8 @@
 {
   "files": {
     "main.css": "/shepard-wheel/static/css/main.b43c23bc.chunk.css",
-    "main.js": "/shepard-wheel/static/js/main.19c80690.chunk.js",
-    "main.js.map": "/shepard-wheel/static/js/main.19c80690.chunk.js.map",
+    "main.js": "/shepard-wheel/static/js/main.4de0eeda.chunk.js",
+    "main.js.map": "/shepard-wheel/static/js/main.4de0eeda.chunk.js.map",
     "runtime-main.js": "/shepard-wheel/static/js/runtime-main.f26b6e9b.js",
     "runtime-main.js.map": "/shepard-wheel/static/js/runtime-main.f26b6e9b.js.map",
     "static/js/2.be81e43e.chunk.js": "/shepard-wheel/static/js/2.be81e43e.chunk.js",
@@ -17,6 +17,6 @@
     "static/js/runtime-main.f26b6e9b.js",
     "static/js/2.be81e43e.chunk.js",
     "static/css/main.b43c23bc.chunk.css",
-    "static/js/main.19c80690.chunk.js"
+    "static/js/main.4de0eeda.chunk.js"
   ]
 }
