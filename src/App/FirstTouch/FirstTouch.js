@@ -4,12 +4,30 @@ import PropTypes from 'prop-types';
 export default function FirstTouch({component: Component = 'div', callback, ...rest}) {
   const [hasCalledCallback, setHasCalledCallback] = useState(false);
 
-  function onClick() {
+  function handle(evt) {
     setHasCalledCallback(true);
     callback();
   }
 
-  return <Component onClick={hasCalledCallback ? null : onClick} {...rest}></Component>;
+  let listeners = {};
+  if (!hasCalledCallback) {
+    listeners = {
+      onClick: handle,
+      onMouseUp: handle,
+      onMouseDown: handle,
+      onMouseEnter: handle,
+      onMouseLeave: handle,
+      onMouseOver: handle,
+      onMouseOut: handle,
+      onMouseMove: handle,
+      onTouchStart: handle,
+      onTouchEnd: handle,
+      onTouchCancel: handle,
+      onTouchMove: handle,
+    }
+  }
+
+  return <Component {...listeners} {...rest}></Component>;
 }
 
 FirstTouch.propTypes = {

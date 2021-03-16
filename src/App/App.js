@@ -25,6 +25,58 @@ import {random} from '@danehansen/math';
 import findChords from '../util/findChords';
 
 export default function App() {
+  // useEffect(() => {
+  //   function handle(evt) {
+  //     if (typeof evt.scale === 'number' && evt.scale !== 1) {
+  //       evt.preventDefault();
+  //     }
+  //
+  //     if (evt.touches?.length > 1) {
+  //       evt.preventDefault();
+  //     }
+  //   }
+  //
+  //   const options = {
+  //     // passive: false,
+  //     // capture: false,
+  //     // signal
+  //   };
+  //   let useCapture;
+  //   // useCapture = false;
+  //
+  //   const events = [
+  //     'pointerover',
+  //     'pointerout',
+  //     'pointerenter',
+  //     'pointerleave',
+  //     'pointerdown',
+  //     'pointerup',
+  //     'pointermove',
+  //     'pointercancel',
+  //     'click',
+  //     'mouseup',
+  //     'mousedown',
+  //     'mouseenter',
+  //     'mouseleave',
+  //     'mouseover',
+  //     'mouseout',
+  //     'touchstart',
+  //     'touchend',
+  //     'touchcancel',
+  //     'touchcmove',
+  //   ];
+  //
+  //   events.forEach((eventType) => {
+  //     window.addEventListener(eventType, handle, options, useCapture);
+  //   });
+  //
+  //   return () => {
+  //     events.forEach((eventType) => {
+  //       window.removeEventListener(eventType, handle, options, useCapture);
+  //     });
+  //   }
+  // }, []);
+
   const urlParams = queryString.parse(window.location.search, {parseNumbers: true, arrayFormat: 'comma'});
   function useURLParams(key, value, def) {
     useEffect(() => {

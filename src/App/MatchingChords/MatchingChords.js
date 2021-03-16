@@ -3,15 +3,16 @@ import classnames from 'classnames';
 
 export default function MatchingChords({chords}) {
   const chordHolders = [];
-  chords.forEach(({name, fingersNeeded}) => {
+  for (let i = 0; i < chords.length; i++) {
+    const {name, fingersNeeded} = chords[i];
     if (!chordHolders[fingersNeeded]) {
       chordHolders[fingersNeeded] = [];
     }
     chordHolders[fingersNeeded].push(<span
       className={styles.chord}
-      key={name}
+      key={i}
     >{name}</span>);
-  });
+  }
 
   return (
     <div className={styles.root}>
