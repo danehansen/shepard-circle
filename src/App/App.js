@@ -23,6 +23,11 @@ import {isEqual} from 'lodash';
 import {useViewportDimensions} from '../util/hooks';
 import {random} from '@danehansen/math';
 import findChords from '../util/findChords';
+import {throttle} from 'lodash';
+
+const replaceState = throttle((queryString) => {
+  window.history.replaceState(null, null, `${window.location.origin}${window.location.pathname}?${queryString}`);
+}, 1000);
 
 export default function App() {
   // useEffect(() => {
@@ -81,7 +86,7 @@ export default function App() {
   function useURLParams(key, value, def) {
     useEffect(() => {
       function changeParams() {
-        window.history.replaceState(null, null, `${window.location.origin}${window.location.pathname}?${queryString.stringify(urlParams, {arrayFormat: 'comma'})}`);
+        replaceState(queryString.stringify(urlParams, {arrayFormat: 'comma'}));
       }
 
       if (!isEqual(urlParams[key], value)) {
