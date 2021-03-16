@@ -15,10 +15,16 @@ const CHORDS = [
     additionalPitches: [300, 700],
   },
   {
-    name: 'power chord',
-    suffix: <sup>5</sup>,
+    name: 'augmented',
+    suffix: '+',
     textTransform: 'toUpperCase',
-    additionalPitches: [700],
+    additionalPitches: [400, 800],
+  },
+  {
+    name: 'diminished',
+    suffix: 'º',
+    textTransform: 'toLowerCase',
+    additionalPitches: [300, 600],
   },
   {
     name: 'major sixth',
@@ -50,18 +56,7 @@ const CHORDS = [
     textTransform: 'toLowerCase',
     additionalPitches: [300, 700, 1000],
   },
-  {
-    name: 'augmented',
-    suffix: '+',
-    textTransform: 'toUpperCase',
-    additionalPitches: [400, 800],
-  },
-  {
-    name: 'diminished',
-    suffix: 'º',
-    textTransform: 'toLowerCase',
-    additionalPitches: [300, 600],
-  },
+
   {
     name: 'augmented seventh',
     suffix: <>+<sup>∆7</sup></>,
