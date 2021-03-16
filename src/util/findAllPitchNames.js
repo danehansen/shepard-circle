@@ -9,6 +9,16 @@ function m(num) {
 }
 
 export default function findAllPitchNames(transposition, mode) {
+  // TODO: this is bad!
+  if ((transposition === 400 && mode === 1) || (transposition === 100 && mode === 6)) {
+    return ['A','A♯','B','B♯','C♯','D','D♯','E','E♯','F♯','G','G♯'];
+  } else if ((transposition === 600 && mode === 1) || (transposition === 300 && mode === 6)) {
+    return ['A','B♭','B','C','D♭','D','E♭','E','F','G♭','G','A♭'];
+  } else if ((transposition === 900 && mode === 1) || (transposition === 600 && mode === 6)) {
+    return ['A','A♯','B','C','C♯','D','D♯','E','E♯','F♯','G','G♯'];
+  } else if ((transposition === 1100 && mode === 1) || (transposition === 800 && mode === 6)) {
+    return ['A','A♯','B','B♯','C♯','D','D♯','E','E♯','F♯♯','G','G♯'];
+  }
   const {useModeForNaming} = MODES[mode];
   if (typeof useModeForNaming === 'number') {
     return findAllPitchNames(transposition, useModeForNaming);
@@ -76,5 +86,6 @@ export default function findAllPitchNames(transposition, mode) {
   makeArrayWithNakedLettersInKeySpots(allNames);
   addAccidentalsToKeySpots(allNames);
   fillInEmptySpots(allNames);
+  // console.log('findAllPitchNames', {transposition, mode, allNames})
   return allNames;
 }

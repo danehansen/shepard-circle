@@ -2,7 +2,7 @@ import styles from './Display.module.scss';
 import classnames from 'classnames';
 import React from 'react';
 import Canvas from './canvas';
-import {toRadianDirection} from '../../util/math';
+import {toRadianDirection} from '@danehansen/math';
 import {MODES, RADIANS_IN_CIRCLE, DEGREES_IN_CIRCLE} from '../../util/constants';
 import {useState, useEffect, useRef} from 'react';
 import findColors from './findColors';

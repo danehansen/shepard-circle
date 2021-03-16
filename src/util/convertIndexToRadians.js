@@ -1,4 +1,4 @@
-import { toRadianDirection } from './math';
+import { toRadianDirection } from '@danehansen/math';
 import { DEGREES_IN_CIRCLE } from './constants';
 
 export default function convertIndexToRadians(index, semitones, rootPitch, pitchSkip) {

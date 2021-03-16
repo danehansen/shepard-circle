@@ -1,5 +1,4 @@
 import findChords from './findChords';
-import {STANDARD_SEMITONES} from './music';
 
 
 describe('findChords', function() {
@@ -9,12 +8,7 @@ describe('findChords', function() {
     let semitones;
     let result;
     let expectedResult;
-
-    //progress checks
     let bloatedResult;
-    let pitchesSorted;
-    let pitchesSortedScaled;
-    let inversions;
 
     pitches = [8, 5, 1]; // major chord
     semitones = 12;
@@ -82,6 +76,7 @@ describe('findChords', function() {
         fingersNeeded: 0,
       },
     ];
+    // eslint-disable-next-line no-unused-vars
     bloatedResult = {
       pitchesSorted: [1, 3, 5],
       pitchesSortedScaled: [200, 600, 1000],

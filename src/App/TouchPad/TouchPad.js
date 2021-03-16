@@ -1,6 +1,5 @@
 import {useRef, useState} from 'react';
-import {modulo} from '@danehansen/math';
-import {toDegreeDirection} from '../../util/math';
+import {modulo, toDegreeDirection} from '@danehansen/math';
 import styles from './TouchPad.module.scss';
 import {RADIANS_IN_CIRCLE, DEGREES_IN_CIRCLE} from '../../util/constants';
 

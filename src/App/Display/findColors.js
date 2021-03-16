@@ -1,4 +1,4 @@
-import {toRadianDirection} from '../../util/math';
+import {toRadianDirection} from '@danehansen/math';
 import {RADIANS_IN_CIRCLE, DEGREES_IN_CIRCLE} from '../../util/constants';
 
 function findDirectionalColor(direction) {

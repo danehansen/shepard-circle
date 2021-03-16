@@ -1,5 +1,4 @@
-import { modulo } from '@danehansen/math';
-import {toRadianDirection} from './math';
+import { modulo, toRadianDirection } from '@danehansen/math';
 import {RADIANS_IN_CIRCLE, DEGREES_IN_CIRCLE} from './constants';
 
 export default function convertRadiansToIndex(rad, semitones, rootPitch, pitchSkip) {
