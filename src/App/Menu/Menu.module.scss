@@ -3,6 +3,7 @@
 .root {
   padding: $padding;
   min-height: 100%;
+  text-shadow: 0 0 4px rgba($colorK, 0.5);
 }
 
 .property {
@@ -62,5 +63,5 @@
 }
 
 .issue {
-
+  text-shadow: none;
 }

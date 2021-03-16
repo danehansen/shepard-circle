@@ -14,6 +14,7 @@
   left: 50%;
   top: 50%;
   letter-spacing: -0.05em;
+  text-shadow: 0 0 4px rgba($colorK, 0.1);
 
   &.hasAccidental {
     font-size: 10vw;
@@ -27,5 +28,6 @@
   &.deemphesized {
     font-weight: $fontWeightBody * 2 / 3;
     opacity: 0.2;
+    text-shadow: 0 0 4px rgba($colorK, 0.9);
   }
 }
