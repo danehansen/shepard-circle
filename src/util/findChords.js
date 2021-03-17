@@ -1,89 +1,61 @@
-import {modulo, sortAscending} from '@danehansen/math';
+import {modulo} from '@danehansen/math';
 import {STANDARD_SEMITONES} from './music';
+import {CHORD_TYPES} from './constants';
 
-const CHORDS = [
-  {
-    name: 'major',
-    suffix: '',
-    textTransform: 'toUpperCase',
-    additionalPitches: [400, 700],
-  },
-  {
-    name: 'minor',
-    suffix: '',
-    textTransform: 'toLowerCase',
-    additionalPitches: [300, 700],
-  },
-  {
-    name: 'augmented',
-    suffix: '+',
-    textTransform: 'toUpperCase',
-    additionalPitches: [400, 800],
-  },
-  {
-    name: 'diminished',
-    suffix: 'º',
-    textTransform: 'toLowerCase',
-    additionalPitches: [300, 600],
-  },
-  {
-    name: 'major sixth',
-    suffix: <sup>6</sup>,
-    textTransform: 'toUpperCase',
-    additionalPitches: [400, 700, 900],
-  },
-  {
-    name: 'minor sixth',
-    suffix: <sup>6</sup>,
-    textTransform: 'toLowerCase',
-    additionalPitches: [300, 700, 900],
-  },
-  {
-    name: 'dominant seventh',
-    suffix: <sup>7</sup>,
-    textTransform: 'toUpperCase',
-    additionalPitches: [400, 700, 1000],
-  },
-  {
-    name: 'major seventh',
-    suffix: <sup>∆7</sup>,
-    textTransform: 'toUpperCase',
-    additionalPitches: [400, 700, 1100],
-  },
-  {
-    name: 'minor seventh',
-    suffix: <sup>7</sup>,
-    textTransform: 'toLowerCase',
-    additionalPitches: [300, 700, 1000],
-  },
+export default function findChords(pitches, semitones, pitchNames, chordTypes = CHORD_TYPES) {
+  const matchingChords = [];
+  const kLimit = pitches.length;
+  if (!kLimit) {
+    return matchingChords;
+  }
+  const cents = pitches.map(convertPitchToCents)
+  const inversions = findInversionsOfChord(cents);
+  const iLimit = 12;
+  const jLimit = chordTypes.length;
 
-  {
-    name: 'augmented seventh',
-    suffix: <>+<sup>∆7</sup></>,
-    textTransform: 'toUpperCase',
-    additionalPitches: [400, 800, 1000],
-  },
-  {
-    name: 'minor-major seventh',
-    suffix: <sup>M7</sup>,
-    textTransform: 'toLowerCase',
-    additionalPitches: [300, 700, 1100],
-  },
-  {
-    name: 'diminished seventh',
-    suffix: <>º<sup>7</sup></>,
-    textTransform: 'toLowerCase',
-    additionalPitches: [300, 600, 900],
-  },
-  {
-    name: 'half-diminished seventh',
-    suffix: <sup>ø7</sup>,
-    textTransform: 'toLowerCase',
-    additionalPitches: [300, 600, 1000],
-  },
-];
+  for (let i = 0; i < iLimit; i++) {
+    const transposition = i * 100;
 
-export default function findChords(pitches, semitones, pitchNames) {
+    for (let j = 0; j < jLimit; j++) {
+      const chord = chordTypes[j];
+
+      for (let k = 0; k <= kLimit; k++) {
+        let rootCent;
+        let additionalCents;
+        let inversion;
+
+        if (k === kLimit) {
+          inversion = inversions[0];
+          rootCent = transposition;
+          additionalCents = inversion.map(cent => modulo(cent - rootCent, 1200));
+        } else {
+          inversion = inversions[k];
+          rootCent = inversion[0];
+          additionalCents = inversion.slice(1).map(cent => modulo(cent - rootCent, 1200));
+        }
+
+        if (transposition === rootCent) {
+          let fingersNeeded = findFingersNeeded(additionalCents, chord);
+
+          if (typeof fingersNeeded === 'number') {
+            const rootPitch = convertCentsToPitch(rootCent);
+            const obj = {
+              fingersNeeded: k === kLimit ? fingersNeeded + 1 : fingersNeeded,
+              name: `${pitchNames[rootPitch][chord.textTransform]()}${chord.suffix}`,
+              rootPitch,
+              chordIndex: j,
+            }
+            matchingChords.push(obj);
+          }
+        }
+      }
+    }
+
+  }
+  matchingChords.sort(sortOnName).sort(sortOnChordsIndex).sort(sortOnFingersNeeded);
+
+  return matchingChords;
+
   function convertPitchToCents(pitch) {
     return pitch / semitones * STANDARD_SEMITONES * 100;
   }
@@ -91,36 +63,6 @@ export default function findChords(pitches, semitones, pitchNames) {
   function convertCentsToPitch(cents) {
     return cents / 100 / STANDARD_SEMITONES * semitones;
   }
-
-  const pitchesSorted = pitches.sort(sortAscending);
-  const pitchesSortedScaled = pitchesSorted.map(convertPitchToCents)
-  const inversions = findInversionsOfChord(pitchesSortedScaled)
-
-  const matchingChords = [];
-  inversions.forEach(inversion => {
-    const inversionLowered = inversion.map((pitch) => {
-      return modulo(pitch - inversion[0], 1200);
-    })
-    const rootPitch = convertCentsToPitch(inversion[0]);
-    const additionalPitches = inversionLowered.slice(1);
-    CHORDS.forEach(chord => {
-      const fingersNeeded = findFingersNeeded(additionalPitches, chord);
-      if (typeof fingersNeeded === 'number') {
-        matchingChords.push({
-          name: <>{pitchNames[rootPitch][chord.textTransform]()}{chord.suffix}</>,
-          fingersNeeded,
-        })
-      }
-    })
-  });
-  matchingChords.sort(sortMatchingChords);
-  return matchingChords;
-  // return {
-  //   pitchesSorted,
-  //   pitchesSortedScaled,
-  //   inversions,
-  //   matchingChords,
-  // }
 }
 
 function findInversionsOfChord(pitches) {
@@ -131,8 +73,21 @@ function findInversionsOfChord(pitches) {
   return results;
 }
 
-function sortMatchingChords(chordA, chordB) {
+function sortOnFingersNeeded(chordA, chordB) {
   return chordA.fingersNeeded - chordB.fingersNeeded;
+}
+
+function sortOnChordsIndex(chordA, chordB) {
+  return chordA.chordIndex - chordB.chordIndex;
+}
+
+function sortOnName(chordA, chordB) {
+  if (chordA.name > chordB.name) {
+    return 1;
+  } else if (chordA.name < chordB.name) {
+    return -1;
+  }
+  return 0;
 }
 
 function findFingersNeeded(additionalPitches, chord) {

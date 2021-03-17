@@ -82,3 +82,85 @@ export const TEMPERMENT_TYPES = {
   MEANTONE: 'meantone',
   PYTHAGOREAN: 'pythagorean',
 };
+
+
+export const CHORD_TYPES = [
+  {
+    name: 'major',
+    suffix: '',
+    textTransform: 'toUpperCase',
+    additionalPitches: [400, 700],
+  },
+  {
+    name: 'minor',
+    suffix: '',
+    textTransform: 'toLowerCase',
+    additionalPitches: [300, 700],
+  },
+  {
+    name: 'augmented',
+    suffix: '+',
+    textTransform: 'toUpperCase',
+    additionalPitches: [400, 800],
+  },
+  {
+    name: 'diminished',
+    suffix: 'º',
+    textTransform: 'toLowerCase',
+    additionalPitches: [300, 600],
+  },
+  {
+    name: 'major sixth',
+    suffix: <sup>6</sup>,
+    textTransform: 'toUpperCase',
+    additionalPitches: [400, 700, 900],
+  },
+  {
+    name: 'minor sixth',
+    suffix: <sup>6</sup>,
+    textTransform: 'toLowerCase',
+    additionalPitches: [300, 700, 900],
+  },
+  {
+    name: 'dominant seventh',
+    suffix: <sup>7</sup>,
+    textTransform: 'toUpperCase',
+    additionalPitches: [400, 700, 1000],
+  },
+  {
+    name: 'major seventh',
+    suffix: <sup>∆7</sup>,
+    textTransform: 'toUpperCase',
+    additionalPitches: [400, 700, 1100],
+  },
+  {
+    name: 'minor seventh',
+    suffix: <sup>7</sup>,
+    textTransform: 'toLowerCase',
+    additionalPitches: [300, 700, 1000],
+  },
+  {
+    name: 'augmented seventh',
+    suffix: <>+<sup>∆7</sup></>,
+    textTransform: 'toUpperCase',
+    additionalPitches: [400, 800, 1000],
+  },
+  {
+    name: 'minor-major seventh',
+    suffix: <sup>M7</sup>,
+    textTransform: 'toLowerCase',
+    additionalPitches: [300, 700, 1100],
+  },
+  {
+    name: 'diminished seventh',
+    suffix: <>º<sup>7</sup></>,
+    textTransform: 'toLowerCase',
+    additionalPitches: [300, 600, 900],
+  },
+  {
+    name: 'half-diminished seventh',
+    suffix: <sup>ø7</sup>,
+    textTransform: 'toLowerCase',
+    additionalPitches: [300, 600, 1000],
+  },
+];

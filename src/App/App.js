@@ -187,8 +187,8 @@ export default function App() {
   }
 
   function onTouchCallback(pitches) {
-    function addRandomPitches(low, high) {
-      if (!pitches.length || (!low && !high)) {
+    function addRandomPitches(low, high = low) {
+      if (!pitches.length || !low) {
         return pitches;
       }
 
@@ -198,6 +198,7 @@ export default function App() {
         let randomPitch;
         do {
           randomPitch = random(0, 12, true);
+          // randomPitch = (pitches[0] + 3)%12
         } while (pitches.indexOf(randomPitch) >= 0)
         randomPitches.push(randomPitch);
       }
@@ -223,7 +224,7 @@ export default function App() {
   return (
     <FirstTouch className={styles.root} callback={ initializaAudio.bind(null, baseFrequencies, eq)}>
       <div className={styles.contentHolder}>
-        <MatchingChords chords={activeChords} />
+        <MatchingChords chords={activeChords} pitchNames={pitchNames} />
       </div>
       <div className={styles.wheelHolder} style={{width: `${diameter}px`, height: `${diameter}px`}}>
         <Display
