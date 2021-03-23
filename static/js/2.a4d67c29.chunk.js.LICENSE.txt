@@ -10,6 +10,10 @@ object-assign
   http://jedwatson.github.io/classnames
 */
 
+/*!*********************!*\
+          !*** ./src/math.js ***!
+          \*********************/
+
 /**
  * @license
  * Lodash <https://lodash.com/>
