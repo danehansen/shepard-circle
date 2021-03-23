@@ -1,6 +1,6 @@
 import styles from './MatchingChords.module.scss';
 import classnames from 'classnames';
-import {CHORD_TYPES} from '../../util/constants';
+import {CHORD_TYPES} from 'util/constants';
 
 export default function MatchingChords({chords, pitchNames}) {
   const chordHolders = [];

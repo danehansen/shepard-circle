@@ -1,18 +1,16 @@
 import {HUMAN_MAX_FREQ} from './music';
 import {EQ_FREQUENCIES} from './constants';
 
-let frequencies;
-let currentOscillators;
 let audioContext;
-let gainNode;
 let headNode;
+let currentOscillators = {};
 
-export function initializaAudio(baseFrequencies, eq) {
+export function initializaAudio(eq) {
   if (audioContext) {
     audioContext.close();
   }
   audioContext = new (window.AudioContext || window.webkitAudioContext)();
-  gainNode = audioContext.createGain();
+  const gainNode = audioContext.createGain();
   gainNode.connect(audioContext.destination);
 
   // TODO: figure out this gain value
@@ -37,10 +35,11 @@ export function initializaAudio(baseFrequencies, eq) {
   }
   gainNode.connect(headNode);
 
-  currentOscillators = [];
-  frequencies = baseFrequencies.map(function(frequency) {
-    return findAudibleOctaves(frequency);
-  })
+  Object.values(currentOscillators).forEach(oscillator => {
+    oscillator.stop();
+    oscillator.disconnect();
+  });
+  currentOscillators = {};
 }
 
 function findAudibleOctaves(frequency) {
@@ -52,33 +51,42 @@ function findAudibleOctaves(frequency) {
   return frequencies;
 }
 
-function startNote(index, type) {
-  const oscillators = [];
-  currentOscillators[index] = oscillators;
-  for(const frequency of frequencies[index]) {
-    const oscillatorNode = audioContext.createOscillator();
-    oscillatorNode.frequency.value = frequency;
-    oscillatorNode.type = type;
-    oscillatorNode.connect(headNode);
-    oscillatorNode.start();
-    oscillators.push(oscillatorNode);
+export function playFrequencies(baseFrequencies, oscillatorType) {
+  const oldOscillators = currentOscillators;
+  const newOscillators = {};
+  const nonExistingOscillators = [];
+  for(const baseFrequency of baseFrequencies) {
+    const frequencies = findAudibleOctaves(baseFrequency);
+    for (const frequency of frequencies) {
+      const oscillator = oldOscillators[frequency];
+      if (oscillator) {
+        newOscillators[frequency] = oscillator;
+        delete oldOscillators[frequency];
+      } else {
+        nonExistingOscillators.push(frequency);
+      }
+    }
   }
-}
+  const leftoverOscillators = Object.values(oldOscillators);
 
-function stopNote(index) {
-  for(const oscillator of currentOscillators[index]) {
+  for(const frequency of nonExistingOscillators) {
+    let oscillator;
+    if (leftoverOscillators.length) {
+      oscillator = leftoverOscillators.pop();
+      oscillator.frequency.setValueAtTime(frequency, 0);
+    } else {
+      oscillator = audioContext.createOscillator();
+      oscillator.type = oscillatorType;
+      oscillator.frequency.value = frequency;
+      oscillator.connect(headNode);
+      oscillator.start();
+    }
+    newOscillators[frequency] = oscillator;
+  }
+
+  leftoverOscillators.forEach(oscillator => {
     oscillator.stop();
-  }
-  currentOscillators[index] = null;
-}
-
-export function toggleNote(note, isPlaying, type) {
-  if (!currentOscillators) {
-    return;
-  }
-  if (isPlaying && !currentOscillators[note]) {
-    startNote(note, type);
-  } else if (!isPlaying && currentOscillators[note]) {
-    stopNote(note);
-  }
+    oscillator.disconnect();
+  });
+  currentOscillators = newOscillators;
 }

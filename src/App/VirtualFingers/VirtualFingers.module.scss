@@ -1,0 +1,30 @@
+@import 'styles/shared.module.scss';
+
+.root {
+
+}
+
+.row {
+  display: flex;
+}
+
+.button {
+  flex-grow: 1;
+  font-size: 10px;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.fraction {
+
+}
+
+.numerator {
+
+}
+
+.denominator {
+  border-top: 0.6px solid $colorK;
+}

@@ -1,5 +1,5 @@
-import findIntervalRatio from '../../util/findIntervalRatio';
-import {RADIANS_IN_CIRCLE} from '../../util/constants';
+import findIntervalRatio from 'util/findIntervalRatio';
+import {RADIANS_IN_CIRCLE} from 'util/constants';
 
 export default function drawInterval(radianA, radianB, diameter, canvas, radius, frequencyA, frequencyB, colorA, colorB) {
   const center = diameter / 2;
@@ -29,7 +29,7 @@ export default function drawInterval(radianA, radianB, diameter, canvas, radius,
     const radiusA = diff / interval[0] / 2;
     const radiusB = diff / interval[1] / 2;
 
-    canvas.strokeStyle = `rgb(${colorA.r}, ${colorA.g}, ${colorA.b})`;
+    canvas.strokeStyle = typeof colorA === 'object' ? `rgb(${colorA.r}, ${colorA.g}, ${colorA.b})` : colorB;
     for (let i = 0; i < interval[0]; i++) {
       canvas.beginPath();
       const centerX = pointA.x + xDiff / interval[0] * (i + 0.5);
@@ -38,7 +38,7 @@ export default function drawInterval(radianA, radianB, diameter, canvas, radius,
       canvas.stroke();
     }
 
-    canvas.strokeStyle = `rgb(${colorB.r}, ${colorB.g}, ${colorB.b})`;
+    canvas.strokeStyle = typeof colorB === 'object' ? `rgb(${colorB.r}, ${colorB.g}, ${colorB.b})` : colorB;
     for (let i = 0; i < interval[1]; i++) {
       canvas.beginPath();
       const centerX = pointA.x + xDiff / interval[1] * (i + 0.5);

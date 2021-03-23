@@ -17,3 +17,9 @@ button, input {
 h1, h2, h3 {
   margin: 0;
 }
+
+button {
+  border-radius: none;
+  background: none;
+  outline: none;
+}

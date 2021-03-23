@@ -1,5 +1,5 @@
 import {modulo} from '@danehansen/math';
-import {RADIANS_IN_CIRCLE} from '../../util/constants';
+import {RADIANS_IN_CIRCLE} from 'util/constants';
 
 function flipRadiansVertically(radians) {
   return Math.atan2(-Math.sin(radians), Math.cos(radians));
@@ -10,7 +10,7 @@ export default function fillSlice(canvas, color, diameter, startRadians, endRadi
   const isCircle = modulo(startRadians, RADIANS_IN_CIRCLE) === modulo(endRadians, RADIANS_IN_CIRCLE);
 
   canvas.beginPath();
-  canvas.fillStyle =`rgb(${color.r}, ${color.g}, ${color.b})`;
+  canvas.fillStyle = typeof color === 'object' ? `rgb(${color.r}, ${color.g}, ${color.b})` : color;
 
   if (isCircle) {
     canvas.arc(center, center, center * outerRadius, 0, RADIANS_IN_CIRCLE);

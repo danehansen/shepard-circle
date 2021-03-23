@@ -7,27 +7,25 @@ import TouchPad from './TouchPad/TouchPad';
 import Button from './Button/Button';
 import FirstTouch from './FirstTouch/FirstTouch';
 import MatchingChords from './MatchingChords/MatchingChords';
-import {OSCILLATOR_TYPES, DEFAULT_TRANSPOSITION, EQ_FREQUENCIES} from '../util/constants';
-import {STANDARD_A4, STANDARD_SEMITONES, transposeFrequency} from '../util/music';
+import VirtualFingers from './VirtualFingers/VirtualFingers';
+import {OSCILLATOR_TYPES, DEFAULT_TRANSPOSITION, EQ_FREQUENCIES} from 'util/constants';
+import {STANDARD_A4, STANDARD_SEMITONES, transposeFrequency} from 'util/music';
 import {useState, useEffect} from 'react';
-import findPitchSkipOptions from '../util/findPitchSkipOptions';
-import findBestPitchNames from '../util/findBestPitchNames';
-import findPitchNames from '../util/findPitchNames';
-import findBaseFrequencies from '../util/findBaseFrequencies';
-import findPitchSequence from '../util/findPitchSequence';
-import findChordNames from '../util/findChordNames';
-import sortPitchNames from '../util/sortPitchNames';
-import {initializaAudio, toggleNote} from '../util/shepardTone';
+import findPitchSkipOptions from 'util/findPitchSkipOptions';
+import findBestPitchNames from 'util/findBestPitchNames';
+import findPitchNames from 'util/findPitchNames';
+import findBaseFrequencies from 'util/findBaseFrequencies';
+import findBaseFrequency from 'util/findBaseFrequency';
+import findPitchSequence from 'util/findPitchSequence';
+import findChordNames from 'util/findChordNames';
+import sortPitchNames from 'util/sortPitchNames';
+import {initializaAudio, playFrequencies} from 'util/shepardTone';
+import {useViewportDimensions} from 'util/hooks';
+import findChords from 'util/findChords';
+import replaceState from 'util/replaceState';
+import {random} from '@danehansen/math';
 import queryString from 'query-string';
 import {isEqual} from 'lodash';
-import {useViewportDimensions} from '../util/hooks';
-import {random} from '@danehansen/math';
-import findChords from '../util/findChords';
-import {throttle} from 'lodash';
-
-const replaceState = throttle((queryString) => {
-  window.history.replaceState(null, null, `${window.location.origin}${window.location.pathname}?${queryString}`);
-}, 1000);
 
 export default function App() {
   // useEffect(() => {
@@ -173,7 +171,20 @@ export default function App() {
     setChordNamesSorted(findChordNames(semitones, mode, pitchSkip));
   }, [semitones, pitchSkip, mode]);
 
-  const [activePitches, setActivePitches] = useState([]);
+  const [manualPitches, setManualPitches] = useState([]);
+  const [activeVirtualFingers, setActiveVirtualFingers] = useState([]);
+  function onVirtualFinger(cents, isOn) {
+    if (isOn) {
+      if (activeVirtualFingers.indexOf(cents) < 0) {
+        setActiveVirtualFingers([...activeVirtualFingers, cents]);
+      }
+    } else {
+        const newActiveVirtualFingers = [...activeVirtualFingers];
+        newActiveVirtualFingers.splice(activeVirtualFingers.indexOf(cents, 1));
+      setActiveVirtualFingers(newActiveVirtualFingers);
+    }
+  }
+
   const [activeChords, setActiveChords] = useState([]);
 
   const diameter = Math.min(...useViewportDimensions());
@@ -181,7 +192,7 @@ export default function App() {
   const [isMenuOpen, setMenuOpen] = useState(false);
   function onMenuButtonClick() {
     if (isMenuOpen) {
-      initializaAudio(baseFrequencies, eq);
+      initializaAudio(eq);
     }
     setMenuOpen(!isMenuOpen);
   }
@@ -208,34 +219,79 @@ export default function App() {
 
     // const newPitches = addRandomPitches(1, 2);
     const newPitches = addRandomPitches();
-
-    for(let i = 0; i < semitones; i++) {
-      if (newPitches.indexOf(i) >= 0) {
-        toggleNote(i, true, oscillator)
-      } else {
-        toggleNote(i, false, oscillator)
-      }
-    }
-
-    setActivePitches(newPitches);
+    setManualPitches(newPitches);
     setActiveChords(findChords(newPitches, semitones, pitchNames));
   }
 
+  useEffect(() => {
+    const activeFrequencies = [];
+    for(let i = 0; i < semitones; i++) {
+      if (manualPitches.indexOf(i) >= 0) {
+        const frequency = baseFrequencies[i];
+        if (activeFrequencies.indexOf(frequency) < 0) {
+          activeFrequencies.push(frequency);
+        }
+        for (let j = 0; j < activeVirtualFingers.length; j++) {
+          const virtualFrequency = findBaseFrequency(transposeFrequency(frequency, activeVirtualFingers[j]));
+          if (activeFrequencies.indexOf(virtualFrequency) < 0) {
+            activeFrequencies.push(virtualFrequency);
+          }
+        }
+      }
+    }
+
+    const ap = activeFrequencies.map((af) => {
+      let closestDistance = Number.MAX_VALUE;
+      let closestIndex;
+      baseFrequencies.forEach((bf, i) => {
+        const distance = Math.abs(af - bf);
+        if (distance < closestDistance) {
+          closestDistance = distance;
+          closestIndex = i;
+        }
+      });
+      return closestIndex;
+    })
+
+    setAllPitches(ap);
+    playFrequencies(activeFrequencies, oscillator);
+  }, [manualPitches, activeVirtualFingers, baseFrequencies, oscillator, semitones]);
+
+  const [allPitches, setAllPitches] = useState([]);
+
   return (
-    <FirstTouch className={styles.root} callback={ initializaAudio.bind(null, baseFrequencies, eq)}>
+    <FirstTouch className={styles.root} callback={ initializaAudio.bind(null, eq)}>
       <div className={styles.contentHolder}>
-        <MatchingChords chords={activeChords} pitchNames={pitchNames} />
+        <div className={styles.top}>
+          <VirtualFingers
+            pitchNames={pitchNames}
+            callback={onVirtualFinger}
+          />
+        </div>
+        <div className={styles.bottom}>
+          <MatchingChords
+            chords={activeChords}
+            pitchNames={pitchNames}
+          />
+        </div>
       </div>
       <div className={styles.wheelHolder} style={{width: `${diameter}px`, height: `${diameter}px`}}>
         <Display
-          activePitches={activePitches}
+          activePitches={allPitches}
           baseFrequencies={baseFrequencies}
           diameter={diameter}
           pitchSequence={pitchSequence}
           mode={mode}
         />
-        <PitchLabel pitchNamesSorted={pitchNamesSorted} diameter={diameter} chordNamesSorted={chordNamesSorted} />
-        <ChordLabel chordNamesSorted={chordNamesSorted} diameter={diameter} />
+        <PitchLabel
+          pitchNamesSorted={pitchNamesSorted}
+          diameter={diameter}
+          chordNamesSorted={chordNamesSorted}
+        />
+        <ChordLabel
+          chordNamesSorted={chordNamesSorted}
+          diameter={diameter}
+        />
         <TouchPad
           callback={onTouchCallback}
           diameter={diameter}
@@ -243,24 +299,26 @@ export default function App() {
         />
       </div>
 
-      {isMenuOpen && <div className={styles.menuHolder}><Menu
-        a4={a4}
-        setA4={setA4}
-        allPitchNames={allPitchNames}
-        eq={eq}
-        setEq={setEq}
-        mode={mode}
-        setMode={setMode}
-        oscillator={oscillator}
-        setOscillator={setOscillator}
-        pitchSkip={pitchSkip}
-        setPitchSkip={setPitchSkip}
-        semitones={semitones}
-        setSemitones={setSemitones}
-        transposition={transposition}
-        setTransposition={setTransposition}
-        pitchSkipOptions={pitchSkipOptions}
-      /></div>}
+      {isMenuOpen && <div className={styles.menuHolder}>
+        <Menu
+          a4={a4}
+          setA4={setA4}
+          allPitchNames={allPitchNames}
+          eq={eq}
+          setEq={setEq}
+          mode={mode}
+          setMode={setMode}
+          oscillator={oscillator}
+          setOscillator={setOscillator}
+          pitchSkip={pitchSkip}
+          setPitchSkip={setPitchSkip}
+          semitones={semitones}
+          setSemitones={setSemitones}
+          transposition={transposition}
+          setTransposition={setTransposition}
+          pitchSkipOptions={pitchSkipOptions}
+        />
+      </div>}
 
       <Button className={styles.menuButton} onClick={onMenuButtonClick}>{isMenuOpen ? 'x' : 'menu'}</Button>
     </FirstTouch>

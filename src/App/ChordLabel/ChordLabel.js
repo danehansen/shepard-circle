@@ -1,5 +1,5 @@
 import styles from './ChordLabel.module.scss';
-import {DEGREES_IN_CIRCLE} from '../../util/constants';
+import {DEGREES_IN_CIRCLE} from 'util/constants';
 
 export default function ChordLabel({chordNamesSorted, diameter}) {
   const semitones = chordNamesSorted.length;

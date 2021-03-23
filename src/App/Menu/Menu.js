@@ -1,9 +1,9 @@
 import styles from './Menu.module.scss';
-import {OSCILLATOR_TYPES, MODES, EQ_FREQUENCIES} from '../../util/constants';
-import {STANDARD_A4, A4, STANDARD_SEMITONES, HUMAN_CENT_THRESHOLD, CENTS_PER_STANDARD_SEMITONE, CENTS_PER_OCTAVE} from '../../util/music';
+import {OSCILLATOR_TYPES, MODES, EQ_FREQUENCIES} from 'util/constants';
+import {STANDARD_A4, A4, STANDARD_SEMITONES, HUMAN_CENT_THRESHOLD, CENTS_PER_STANDARD_SEMITONE, CENTS_PER_OCTAVE} from 'util/music';
 import classnames from 'classnames';
 import Input from './Input/Input';
-import Button from '../Button/Button';
+import Button from 'App/Button/Button';
 
 function findIncrementLabel(increment, semitones) {
   if (increment === 1) {

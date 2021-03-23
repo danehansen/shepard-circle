@@ -1,7 +1,7 @@
 import {useRef, useState} from 'react';
 import {modulo, toDegreeDirection} from '@danehansen/math';
 import styles from './TouchPad.module.scss';
-import {RADIANS_IN_CIRCLE, DEGREES_IN_CIRCLE} from '../../util/constants';
+import {RADIANS_IN_CIRCLE, DEGREES_IN_CIRCLE} from 'util/constants';
 
 const IS_TOUCH_SCREEN = 'ontouchstart' in window;
 
