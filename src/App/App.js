@@ -8,7 +8,7 @@ import Button from './Button/Button';
 import FirstTouch from './FirstTouch/FirstTouch';
 import MatchingChords from './MatchingChords/MatchingChords';
 import VirtualFingers from './VirtualFingers/VirtualFingers';
-import {OSCILLATOR_TYPES, DEFAULT_TRANSPOSITION, EQ_FREQUENCIES} from 'util/constants';
+import {OSCILLATOR_TYPES, DEFAULT_TRANSPOSITION, EQ_FREQUENCIES, MODES} from 'util/constants';
 import {STANDARD_A4, STANDARD_SEMITONES, transposeFrequency} from 'util/music';
 import {useState, useEffect} from 'react';
 import findPitchSkipOptions from 'util/findPitchSkipOptions';
@@ -173,15 +173,19 @@ export default function App() {
 
   const [manualPitches, setManualPitches] = useState([]);
   const [activeVirtualFingers, setActiveVirtualFingers] = useState([]);
-  function onVirtualFinger(cents, isOn) {
+  function onVirtualFinger(value, isOn, units) {
     if (isOn) {
-      if (activeVirtualFingers.indexOf(cents) < 0) {
-        setActiveVirtualFingers([...activeVirtualFingers, cents]);
+      const alreadyContained = activeVirtualFingers.find(element => element.value === value && element.units === units)
+      if (!alreadyContained) {
+        setActiveVirtualFingers([...activeVirtualFingers, {value, units}]);
       }
     } else {
+      const index = activeVirtualFingers.findIndex(element => element.value === value && element.units === units)
+      if (index >= 0) {
         const newActiveVirtualFingers = [...activeVirtualFingers];
-        newActiveVirtualFingers.splice(activeVirtualFingers.indexOf(cents, 1));
-      setActiveVirtualFingers(newActiveVirtualFingers);
+        newActiveVirtualFingers.splice(index, 1);
+        setActiveVirtualFingers(newActiveVirtualFingers);
+      }
     }
   }
 
@@ -223,6 +227,23 @@ export default function App() {
     setActiveChords(findChords(newPitches, semitones, pitchNames));
   }
 
+  function findTranspositionAmount(frequency, virtualFinger, mode) {
+    if (virtualFinger.units === 'steps') {
+      const M = MODES[mode];
+      let steps = 0;
+      for (let i = 1; i < 12; i++) {
+        if (M[i]) {
+          steps++;
+        }
+        if (steps === virtualFinger.value) {
+          return i * 100;
+        }
+      }
+    } else {
+      return virtualFinger.value;
+    }
+  }
+
   useEffect(() => {
     const activeFrequencies = [];
     for(let i = 0; i < semitones; i++) {
@@ -232,7 +253,9 @@ export default function App() {
           activeFrequencies.push(frequency);
         }
         for (let j = 0; j < activeVirtualFingers.length; j++) {
-          const virtualFrequency = findBaseFrequency(transposeFrequency(frequency, activeVirtualFingers[j]));
+          const virtualFinger = activeVirtualFingers[j];
+          const transpositionAmount = findTranspositionAmount(frequency, virtualFinger, mode);
+          const virtualFrequency = findBaseFrequency(transposeFrequency(frequency, transpositionAmount));
           if (activeFrequencies.indexOf(virtualFrequency) < 0) {
             activeFrequencies.push(virtualFrequency);
           }
@@ -255,7 +278,7 @@ export default function App() {
 
     setAllPitches(ap);
     playFrequencies(activeFrequencies, oscillator);
-  }, [manualPitches, activeVirtualFingers, baseFrequencies, oscillator, semitones]);
+  }, [manualPitches, activeVirtualFingers, baseFrequencies, oscillator, semitones, mode]);
 
   const [allPitches, setAllPitches] = useState([]);
 
@@ -266,6 +289,7 @@ export default function App() {
           <VirtualFingers
             pitchNames={pitchNames}
             callback={onVirtualFinger}
+            hasMode={!!mode}
           />
         </div>
         <div className={styles.bottom}>

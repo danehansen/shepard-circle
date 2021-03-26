@@ -11,10 +11,11 @@
 .button {
   flex-grow: 1;
   font-size: 10px;
-  height: 30px;
+  height: 40px;
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: 0;
 }
 
 .fraction {
