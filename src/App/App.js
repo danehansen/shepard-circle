@@ -356,7 +356,6 @@ export default function App() {
         <TouchPad
           callback={onTouchCallback}
           callbackNew={setManualPitchClasses}
-          diameter={diameter}
           pitchSequence={pitchSequence}
         />
       </div>

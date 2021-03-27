@@ -18,7 +18,7 @@ export default function Display({className, activePitches, baseFrequencies, diam
     if (!rootNode.current) {
       return;
     }
-    setRoot(new Canvas(rootNode.current));
+    setRoot(new Canvas(rootNode.current, diameter, diameter));
     setBuffer(new Canvas(undefined, diameter, diameter));
   }, [rootNode, diameter]);
 

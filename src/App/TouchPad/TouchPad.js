@@ -1,8 +1,9 @@
-import {useRef, useState} from 'react';
+import {useRef, useEffect, useState} from 'react';
 import {modulo, toDegreeDirection} from '@danehansen/math';
 import simplifyFraction from 'util/simplifyFraction';
 import styles from './TouchPad.module.scss';
 import {RADIANS_IN_CIRCLE, DEGREES_IN_CIRCLE} from 'util/constants';
+import {useBoundingClientRect} from 'util/hooks';
 
 const IS_TOUCH_SCREEN = 'ontouchstart' in window;
 
@@ -10,23 +11,23 @@ export default function TouchPad({
   pitchSequence,
   callback,
   callbackNew,
-  diameter,
 }) {
-  const rootNode = useRef();
+  const rootRef = useRef();
   const [pointerIsDown, setPointerIsDown] = useState(false);
   const {length:semitones} = pitchSequence;
+  const rootRect = useBoundingClientRect(rootRef);
 
   function handle(evt) {
     const pitches = [];
     const pitchClasses = [];
     const type = evt.type;
     const isTouchEvent = /touch/.test(type);
-    const rect = rootNode.current.getBoundingClientRect();
     const halfSlice = RADIANS_IN_CIRCLE / semitones / 2;
+    const diameter = rootRect.width;
 
     function findPitchIndex(clientX, clientY) {
-      const x = clientX - rect.x - diameter * 0.5;
-      const y = -(clientY - rect.y - diameter * 0.5);
+      const x = clientX - rootRect.x - diameter * 0.5;
+      const y = -(clientY - rootRect.y - diameter * 0.5);
       const length = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
 
       if (length <= diameter / 2) {
@@ -85,7 +86,7 @@ export default function TouchPad({
   }
 
   return <div
-    ref={rootNode}
+    ref={rootRef}
     className={styles.root}
     {...listeners}
   />;

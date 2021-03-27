@@ -27,3 +27,27 @@ export function useViewportDimensions(win = WIN || PLACEHOLDER_WINDOW) {
 
   return [innerWidth, innerHeight];
 }
+
+export function useBoundingClientRect(ref) {
+  const DEFAULT_RECT = {
+    x: 0,
+    y: 0,
+    width: 0,
+    height: 0,
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+  };
+  const [rect, setRect] = useState(DEFAULT_RECT);
+  const [innerWidth, innerHeight] = useViewportDimensions();
+
+  useEffect(() => {
+    if (!ref.current) {
+      return;
+    }
+    setRect(ref.current.getBoundingClientRect());
+  }, [innerWidth, innerHeight, ref]);
+
+  return rect;
+}
