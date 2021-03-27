@@ -19,7 +19,7 @@ import findBaseFrequency from 'util/findBaseFrequency';
 import findPitchSequence from 'util/findPitchSequence';
 import findChordNames from 'util/findChordNames';
 import sortPitchNames from 'util/sortPitchNames';
-import {initializaAudio, playFrequencies} from 'util/shepardTone';
+import {initializaAudio, playFrequencies, playPitchClasses} from 'util/shepardTone';
 import {useViewportDimensions} from 'util/hooks';
 import findChords from 'util/findChords';
 import replaceState from 'util/replaceState';
@@ -189,6 +189,43 @@ export default function App() {
     }
   }
 
+
+
+
+
+
+  const [manualPitchClasses, setManualPitchClasses] = useState([]);
+
+  const [toggledPitchClasses, setToggledPitchClasses] = useState(urlParams.toggledPitchClasses || []);
+  useURLParams('toggledPitchClasses', toggledPitchClasses, []);
+
+  const [manualVirtualFingers, setManualVirtualFingers] = useState([]);
+
+  const [toggledVirtualFingers, setToggledVirtualFingers] = useState(urlParams.toggledVirtualFingers || []);
+  useURLParams('toggledVirtualFingers', toggledVirtualFingers, []);
+
+  const [soundingPitchClasses, setSoundingPitchClasses] = useState([...manualPitchClasses]);
+  useEffect(() => {
+    const newSoundingPitchClasses = [...manualPitchClasses, ...toggledPitchClasses];
+    setSoundingPitchClasses(newSoundingPitchClasses);
+  }, [manualPitchClasses, toggledPitchClasses, manualVirtualFingers, toggledVirtualFingers]);
+
+  useEffect(() => {
+    playPitchClasses(soundingPitchClasses);
+  }, [soundingPitchClasses]);
+
+
+
+
+
+
+
+
+
+
+
+
+
   const [activeChords, setActiveChords] = useState([]);
 
   const diameter = Math.min(...useViewportDimensions());
@@ -318,6 +355,7 @@ export default function App() {
         />
         <TouchPad
           callback={onTouchCallback}
+          callbackNew={setManualPitchClasses}
           diameter={diameter}
           pitchSequence={pitchSequence}
         />

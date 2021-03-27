@@ -1,5 +1,6 @@
 import {useRef, useState} from 'react';
 import {modulo, toDegreeDirection} from '@danehansen/math';
+import simplifyFraction from 'util/simplifyFraction';
 import styles from './TouchPad.module.scss';
 import {RADIANS_IN_CIRCLE, DEGREES_IN_CIRCLE} from 'util/constants';
 
@@ -8,17 +9,20 @@ const IS_TOUCH_SCREEN = 'ontouchstart' in window;
 export default function TouchPad({
   pitchSequence,
   callback,
+  callbackNew,
   diameter,
 }) {
   const rootNode = useRef();
   const [pointerIsDown, setPointerIsDown] = useState(false);
+  const {length:semitones} = pitchSequence;
 
   function handle(evt) {
     const pitches = [];
+    const pitchClasses = [];
     const type = evt.type;
     const isTouchEvent = /touch/.test(type);
     const rect = rootNode.current.getBoundingClientRect();
-    const halfSlice = RADIANS_IN_CIRCLE / pitchSequence.length / 2;
+    const halfSlice = RADIANS_IN_CIRCLE / semitones / 2;
 
     function findPitchIndex(clientX, clientY) {
       const x = clientX - rect.x - diameter * 0.5;
@@ -28,9 +32,10 @@ export default function TouchPad({
       if (length <= diameter / 2) {
         const rad = modulo(Math.atan2(y, x), RADIANS_IN_CIRCLE);
         const degrees = toDegreeDirection(rad - halfSlice);
-        const index = Math.floor(degrees / DEGREES_IN_CIRCLE * pitchSequence.length);
+        const index = Math.floor(degrees / DEGREES_IN_CIRCLE * semitones);
         if (typeof index === 'number') {
           pitches.push(pitchSequence[index]);
+          pitchClasses.push(simplifyFraction(index,semitones));
         }
       } else {
         setPointerIsDown(false);
@@ -60,6 +65,7 @@ export default function TouchPad({
     }
 
     callback(pitches);
+    callbackNew(pitchClasses);
   }
 
   let listeners;

@@ -90,3 +90,7 @@ export function playFrequencies(baseFrequencies, oscillatorType) {
   });
   currentOscillators = newOscillators;
 }
+
+export function playPitchClasses(pitchClasses) {
+  console.log('playPitchClasses:', pitchClasses);
+}
