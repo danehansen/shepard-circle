@@ -10,8 +10,10 @@
 
 .button {
   flex-grow: 1;
-  font-size: 10px;
-  height: 40px;
+  flex-shrink: 1;
+  font-size: $fontSizeHeadline;
+  line-height: $fontSizeHeadline;
+  height: 32px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -27,5 +29,5 @@
 }
 
 .denominator {
-  border-top: 0.6px solid $colorK;
+  border-top: 1.2px solid $colorK;
 }
