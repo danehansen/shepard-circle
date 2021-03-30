@@ -8,25 +8,25 @@ function m(num) {
   return modulo(num, STANDARD_SEMITONES);
 }
 
-export default function findAllPitchNames(transposition, mode) {
+export default function findAllPitchNames(transposition, modeIndex) {
   // TODO: this is bad!
-  if ((transposition === 400 && mode === 1) || (transposition === 100 && mode === 6)) {
+  if ((transposition === 400 && modeIndex === 1) || (transposition === 100 && modeIndex === 6)) {
     return ['A','A♯','B','B♯','C♯','D','D♯','E','E♯','F♯','G','G♯'];
-  } else if ((transposition === 600 && mode === 1) || (transposition === 300 && mode === 6)) {
+  } else if ((transposition === 600 && modeIndex === 1) || (transposition === 300 && modeIndex === 6)) {
     return ['A','B♭','B','C','D♭','D','E♭','E','F','G♭','G','A♭'];
-  } else if ((transposition === 900 && mode === 1) || (transposition === 600 && mode === 6)) {
+  } else if ((transposition === 900 && modeIndex === 1) || (transposition === 600 && modeIndex === 6)) {
     return ['A','A♯','B','C','C♯','D','D♯','E','E♯','F♯','G','G♯'];
-  } else if ((transposition === 1100 && mode === 1) || (transposition === 800 && mode === 6)) {
+  } else if ((transposition === 1100 && modeIndex === 1) || (transposition === 800 && modeIndex === 6)) {
     return ['A','A♯','B','B♯','C♯','D','D♯','E','E♯','F♯♯','G','G♯'];
   }
-  const {useModeForNaming} = MODES[mode];
+  const {useModeForNaming} = MODES[modeIndex];
   if (typeof useModeForNaming === 'number') {
     return findAllPitchNames(transposition, useModeForNaming);
   }
 
   function makeArrayWithNakedLettersInKeySpots(array) {
     const letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
-    const {chords} = MODES[mode];
+    const {chords} = MODES[modeIndex];
     let lastLetterIndex = 0;
     for (let i = 0; i < STANDARD_SEMITONES; i++) {
       const chordIndex = m(i - transposition / CENTS_PER_STANDARD_SEMITONE);
@@ -86,6 +86,5 @@ export default function findAllPitchNames(transposition, mode) {
   makeArrayWithNakedLettersInKeySpots(allNames);
   addAccidentalsToKeySpots(allNames);
   fillInEmptySpots(allNames);
-  // console.log('findAllPitchNames', {transposition, mode, allNames})
   return allNames;
 }

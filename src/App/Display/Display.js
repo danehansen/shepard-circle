@@ -10,7 +10,7 @@ import findColors from './findColors';
 import fillSlice from './fillSlice';
 import drawInterval from './drawInterval';
 
-export default function Display({className, soundingPitchClasses, baseFrequencies, diameter, mode, pitchSequence}) {
+export default function Display({className, soundingPitchClasses, baseFrequencies, diameter, modeIndex, pitchSequence}) {
   const rootNode = useRef();
 
   const [root, setRoot] = useState(null);
@@ -59,7 +59,7 @@ export default function Display({className, soundingPitchClasses, baseFrequencie
 
     function drawSlices() {
       const halfSlice = RADIANS_IN_CIRCLE / semitones / 2;
-      const {chords} = MODES[mode];
+      const {chords} = MODES[modeIndex];
 
       for (let i = 0; i < semitones; i++) {
         const pitch = pitchSequence[i];
@@ -78,7 +78,7 @@ export default function Display({className, soundingPitchClasses, baseFrequencie
     drawSlices();
     connectPitches();
     root.drawImage(buffer);
-  }, [soundingPitchClasses, baseFrequencies, diameter, mode, pitchSequence, buffer, root]);
+  }, [soundingPitchClasses, baseFrequencies, diameter, modeIndex, pitchSequence, buffer, root]);
 
   return <canvas className={classnames(styles.root, className)} ref={rootNode} />;
 }

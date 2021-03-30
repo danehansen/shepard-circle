@@ -52,7 +52,7 @@ function findAudibleOctaves(frequency) {
   return frequencies;
 }
 
-export function playPitchClasses(pitchClasses, mode, transposition, oscillatorType, a4) {
+export function playPitchClasses(pitchClasses, transposition, oscillatorType, a4) {
   const oldOscillators = currentOscillators;
   const newOscillators = {};
   const nonExistingOscillators = [];

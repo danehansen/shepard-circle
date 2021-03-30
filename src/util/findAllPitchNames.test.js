@@ -12,13 +12,13 @@ describe('findAllPitchNames', function() {
     const endingMode = MODES.length - 1;
 
     for (let transposition = startingTransposition; transposition <= endingTransposition; transposition += CENTS_PER_STANDARD_SEMITONE) {
-      for (let mode = startingMode; mode <= endingMode; mode++) {
-        const {chords} = MODES[mode];
+      for (let modeIndex = startingMode; modeIndex <= endingMode; modeIndex++) {
+        const {chords} = MODES[modeIndex];
         const chordsInKey = chords.filter((chord) => !!chord);
         if (chordsInKey.length !== 7) {
           continue;
         }
-        const result = findAllPitchNames(transposition, mode);
+        const result = findAllPitchNames(transposition, modeIndex);
         const resultsInKey = result.filter((name, i) => {
           const index = modulo(i - (transposition / CENTS_PER_STANDARD_SEMITONE), STANDARD_SEMITONES);
           return !!chords[index];

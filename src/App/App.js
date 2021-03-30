@@ -107,8 +107,8 @@ export default function App() {
   const [a4, setA4] = useState(urlParams.a4 || STANDARD_A4);
   useURLParams('a4', a4, STANDARD_A4);
 
-  const [oscillator, setOscillator] = useState(urlParams.oscillator || OSCILLATOR_TYPES.SINE);
-  useURLParams('oscillator', oscillator, OSCILLATOR_TYPES.SINE);
+  const [oscillatorType, setOscillatorType] = useState(urlParams.oscillatorType || OSCILLATOR_TYPES.SINE);
+  useURLParams('oscillatorType', oscillatorType, OSCILLATOR_TYPES.SINE);
 
   const [semitones, setSemitones] = useState(urlParams.semitones || STANDARD_SEMITONES);
   useURLParams('semitones', semitones, STANDARD_SEMITONES);
@@ -116,13 +116,13 @@ export default function App() {
   const [transposition, setTransposition] = useState(urlParams.transposition !== undefined ? urlParams.transposition : DEFAULT_TRANSPOSITION);
   useURLParams('transposition', transposition, DEFAULT_TRANSPOSITION);
 
-  const [mode, setMode] = useState(urlParams.mode || 0);
-  useURLParams('mode', mode, 0);
+  const [modeIndex, setModeIndex] = useState(urlParams.modeIndex || 0);
+  useURLParams('modeIndex', modeIndex, 0);
 
-  const [allPitchNames, setAllPitchNames] = useState(findBestPitchNames(transposition, mode));
+  const [allPitchNames, setAllPitchNames] = useState(findBestPitchNames(transposition, modeIndex));
   useEffect(() => {
-    setAllPitchNames(findBestPitchNames(transposition, mode));
-  }, [mode, transposition]);
+    setAllPitchNames(findBestPitchNames(transposition, modeIndex));
+  }, [modeIndex, transposition]);
 
   const [pitchNames, setPitchNames] = useState(findPitchNames(semitones, transposition, allPitchNames));
   useEffect(() => {
@@ -171,10 +171,10 @@ export default function App() {
     setPitchNamesSorted(sortPitchNames(pitchNames, pitchSkip));
   }, [pitchNames, pitchSkip]);
 
-  const [chordNamesSorted, setChordNamesSorted] = useState(findChordNames(semitones, mode, pitchSkip));
+  const [chordNamesSorted, setChordNamesSorted] = useState(findChordNames(semitones, modeIndex, pitchSkip));
   useEffect(() => {
-    setChordNamesSorted(findChordNames(semitones, mode, pitchSkip));
-  }, [semitones, pitchSkip, mode]);
+    setChordNamesSorted(findChordNames(semitones, modeIndex, pitchSkip));
+  }, [semitones, pitchSkip, modeIndex]);
 
   function onVirtualFinger(value, isOn, units) {
     if (isOn) {
@@ -232,14 +232,14 @@ export default function App() {
         if (virtualFinger.units === VIRTUAL_FINGER_UNITS.STEPS) {
           let index = pitchClassFraction * STANDARD_SEMITONES;
           if (index % 1 === 0) {
-            const pitchClassIsInScale = !!MODES[mode].chords[index];
+            const pitchClassIsInScale = !!MODES[modeIndex].chords[index];
             if (pitchClassIsInScale) {
               let steps = 0;
               let halfSteps = 0;
               while (steps !== virtualFinger.value) {
                 halfSteps ++;
                 index = (index + 1) % STANDARD_SEMITONES;
-                if (!!MODES[mode].chords[index]) {
+                if (!!MODES[modeIndex].chords[index]) {
                   steps++;
                 }
               }
@@ -267,12 +267,12 @@ export default function App() {
 
     newSoundingPitchClasses = unionWith(newSoundingPitchClasses, virtualPitchClasses, isEqual);
     setSoundingPitchClasses(newSoundingPitchClasses);
-  }, [manualPitchClasses, toggledPitchClasses, manualVirtualFingers, toggledVirtualFingers, mode]);
+  }, [manualPitchClasses, toggledPitchClasses, manualVirtualFingers, toggledVirtualFingers, modeIndex]);
 
   useEffect(() => {
-    playPitchClasses(soundingPitchClasses, mode, transposition, oscillator, a4);
+    playPitchClasses(soundingPitchClasses, transposition, oscillatorType, a4);
     setActiveChords(findChords(soundingPitchClasses, semitones, pitchNames));
-  }, [soundingPitchClasses, mode, transposition, oscillator, a4, pitchNames, semitones]);
+  }, [soundingPitchClasses, modeIndex, transposition, oscillatorType, a4, pitchNames, semitones]);
 
   function togglePitchClass(pitchClass) {
     const index = findIndex(toggledPitchClasses, pc => isEqual(pc, pitchClass));
@@ -306,7 +306,7 @@ export default function App() {
             pitchNames={pitchNames}
             onVirtualFinger={onVirtualFinger}
             toggleVirtualFinger={toggleVirtualFinger}
-            hasMode={!!mode}
+            hasMode={!!modeIndex}
           />
         </div>
         <div className={styles.bottom}>
@@ -322,7 +322,7 @@ export default function App() {
           baseFrequencies={baseFrequencies}
           diameter={diameter}
           pitchSequence={pitchSequence}
-          mode={mode}
+          modeIndex={modeIndex}
         />
         <PitchLabel
           pitchNamesSorted={pitchNamesSorted}
@@ -347,10 +347,10 @@ export default function App() {
           allPitchNames={allPitchNames}
           eq={eq}
           setEq={setEq}
-          mode={mode}
-          setMode={setMode}
-          oscillator={oscillator}
-          setOscillator={setOscillator}
+          modeIndex={modeIndex}
+          setModeIndex={setModeIndex}
+          oscillatorType={oscillatorType}
+          setOscillatorType={setOscillatorType}
           pitchSkip={pitchSkip}
           setPitchSkip={setPitchSkip}
           semitones={semitones}

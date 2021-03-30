@@ -27,10 +27,10 @@ export default function Menu({
     allPitchNames,
     eq,
     setEq,
-    mode,
-    setMode,
-    oscillator,
-    setOscillator,
+    modeIndex,
+    setModeIndex,
+    oscillatorType,
+    setOscillatorType,
     pitchSkip,
     setPitchSkip,
     semitones,
@@ -41,7 +41,7 @@ export default function Menu({
   }) {
 
   function onOscillatorChange({ target: { value }}) {
-    setOscillator(value);
+    setOscillatorType(value);
   }
 
   function onEQChange(index, {target: {value}}) {
@@ -56,7 +56,7 @@ export default function Menu({
         <h2 className={styles.title}>Oscillator</h2>
         {Object.values(OSCILLATOR_TYPES).map((value) => {
           return <label className={styles.label} key={value}>
-            <Input type="radio" checked={oscillator === value} value={value} onChange={onOscillatorChange} />
+            <Input type="radio" checked={oscillatorType === value} value={value} onChange={onOscillatorChange} />
             <div className={styles.labelText}>{value}</div>
           </label>
         })}
@@ -89,7 +89,7 @@ export default function Menu({
         <div className={styles.columns}>
           {MODES.map((modeObj, index) => {
             return <label className={styles.label} key={modeObj.name}>
-              <Input type="radio" value={index} name="mode" checked={mode === index} onChange={({target:{value}}) => {setMode(parseInt(value))}} />
+              <Input type="radio" value={index} name="mode" checked={modeIndex === index} onChange={({target:{value}}) => {setModeIndex(parseInt(value))}} />
               <div className={styles.labelText}>{modeObj.name}</div>
             </label>
           })}
