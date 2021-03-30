@@ -36,9 +36,10 @@
 
 .contentHolder {
   padding: $padding;
-  flex-grow: 1;
   display: flex;
   flex-direction: column;
+  overflow: visible;
+  box-sizing: border-box;
 }
 
 .top {
