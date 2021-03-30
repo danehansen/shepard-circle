@@ -1,5 +1,5 @@
-import findAllPitchNames from './findAllPitchNames';
-import {MODES} from './constants';
+import findAllPitchNames from 'util/findAllPitchNames';
+import {MODES} from 'util/constants';
 
 export default function findBestPitchNames(transposition, mode) {
   let lowestNumOfIncidentals = Number.MAX_VALUE;

@@ -1,4 +1,4 @@
-import {useRef, useEffect, useState} from 'react';
+import {useRef, useState} from 'react';
 import {modulo, toDegreeDirection} from '@danehansen/math';
 import simplifyFraction from 'util/simplifyFraction';
 import styles from './TouchPad.module.scss';
@@ -9,39 +9,36 @@ const IS_TOUCH_SCREEN = 'ontouchstart' in window;
 
 export default function TouchPad({
   pitchSequence,
-  callback,
-  callbackNew,
+  setManualPitchClasses,
+  togglePitchClass,
 }) {
   const rootRef = useRef();
   const [pointerIsDown, setPointerIsDown] = useState(false);
   const {length:semitones} = pitchSequence;
   const rootRect = useBoundingClientRect(rootRef);
+  const diameter = rootRect.width;
+  const halfSlice = RADIANS_IN_CIRCLE / semitones / 2;
+
+  function findPitchIndex(clientX, clientY) {
+    const x = clientX - rootRect.x - diameter * 0.5;
+    const y = -(clientY - rootRect.y - diameter * 0.5);
+    const length = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
+
+    if (length <= diameter / 2) {
+      const rad = modulo(Math.atan2(y, x), RADIANS_IN_CIRCLE);
+      const degrees = toDegreeDirection(rad - halfSlice);
+      const index = Math.floor(degrees / DEGREES_IN_CIRCLE * semitones);
+      return index;
+    }
+    return null;
+  }
 
   function handle(evt) {
     const pitches = [];
     const pitchClasses = [];
     const type = evt.type;
     const isTouchEvent = /touch/.test(type);
-    const halfSlice = RADIANS_IN_CIRCLE / semitones / 2;
-    const diameter = rootRect.width;
 
-    function findPitchIndex(clientX, clientY) {
-      const x = clientX - rootRect.x - diameter * 0.5;
-      const y = -(clientY - rootRect.y - diameter * 0.5);
-      const length = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
-
-      if (length <= diameter / 2) {
-        const rad = modulo(Math.atan2(y, x), RADIANS_IN_CIRCLE);
-        const degrees = toDegreeDirection(rad - halfSlice);
-        const index = Math.floor(degrees / DEGREES_IN_CIRCLE * semitones);
-        if (typeof index === 'number') {
-          pitches.push(pitchSequence[index]);
-          pitchClasses.push(simplifyFraction(index,semitones));
-        }
-      } else {
-        setPointerIsDown(false);
-      }
-    }
 
     switch(type) {
       case 'mousedown':
@@ -57,21 +54,44 @@ export default function TouchPad({
       const targetTouches = evt.targetTouches || [];
       for (let i = 0; i < targetTouches.length; i++) {
         const touch = targetTouches[i];
-        findPitchIndex(touch.clientX, touch.clientY);
+        const index = findPitchIndex(touch.clientX, touch.clientY);
+        if (typeof index === 'number') {
+              pitches.push(pitchSequence[index]);
+              pitchClasses.push(simplifyFraction(index,semitones));
+            }
+          else {
+            setPointerIsDown(false);
+          }
       }
     } else {
       if (type !== 'mouseup') {
-        findPitchIndex(evt.clientX, evt.clientY);
+        const index = findPitchIndex(evt.clientX, evt.clientY);
+        if (typeof index === 'number') {
+            pitches.push(pitchSequence[index]);
+            pitchClasses.push(simplifyFraction(index,semitones));
+          }
+        else {
+          setPointerIsDown(false);
+        }
       }
     }
 
-    callback(pitches);
-    callbackNew(pitchClasses);
+    setManualPitchClasses(pitchClasses);
   }
 
-  let listeners;
+  function handleToggle(evt) {
+    const index = findPitchIndex(evt.clientX, evt.clientY);
+    if (typeof index === 'number') {
+      togglePitchClass(simplifyFraction(index,semitones))
+    }
+  }
+
+  let listeners = {
+    onDoubleClick: handleToggle,
+  };
   if (IS_TOUCH_SCREEN) {
     listeners = {
+      ...listeners,
       onTouchStart: handle,
       onTouchEnd: handle,
       onTouchCancel: handle,
@@ -79,6 +99,7 @@ export default function TouchPad({
     }
   } else {
     listeners = {
+      ...listeners,
       onMouseUp: handle,
       onMouseDown: handle,
       onMouseMove: pointerIsDown ? handle : null,

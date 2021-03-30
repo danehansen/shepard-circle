@@ -1,4 +1,4 @@
-import {findInterval, CENTS_PER_OCTAVE} from './music';
+import {findInterval, CENTS_PER_OCTAVE} from 'util/music';
 
 export default function findIntervalRatio(fRoot, fComparison) {
   const tolerance = 2;

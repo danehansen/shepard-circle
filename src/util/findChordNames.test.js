@@ -1,4 +1,4 @@
-import findChordNames from './findChordNames';
+import findChordNames from 'util/findChordNames';
 
 describe('findChordNames', function() {
   it('returns correct results', function() {

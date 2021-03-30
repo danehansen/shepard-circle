@@ -1,5 +1,5 @@
 import {round} from '@danehansen/math';
-import {STANDARD_SEMITONES, CENTS_PER_STANDARD_SEMITONE} from './music';
+import {STANDARD_SEMITONES, CENTS_PER_STANDARD_SEMITONE} from 'util/music';
 
 export default function findPitchNames(semitones, transposition, allPitchNames) {
   return [...Array(semitones).keys()].map(function(i) {

@@ -1,6 +1,6 @@
 import {modulo} from '@danehansen/math';
-import {MODES} from './constants';
-import {STANDARD_SEMITONES, CENTS_PER_STANDARD_SEMITONE} from './music';
+import {MODES} from 'util/constants';
+import {STANDARD_SEMITONES, CENTS_PER_STANDARD_SEMITONE} from 'util/music';
 
 const PITCH_NAMES = ['A', ['A♯','B♭'], 'B', 'C', ['C♯','D♭'], 'D', ['D♯','E♭'], 'E', 'F', ['F♯','G♭'], 'G', ['G♯','A♭']];
 

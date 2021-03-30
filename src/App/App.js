@@ -8,24 +8,24 @@ import Button from './Button/Button';
 import FirstTouch from './FirstTouch/FirstTouch';
 import MatchingChords from './MatchingChords/MatchingChords';
 import VirtualFingers from './VirtualFingers/VirtualFingers';
-import {OSCILLATOR_TYPES, DEFAULT_TRANSPOSITION, EQ_FREQUENCIES, MODES} from 'util/constants';
-import {STANDARD_A4, STANDARD_SEMITONES, transposeFrequency} from 'util/music';
-import {useState, useEffect} from 'react';
+import {OSCILLATOR_TYPES, DEFAULT_TRANSPOSITION, EQ_FREQUENCIES, MODES, VIRTUAL_FINGER_UNITS} from 'util/constants';
+import {STANDARD_A4, STANDARD_SEMITONES, transposeFrequency, CENTS_PER_OCTAVE} from 'util/music';
 import findPitchSkipOptions from 'util/findPitchSkipOptions';
 import findBestPitchNames from 'util/findBestPitchNames';
 import findPitchNames from 'util/findPitchNames';
 import findBaseFrequencies from 'util/findBaseFrequencies';
-import findBaseFrequency from 'util/findBaseFrequency';
 import findPitchSequence from 'util/findPitchSequence';
 import findChordNames from 'util/findChordNames';
 import sortPitchNames from 'util/sortPitchNames';
-import {initializaAudio, playFrequencies, playPitchClasses} from 'util/shepardTone';
+import {initializaAudio, playPitchClasses} from 'util/shepardTone';
 import {useViewportDimensions} from 'util/hooks';
 import findChords from 'util/findChords';
 import replaceState from 'util/replaceState';
-import {random} from '@danehansen/math';
+import simplifyFraction from 'util/simplifyFraction';
+
+import {useState, useEffect} from 'react';
 import queryString from 'query-string';
-import {isEqual} from 'lodash';
+import {isEqual, unionWith, findIndex} from 'lodash';
 
 export default function App() {
   // useEffect(() => {
@@ -80,11 +80,16 @@ export default function App() {
   //   }
   // }, []);
 
-  const urlParams = queryString.parse(window.location.search, {parseNumbers: true, arrayFormat: 'comma'});
+  const params = {
+    arrayFormat: 'comma',
+    parseNumbers: true,
+  };
+
+  const urlParams = queryString.parse(window.location.search, params);
   function useURLParams(key, value, def) {
     useEffect(() => {
       function changeParams() {
-        replaceState(queryString.stringify(urlParams, {arrayFormat: 'comma'}));
+        replaceState(queryString.stringify(urlParams, params));
       }
 
       if (!isEqual(urlParams[key], value)) {
@@ -171,60 +176,115 @@ export default function App() {
     setChordNamesSorted(findChordNames(semitones, mode, pitchSkip));
   }, [semitones, pitchSkip, mode]);
 
-  const [manualPitches, setManualPitches] = useState([]);
-  const [activeVirtualFingers, setActiveVirtualFingers] = useState([]);
   function onVirtualFinger(value, isOn, units) {
     if (isOn) {
-      const alreadyContained = activeVirtualFingers.find(element => element.value === value && element.units === units)
+      const alreadyContained = manualVirtualFingers.find(element => element.value === value && element.units === units)
       if (!alreadyContained) {
-        setActiveVirtualFingers([...activeVirtualFingers, {value, units}]);
+        setManualVirtualFingers([...manualVirtualFingers, {value, units}]);
       }
     } else {
-      const index = activeVirtualFingers.findIndex(element => element.value === value && element.units === units)
+      const index = manualVirtualFingers.findIndex(element => element.value === value && element.units === units)
       if (index >= 0) {
-        const newActiveVirtualFingers = [...activeVirtualFingers];
+        const newActiveVirtualFingers = [...manualVirtualFingers];
         newActiveVirtualFingers.splice(index, 1);
-        setActiveVirtualFingers(newActiveVirtualFingers);
+        setManualVirtualFingers(newActiveVirtualFingers);
       }
     }
   }
 
-
-
-
-
+  function toggleVirtualFinger(value, units) {
+    const virtualFinger = {value, units};
+    const index = findIndex(toggledVirtualFingers, vf => isEqual(vf, virtualFinger));
+    let newToggledVirtualFingers = [];
+    if (index >= 0) {
+      newToggledVirtualFingers = [...newToggledVirtualFingers];
+      newToggledVirtualFingers.splice(index, 1);
+    } else {
+      newToggledVirtualFingers = [...newToggledVirtualFingers, virtualFinger];
+    }
+    setToggledVirtualFingers(newToggledVirtualFingers);
+  }
 
   const [manualPitchClasses, setManualPitchClasses] = useState([]);
 
   const [toggledPitchClasses, setToggledPitchClasses] = useState(urlParams.toggledPitchClasses || []);
-  useURLParams('toggledPitchClasses', toggledPitchClasses, []);
+  // useURLParams('toggledPitchClasses', toggledPitchClasses, []);
 
   const [manualVirtualFingers, setManualVirtualFingers] = useState([]);
 
   const [toggledVirtualFingers, setToggledVirtualFingers] = useState(urlParams.toggledVirtualFingers || []);
-  useURLParams('toggledVirtualFingers', toggledVirtualFingers, []);
+  // useURLParams('toggledVirtualFingers', toggledVirtualFingers, []);
 
   const [soundingPitchClasses, setSoundingPitchClasses] = useState([...manualPitchClasses]);
   useEffect(() => {
-    const newSoundingPitchClasses = [...manualPitchClasses, ...toggledPitchClasses];
+    const newSoundingVirtualFingers = unionWith(manualVirtualFingers, toggledVirtualFingers, isEqual);
+
+    let newSoundingPitchClasses = unionWith(manualPitchClasses, toggledPitchClasses, isEqual);
+
+    let virtualPitchClasses = [];
+    for (let i = 0; i < newSoundingVirtualFingers.length; i++) {
+      const virtualFinger = newSoundingVirtualFingers[i];
+
+      for (let j = 0; j < newSoundingPitchClasses.length; j++) {
+        const pitchClass = newSoundingPitchClasses[j];
+        let virtualPitchClass;
+        const pitchClassFraction = pitchClass[0] / pitchClass[1];
+        if (virtualFinger.units === VIRTUAL_FINGER_UNITS.STEPS) {
+          let index = pitchClassFraction * STANDARD_SEMITONES;
+          if (index % 1 === 0) {
+            const pitchClassIsInScale = !!MODES[mode].chords[index];
+            if (pitchClassIsInScale) {
+              let steps = 0;
+              let halfSteps = 0;
+              while (steps !== virtualFinger.value) {
+                halfSteps ++;
+                index = (index + 1) % STANDARD_SEMITONES;
+                if (!!MODES[mode].chords[index]) {
+                  steps++;
+                }
+              }
+              const virtualFingerFraction = halfSteps / STANDARD_SEMITONES;
+              const totalFraction = pitchClassFraction + virtualFingerFraction;
+              const simpleFraction = simplifyFraction(totalFraction, 1);
+              virtualPitchClass = simpleFraction;
+            } else {
+              // TODO: pitchClass is not within mode
+            }
+          } else {
+            // TODO: index not 0-11 integer
+          }
+        } else {
+          const virtualFingerFraction = virtualFinger.value / CENTS_PER_OCTAVE;
+          const totalFraction = pitchClassFraction + virtualFingerFraction;
+          const simpleFraction = simplifyFraction(totalFraction, 1);
+          virtualPitchClass = simpleFraction;
+        }
+        if (virtualPitchClass) {
+          virtualPitchClasses.push(virtualPitchClass);
+        }
+      }
+    }
+
+    newSoundingPitchClasses = unionWith(newSoundingPitchClasses, virtualPitchClasses, isEqual);
     setSoundingPitchClasses(newSoundingPitchClasses);
-  }, [manualPitchClasses, toggledPitchClasses, manualVirtualFingers, toggledVirtualFingers]);
+  }, [manualPitchClasses, toggledPitchClasses, manualVirtualFingers, toggledVirtualFingers, mode]);
 
   useEffect(() => {
-    playPitchClasses(soundingPitchClasses);
-  }, [soundingPitchClasses]);
+    playPitchClasses(soundingPitchClasses, mode, transposition, oscillator, a4);
+    setActiveChords(findChords(soundingPitchClasses, semitones, pitchNames));
+  }, [soundingPitchClasses, mode, transposition, oscillator, a4, pitchNames, semitones]);
 
-
-
-
-
-
-
-
-
-
-
-
+  function togglePitchClass(pitchClass) {
+    const index = findIndex(toggledPitchClasses, pc => isEqual(pc, pitchClass));
+    let newToggledPitchClasses;
+    if (index >= 0) {
+      newToggledPitchClasses = [...toggledPitchClasses];
+      newToggledPitchClasses.splice(index, 1);
+    } else {
+      newToggledPitchClasses = [...toggledPitchClasses, pitchClass];
+    }
+    setToggledPitchClasses(newToggledPitchClasses);
+  }
 
   const [activeChords, setActiveChords] = useState([]);
 
@@ -238,94 +298,14 @@ export default function App() {
     setMenuOpen(!isMenuOpen);
   }
 
-  function onTouchCallback(pitches) {
-    function addRandomPitches(low, high = low) {
-      if (!pitches.length || !low) {
-        return pitches;
-      }
-
-      const randomAmount = random(low, high, true);
-      const randomPitches = [];
-      for (let i = 0; i < randomAmount; i++) {
-        let randomPitch;
-        do {
-          randomPitch = random(0, 12, true);
-          // randomPitch = (pitches[0] + 3)%12
-        } while (pitches.indexOf(randomPitch) >= 0)
-        randomPitches.push(randomPitch);
-      }
-
-      return [...pitches, ...randomPitches];
-    }
-
-    // const newPitches = addRandomPitches(1, 2);
-    const newPitches = addRandomPitches();
-    setManualPitches(newPitches);
-    setActiveChords(findChords(newPitches, semitones, pitchNames));
-  }
-
-  function findTranspositionAmount(frequency, virtualFinger, mode) {
-    if (virtualFinger.units === 'steps') {
-      const M = MODES[mode];
-      let steps = 0;
-      for (let i = 1; i < 12; i++) {
-        if (M[i]) {
-          steps++;
-        }
-        if (steps === virtualFinger.value) {
-          return i * 100;
-        }
-      }
-    } else {
-      return virtualFinger.value;
-    }
-  }
-
-  useEffect(() => {
-    const activeFrequencies = [];
-    for(let i = 0; i < semitones; i++) {
-      if (manualPitches.indexOf(i) >= 0) {
-        const frequency = baseFrequencies[i];
-        if (activeFrequencies.indexOf(frequency) < 0) {
-          activeFrequencies.push(frequency);
-        }
-        for (let j = 0; j < activeVirtualFingers.length; j++) {
-          const virtualFinger = activeVirtualFingers[j];
-          const transpositionAmount = findTranspositionAmount(frequency, virtualFinger, mode);
-          const virtualFrequency = findBaseFrequency(transposeFrequency(frequency, transpositionAmount));
-          if (activeFrequencies.indexOf(virtualFrequency) < 0) {
-            activeFrequencies.push(virtualFrequency);
-          }
-        }
-      }
-    }
-
-    const ap = activeFrequencies.map((af) => {
-      let closestDistance = Number.MAX_VALUE;
-      let closestIndex;
-      baseFrequencies.forEach((bf, i) => {
-        const distance = Math.abs(af - bf);
-        if (distance < closestDistance) {
-          closestDistance = distance;
-          closestIndex = i;
-        }
-      });
-      return closestIndex;
-    })
-
-    setAllPitches(ap);
-    playFrequencies(activeFrequencies, oscillator);
-  }, [manualPitches, activeVirtualFingers, baseFrequencies, oscillator, semitones, mode]);
-
-  const [allPitches, setAllPitches] = useState([]);
-
   return (
     <FirstTouch className={styles.root} callback={ initializaAudio.bind(null, eq)}>
       <div className={styles.contentHolder}>
         <div className={styles.top}>
           <VirtualFingers
             pitchNames={pitchNames}
-            callback={onVirtualFinger}
+            onVirtualFinger={onVirtualFinger}
+            toggleVirtualFinger={toggleVirtualFinger}
             hasMode={!!mode}
           />
         </div>
@@ -338,7 +318,7 @@ export default function App() {
       </div>
       <div className={styles.wheelHolder} style={{width: `${diameter}px`, height: `${diameter}px`}}>
         <Display
-          activePitches={allPitches}
+          soundingPitchClasses={soundingPitchClasses}
           baseFrequencies={baseFrequencies}
           diameter={diameter}
           pitchSequence={pitchSequence}
@@ -354,8 +334,8 @@ export default function App() {
           diameter={diameter}
         />
         <TouchPad
-          callback={onTouchCallback}
-          callbackNew={setManualPitchClasses}
+          setManualPitchClasses={setManualPitchClasses}
+          togglePitchClass={togglePitchClass}
           pitchSequence={pitchSequence}
         />
       </div>

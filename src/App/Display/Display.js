@@ -4,12 +4,13 @@ import React from 'react';
 import Canvas from './canvas';
 import {toRadianDirection} from '@danehansen/math';
 import {MODES, RADIANS_IN_CIRCLE, DEGREES_IN_CIRCLE} from 'util/constants';
+import {STANDARD_SEMITONES} from 'util/music';
 import {useState, useEffect, useRef} from 'react';
 import findColors from './findColors';
 import fillSlice from './fillSlice';
 import drawInterval from './drawInterval';
 
-export default function Display({className, activePitches, baseFrequencies, diameter, mode, pitchSequence}) {
+export default function Display({className, soundingPitchClasses, baseFrequencies, diameter, mode, pitchSequence}) {
   const rootNode = useRef();
 
   const [root, setRoot] = useState(null);
@@ -39,16 +40,18 @@ export default function Display({className, activePitches, baseFrequencies, diam
     const colors = findColors(semitones);
 
     function connectPitches() {
-      for (let i = 0; i < activePitches.length; i++) {
-        const pitchA = activePitches[i];
-        const degreesA = DEGREES_IN_CIRCLE / semitones * pitchSequence.indexOf(pitchA);
-        const frequencyA = baseFrequencies[pitchSequence.indexOf(pitchA)];
-        for (let j = i + 1; j < activePitches.length; j++) {
-          const pitchB = activePitches[j];
-          const degreesB = DEGREES_IN_CIRCLE / semitones * pitchSequence.indexOf(pitchB);
-          const frequencyB = baseFrequencies[pitchSequence.indexOf(pitchB)];
-          const colorA = colors[pitchA];
-          const colorB = colors[pitchB]
+      for (let i = 0; i < soundingPitchClasses.length; i++) {
+        const pitchClassA = soundingPitchClasses[i];
+        const sequenceIndexA = pitchSequence.indexOf(Math.round(pitchClassA[0] / pitchClassA[1] * STANDARD_SEMITONES));
+        const degreesA = DEGREES_IN_CIRCLE / semitones * sequenceIndexA;
+        const frequencyA = baseFrequencies[sequenceIndexA];
+        for (let j = i + 1; j < soundingPitchClasses.length; j++) {
+          const pitchClassB = soundingPitchClasses[j];
+          const sequenceIndexB = pitchSequence.indexOf(Math.round(pitchClassB[0] / pitchClassB[1] * STANDARD_SEMITONES));
+          const degreesB = DEGREES_IN_CIRCLE / semitones * sequenceIndexB;
+          const frequencyB = baseFrequencies[sequenceIndexB];
+          const colorA = colors[sequenceIndexA];
+          const colorB = colors[sequenceIndexB];
           drawInterval(toRadianDirection(degreesA), toRadianDirection(degreesB), diameter, buffer, 0.4, frequencyA, frequencyB, colorA, colorB);
         }
       }
@@ -62,7 +65,7 @@ export default function Display({className, activePitches, baseFrequencies, diam
         const pitch = pitchSequence[i];
         const degrees = pitch / semitones * DEGREES_IN_CIRCLE;
         const color = colors[i];
-        const isActive = activePitches.indexOf(i) >= 0;
+        const isActive = soundingPitchClasses.some((pitchClass) => i / STANDARD_SEMITONES === pitchClass[0] / pitchClass[1]);
         const radians = toRadianDirection(degrees);
         const isInKey = !!chords[i];
 
@@ -75,7 +78,7 @@ export default function Display({className, activePitches, baseFrequencies, diam
     drawSlices();
     connectPitches();
     root.drawImage(buffer);
-  }, [activePitches, baseFrequencies, diameter, mode, pitchSequence, buffer, root]);
+  }, [soundingPitchClasses, baseFrequencies, diameter, mode, pitchSequence, buffer, root]);
 
   return <canvas className={classnames(styles.root, className)} ref={rootNode} />;
 }

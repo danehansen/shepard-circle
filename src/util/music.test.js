@@ -1,4 +1,4 @@
-import {findInterval, STANDARD_A4} from './music';
+import {findInterval, STANDARD_A4} from 'util/music';
 
 describe('findInterval', function() {
   it('converts an amount of degrees to radians', function() {

@@ -6,21 +6,6 @@ export const STANDARD_A4 = 440;
 export const CENTS_PER_STANDARD_SEMITONE = 100;
 export const CENTS_PER_OCTAVE = STANDARD_SEMITONES * CENTS_PER_STANDARD_SEMITONE;
 
-export const A4 = {
-  415: 'baroque',
-  427: 'classical',
-  428: 'classical',
-  429: 'classical',
-  430: 'classical',
-  430.54: 'scientific',
-  432: '“frequency of the universe”',
-  435: 'diapson normal',
-  439: 'new philharmonic',
-  [STANDARD_A4]: 'stuttgart',
-  452: 'old philharmonic',
-  466: 'chorton',
-};
-
 export function findInterval(fA, fB) {
   const cents = CENTS_PER_OCTAVE * Math.log2(fB / fA);
   return cents;

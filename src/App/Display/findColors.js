@@ -1,12 +1,12 @@
 import {toRadianDirection} from '@danehansen/math';
 import {RADIANS_IN_CIRCLE, DEGREES_IN_CIRCLE} from 'util/constants';
 
-function findDirectionalColor(direction) {
-  direction -= RADIANS_IN_CIRCLE * 0.25;
+export function findDirectionalColor(radians) {
+  radians -= RADIANS_IN_CIRCLE * 0.25;
   const colorSlice = RADIANS_IN_CIRCLE / 3;
-  const cosR = Math.cos(-direction);
-  const cosG = Math.cos(-direction - colorSlice);
-  const cosB = Math.cos(-direction + colorSlice);
+  const cosR = Math.cos(-radians);
+  const cosG = Math.cos(-radians - colorSlice);
+  const cosB = Math.cos(-radians + colorSlice);
 
   const r = Math.round(cosR * 255 * 0.5 + 255 * 0.5);
   const g = Math.round(cosG * 255 * 0.5 + 255 * 0.5);

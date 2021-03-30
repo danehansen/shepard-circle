@@ -1,6 +1,6 @@
-import convertRadiansToIndex from './convertRadiansToIndex';
+import convertRadiansToIndex from 'util/convertRadiansToIndex';
 import { modulo, toRadianDirection} from '@danehansen/math';
-import {STANDARD_SEMITONES} from './music';
+import {STANDARD_SEMITONES} from 'util/music';
 import {RADIANS_IN_CIRCLE, DEGREES_IN_CIRCLE} from './constants';
 
 describe('convertRadiansToIndex', function() {

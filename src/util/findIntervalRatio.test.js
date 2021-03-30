@@ -1,5 +1,5 @@
-import findIntervalRatio from './findIntervalRatio';
-import {STANDARD_A4} from './music';
+import findIntervalRatio from 'util/findIntervalRatio';
+import {STANDARD_A4} from 'util/music';
 
 describe('findIntervalRatio', function() {
   // root note

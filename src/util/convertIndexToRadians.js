@@ -1,5 +1,5 @@
 import { toRadianDirection } from '@danehansen/math';
-import { DEGREES_IN_CIRCLE } from './constants';
+import { DEGREES_IN_CIRCLE } from 'util/constants';
 
 export default function convertIndexToRadians(index, semitones, rootPitch, pitchSkip) {
   const degreesInSlice = DEGREES_IN_CIRCLE / semitones;

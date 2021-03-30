@@ -1,4 +1,4 @@
-import {STANDARD_SEMITONES, CENTS_PER_STANDARD_SEMITONE, transposeFrequency} from './music';
+import {STANDARD_SEMITONES, CENTS_PER_STANDARD_SEMITONE, transposeFrequency} from 'util/music';
 import findBaseFrequency from './findBaseFrequency';
 
 export default function findBaseFrequencies(semitones, rootFrequency) {

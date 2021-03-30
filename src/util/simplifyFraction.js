@@ -2,7 +2,7 @@ import {primes} from '@danehansen/math';
 
 export default function simplifyFraction(numerator, denominator, tolerance = 0) {
   if (numerator === 0) {
-    return [0,0];
+    return [0, 1];
   }
   if (denominator === 0) {
     return [numerator > 0 ? Infinity : -Infinity, 1];

@@ -1,17 +1,21 @@
 import Button from 'App/Button/Button';
 import styles from './VirtualFingers.module.scss';
+import {VIRTUAL_FINGER_UNITS} from 'util/constants';
 
-export default function VirtualFingers({pitchNames, callback, hasMode}) {
+const {STEPS, CENTS} = VIRTUAL_FINGER_UNITS;
+
+export default function VirtualFingers({pitchNames, onVirtualFinger, hasMode, toggleVirtualFinger}) {
   const semitoneNodes = [];
   for (let i = 1; i < 12; i++) {
     semitoneNodes.push(
       <Button
         key={i}
         className={styles.button}
-        onMouseDown={callback.bind(null, i * 100, true, 'cents')}
-        onMouseUp={callback.bind(null, i * 100, false, 'cents')}
-        onTouchStart={callback.bind(null, i * 100, true, 'cents')}
-        onTouchEnd={callback.bind(null, i * 100, false, 'cents')}
+        onMouseDown={onVirtualFinger.bind(null, i * 100, true, CENTS)}
+        onMouseUp={onVirtualFinger.bind(null, i * 100, false, CENTS)}
+        onTouchStart={onVirtualFinger.bind(null, i * 100, true, CENTS)}
+        onTouchEnd={onVirtualFinger.bind(null, i * 100, false, CENTS)}
+        onDoubleClick={toggleVirtualFinger.bind(null, i * 100, CENTS)}
       >
         <span className={styles.fraction}>+</span>
         <span className={styles.fraction}>
@@ -29,10 +33,11 @@ export default function VirtualFingers({pitchNames, callback, hasMode}) {
               <Button
                 key={i}
                 className={styles.button}
-                onMouseDown={callback.bind(null, i, true, 'steps')}
-                onMouseUp={callback.bind(null, i, false, 'steps')}
-                onTouchStart={callback.bind(null, i, true, 'steps')}
-                onTouchEnd={callback.bind(null, i, false, 'steps')}
+                onMouseDown={onVirtualFinger.bind(null, i, true, STEPS)}
+                onMouseUp={onVirtualFinger.bind(null, i, false, STEPS)}
+                onTouchStart={onVirtualFinger.bind(null, i, true, STEPS)}
+                onTouchEnd={onVirtualFinger.bind(null, i, false, STEPS)}
+                onDoubleClick={toggleVirtualFinger.bind(null, i, STEPS)}
               >
                 <span className={styles.fraction}>+{i}</span>
               </Button>

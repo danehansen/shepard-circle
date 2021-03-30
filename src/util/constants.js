@@ -1,8 +1,12 @@
-import {CENTS_PER_STANDARD_SEMITONE, HUMAN_MAX_FREQ, HUMAN_MIN_FREQ} from './music';
+import {CENTS_PER_STANDARD_SEMITONE, HUMAN_MAX_FREQ, HUMAN_MIN_FREQ, STANDARD_A4} from 'util/music';
 
 export const DEFAULT_TRANSPOSITION = 3 * CENTS_PER_STANDARD_SEMITONE;
 export const DEGREES_IN_CIRCLE = 360;
 export const RADIANS_IN_CIRCLE = Math.PI * 2;
+export const VIRTUAL_FINGER_UNITS = {
+  CENTS: 'cents',
+  STEPS: 'steps',
+};
 
 export const EQ_FREQUENCIES = [];
 let frequency = 2;
@@ -12,6 +16,21 @@ while(frequency < HUMAN_MAX_FREQ) {
     EQ_FREQUENCIES.push(frequency);
   }
 }
+
+export const A4 = {
+  415: 'baroque',
+  427: 'classical',
+  428: 'classical',
+  429: 'classical',
+  430: 'classical',
+  430.54: 'scientific',
+  432: '“frequency of the universe”',
+  435: 'diapson normal',
+  439: 'new philharmonic',
+  [STANDARD_A4]: 'stuttgart',
+  452: 'old philharmonic',
+  466: 'chorton',
+};
 
 export const MODES = [
   {

@@ -1,4 +1,4 @@
-import {MODES} from './constants';
+import {MODES} from 'util/constants';
 
 export default function findChordNames(semitones, modeIndex, pitchSkip) {
   const twelveChordsInMode = [...MODES[modeIndex].chords];

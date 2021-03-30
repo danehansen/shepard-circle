@@ -1,5 +1,5 @@
-import findChords from './findChords';
-import {CHORD_TYPES} from './constants';
+import findChords from 'util/findChords';
+import {CHORD_TYPES} from 'util/constants';
 
 describe('findChords', function() {
   const pitchNames = ['A','A#','B','C','C#','D','D#','E','F','F#','G','G#'];

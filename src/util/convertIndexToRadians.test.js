@@ -1,6 +1,6 @@
-import convertIndexToRadians from './convertIndexToRadians';
-import {STANDARD_SEMITONES} from './music';
-import {RADIANS_IN_CIRCLE} from './constants';
+import convertIndexToRadians from 'util/convertIndexToRadians';
+import {STANDARD_SEMITONES} from 'util/music';
+import {RADIANS_IN_CIRCLE} from 'util/constants';
 
 describe('convertIndexToRadians', function() {
   const DIGITS = 3;

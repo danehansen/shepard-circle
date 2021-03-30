@@ -1,5 +1,5 @@
-import findAllPitchNames from './findAllPitchNames';
-import {STANDARD_SEMITONES, CENTS_PER_STANDARD_SEMITONE} from './music';
+import findAllPitchNames from 'util/findAllPitchNames';
+import {STANDARD_SEMITONES, CENTS_PER_STANDARD_SEMITONE} from 'util/music';
 import {MODES} from './constants';
 import {modulo} from '@danehansen/math';
 

@@ -1,6 +1,6 @@
 import {modulo} from '@danehansen/math';
-import {STANDARD_SEMITONES} from './music';
-import {CHORD_TYPES} from './constants';
+import {STANDARD_SEMITONES} from 'util/music';
+import {CHORD_TYPES} from 'util/constants';
 
 export default function findChords(pitches, semitones, pitchNames, chordTypes = CHORD_TYPES) {
   const matchingChords = [];

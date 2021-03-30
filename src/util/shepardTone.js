@@ -1,5 +1,6 @@
-import {HUMAN_MAX_FREQ} from './music';
-import {EQ_FREQUENCIES} from './constants';
+import {HUMAN_MAX_FREQ, transposeFrequency, CENTS_PER_OCTAVE} from 'util/music';
+import {EQ_FREQUENCIES} from 'util/constants';
+import findBaseFrequency from 'util/findBaseFrequency';
 
 let audioContext;
 let headNode;
@@ -51,13 +52,31 @@ function findAudibleOctaves(frequency) {
   return frequencies;
 }
 
-export function playFrequencies(baseFrequencies, oscillatorType) {
+export function playPitchClasses(pitchClasses, mode, transposition, oscillatorType, a4) {
   const oldOscillators = currentOscillators;
   const newOscillators = {};
   const nonExistingOscillators = [];
-  for(const baseFrequency of baseFrequencies) {
-    const frequencies = findAudibleOctaves(baseFrequency);
-    for (const frequency of frequencies) {
+  const rootFrequency = transposeFrequency(a4, transposition);
+  const baseFrequencies = [];
+  const allFrequencies = [];
+
+  // find all manual and toggled frequencies
+    for (let i = 0; i < pitchClasses.length; i++) {
+      const pitchClass = pitchClasses[i];
+      const fraction  = pitchClass[0] / pitchClass[1] || 0;
+      const cents = fraction * CENTS_PER_OCTAVE;
+      const frequency = transposeFrequency(rootFrequency, cents);
+      const baseFrequency = findBaseFrequency(frequency);
+      baseFrequencies.push(baseFrequency);
+    }
+
+  // add all octaves
+    for(const baseFrequency of baseFrequencies) {
+      allFrequencies.push(...findAudibleOctaves(baseFrequency));
+    }
+
+  // keep existing matching oscillators going
+    for (const frequency of allFrequencies) {
       const oscillator = oldOscillators[frequency];
       if (oscillator) {
         newOscillators[frequency] = oscillator;
@@ -66,31 +85,29 @@ export function playFrequencies(baseFrequencies, oscillatorType) {
         nonExistingOscillators.push(frequency);
       }
     }
-  }
+
   const leftoverOscillators = Object.values(oldOscillators);
 
-  for(const frequency of nonExistingOscillators) {
-    let oscillator;
-    if (leftoverOscillators.length) {
-      oscillator = leftoverOscillators.pop();
-      oscillator.frequency.setValueAtTime(frequency, 0);
-    } else {
-      oscillator = audioContext.createOscillator();
-      oscillator.type = oscillatorType;
-      oscillator.frequency.value = frequency;
-      oscillator.connect(headNode);
-      oscillator.start();
+  // reuse remaining oscillators or make new ones for remaning frequencies
+    for(const frequency of nonExistingOscillators) {
+      let oscillator;
+      if (leftoverOscillators.length) {
+        oscillator = leftoverOscillators.pop();
+        oscillator.frequency.setValueAtTime(frequency, 0);
+      } else {
+        oscillator = audioContext.createOscillator();
+        oscillator.type = oscillatorType;
+        oscillator.frequency.value = frequency;
+        oscillator.connect(headNode);
+        oscillator.start();
+      }
+      newOscillators[frequency] = oscillator;
     }
-    newOscillators[frequency] = oscillator;
-  }
 
-  leftoverOscillators.forEach(oscillator => {
-    oscillator.stop();
-    oscillator.disconnect();
-  });
-  currentOscillators = newOscillators;
-}
-
-export function playPitchClasses(pitchClasses) {
-  console.log('playPitchClasses:', pitchClasses);
+  // kill any leftover osciilators
+    leftoverOscillators.forEach(oscillator => {
+      oscillator.stop();
+      oscillator.disconnect();
+    });
+    currentOscillators = newOscillators;
 }
