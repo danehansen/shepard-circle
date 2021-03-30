@@ -1,0 +1,10 @@
+@import 'styles/shared.module.scss';
+
+.root {
+}
+
+.killTouches {
+  display: inherit;
+  width: 100%;
+  pointer-events: none;
+}

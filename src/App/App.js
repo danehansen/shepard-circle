@@ -175,22 +175,6 @@ export default function App() {
     setChordNamesSorted(findChordNames(semitones, modeIndex, pitchSkip));
   }, [semitones, pitchSkip, modeIndex]);
 
-  function onVirtualFinger(value, isOn, units) {
-    if (isOn) {
-      const alreadyContained = manualVirtualFingers.find(element => element.value === value && element.units === units)
-      if (!alreadyContained) {
-        setManualVirtualFingers([...manualVirtualFingers, {value, units}]);
-      }
-    } else {
-      const index = manualVirtualFingers.findIndex(element => element.value === value && element.units === units)
-      if (index >= 0) {
-        const newActiveVirtualFingers = [...manualVirtualFingers];
-        newActiveVirtualFingers.splice(index, 1);
-        setManualVirtualFingers(newActiveVirtualFingers);
-      }
-    }
-  }
-
   function toggleVirtualFinger(value, units) {
     const virtualFinger = {value, units};
     const index = findIndex(toggledVirtualFingers, vf => isEqual(vf, virtualFinger));
@@ -300,7 +284,7 @@ export default function App() {
         <div className={styles.top}>
           <VirtualFingers
             pitchNames={pitchNames}
-            onVirtualFinger={onVirtualFinger}
+            setManualVirtualFingers={setManualVirtualFingers}
             toggleVirtualFinger={toggleVirtualFinger}
             hasMode={!!modeIndex}
           />

@@ -1,5 +1,6 @@
 import {CENTS_PER_STANDARD_SEMITONE, HUMAN_MAX_FREQ, HUMAN_MIN_FREQ, STANDARD_A4} from 'util/music';
 
+export const IS_TOUCH_SCREEN = 'ontouchstart' in window;
 export const DEFAULT_TRANSPOSITION = 3 * CENTS_PER_STANDARD_SEMITONE;
 export const DEGREES_IN_CIRCLE = 360;
 export const RADIANS_IN_CIRCLE = Math.PI * 2;

@@ -18,7 +18,7 @@
   display: inline-block;
   color: $colorK;
 
-  &:active {
+  &:active, &.isActive {
     border-color: $colorGray3 $colorGray7 $colorGray7 $colorGray3;
     transform: translate(1px, 1px);
   }

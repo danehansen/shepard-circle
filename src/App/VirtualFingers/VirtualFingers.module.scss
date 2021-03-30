@@ -6,6 +6,10 @@
 
 .row {
   display: flex;
+
+  &+.row {
+    margin-top: $margin / 2;
+  }
 }
 
 .button {

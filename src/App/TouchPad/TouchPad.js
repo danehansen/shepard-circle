@@ -1,10 +1,8 @@
 import {useRef, useState} from 'react';
 import {modulo, toDegreeDirection} from '@danehansen/math';
 import styles from './TouchPad.module.scss';
-import {RADIANS_IN_CIRCLE, DEGREES_IN_CIRCLE} from 'util/constants';
+import {RADIANS_IN_CIRCLE, DEGREES_IN_CIRCLE, IS_TOUCH_SCREEN} from 'util/constants';
 import {useBoundingClientRect} from 'util/hooks';
-
-const IS_TOUCH_SCREEN = 'ontouchstart' in window;
 
 export default function TouchPad({
   pitchSequence,
@@ -54,19 +52,17 @@ export default function TouchPad({
         const touch = targetTouches[i];
         const index = findPitchIndex(touch.clientX, touch.clientY);
         if (typeof index === 'number') {
-              pitchClasses.push(index);
-            }
-          else {
-            setPointerIsDown(false);
-          }
+          pitchClasses.push(index);
+        } else {
+          setPointerIsDown(false);
+        }
       }
     } else {
       if (type !== 'mouseup') {
         const index = findPitchIndex(evt.clientX, evt.clientY);
         if (typeof index === 'number') {
-            pitchClasses.push(index);
-          }
-        else {
+          pitchClasses.push(index);
+        } else {
           setPointerIsDown(false);
         }
       }
