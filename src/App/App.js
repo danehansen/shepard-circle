@@ -21,7 +21,6 @@ import {initializaAudio, playPitchClasses} from 'util/shepardTone';
 import {useViewportDimensions} from 'util/hooks';
 import findChords from 'util/findChords';
 import replaceState from 'util/replaceState';
-import simplifyFraction from 'util/simplifyFraction';
 
 import {useState, useEffect} from 'react';
 import queryString from 'query-string';
@@ -81,7 +80,7 @@ export default function App() {
   // }, []);
 
   const params = {
-    arrayFormat: 'comma',
+    arrayFormat: 'index',
     parseNumbers: true,
   };
 
@@ -208,7 +207,7 @@ export default function App() {
   const [manualPitchClasses, setManualPitchClasses] = useState([]);
 
   const [toggledPitchClasses, setToggledPitchClasses] = useState(urlParams.toggledPitchClasses || []);
-  // useURLParams('toggledPitchClasses', toggledPitchClasses, []);
+  useURLParams('toggledPitchClasses', toggledPitchClasses, []);
 
   const [manualVirtualFingers, setManualVirtualFingers] = useState([]);
 
@@ -227,10 +226,10 @@ export default function App() {
 
       for (let j = 0; j < newSoundingPitchClasses.length; j++) {
         const pitchClass = newSoundingPitchClasses[j];
-        let virtualPitchClass;
-        const pitchClassFraction = pitchClass[0] / pitchClass[1];
+        let virtualFingerFraction;
+        const pitchClassFraction = pitchClass / semitones;
         if (virtualFinger.units === VIRTUAL_FINGER_UNITS.STEPS) {
-          let index = pitchClassFraction * STANDARD_SEMITONES;
+          let index = pitchClass;
           if (index % 1 === 0) {
             const pitchClassIsInScale = !!MODES[modeIndex].chords[index];
             if (pitchClassIsInScale) {
@@ -243,10 +242,7 @@ export default function App() {
                   steps++;
                 }
               }
-              const virtualFingerFraction = halfSteps / STANDARD_SEMITONES;
-              const totalFraction = pitchClassFraction + virtualFingerFraction;
-              const simpleFraction = simplifyFraction(totalFraction, 1);
-              virtualPitchClass = simpleFraction;
+              virtualFingerFraction = halfSteps / STANDARD_SEMITONES;
             } else {
               // TODO: pitchClass is not within mode
             }
@@ -254,12 +250,12 @@ export default function App() {
             // TODO: index not 0-11 integer
           }
         } else {
-          const virtualFingerFraction = virtualFinger.value / CENTS_PER_OCTAVE;
-          const totalFraction = pitchClassFraction + virtualFingerFraction;
-          const simpleFraction = simplifyFraction(totalFraction, 1);
-          virtualPitchClass = simpleFraction;
+          virtualFingerFraction = virtualFinger.value / CENTS_PER_OCTAVE;
         }
-        if (virtualPitchClass) {
+        if (virtualFingerFraction) {
+          const totalFraction = (pitchClassFraction + virtualFingerFraction) % 1;
+          const tolerance = 10000;
+          const virtualPitchClass = Math.round(totalFraction * semitones * tolerance) / tolerance;
           virtualPitchClasses.push(virtualPitchClass);
         }
       }
@@ -267,15 +263,15 @@ export default function App() {
 
     newSoundingPitchClasses = unionWith(newSoundingPitchClasses, virtualPitchClasses, isEqual);
     setSoundingPitchClasses(newSoundingPitchClasses);
-  }, [manualPitchClasses, toggledPitchClasses, manualVirtualFingers, toggledVirtualFingers, modeIndex]);
+  }, [manualPitchClasses, toggledPitchClasses, manualVirtualFingers, toggledVirtualFingers, modeIndex, semitones]);
 
   useEffect(() => {
-    playPitchClasses(soundingPitchClasses, transposition, oscillatorType, a4);
+    playPitchClasses(soundingPitchClasses, transposition, oscillatorType, a4, semitones);
     setActiveChords(findChords(soundingPitchClasses, semitones, pitchNames));
   }, [soundingPitchClasses, modeIndex, transposition, oscillatorType, a4, pitchNames, semitones]);
 
   function togglePitchClass(pitchClass) {
-    const index = findIndex(toggledPitchClasses, pc => isEqual(pc, pitchClass));
+    const index = toggledPitchClasses.indexOf(pitchClass);
     let newToggledPitchClasses;
     if (index >= 0) {
       newToggledPitchClasses = [...toggledPitchClasses];

@@ -4,7 +4,6 @@ import React from 'react';
 import Canvas from './canvas';
 import {toRadianDirection} from '@danehansen/math';
 import {MODES, RADIANS_IN_CIRCLE, DEGREES_IN_CIRCLE} from 'util/constants';
-import {STANDARD_SEMITONES} from 'util/music';
 import {useState, useEffect, useRef} from 'react';
 import findColors from './findColors';
 import fillSlice from './fillSlice';
@@ -42,12 +41,12 @@ export default function Display({className, soundingPitchClasses, baseFrequencie
     function connectPitches() {
       for (let i = 0; i < soundingPitchClasses.length; i++) {
         const pitchClassA = soundingPitchClasses[i];
-        const sequenceIndexA = pitchSequence.indexOf(Math.round(pitchClassA[0] / pitchClassA[1] * STANDARD_SEMITONES));
+        const sequenceIndexA = pitchSequence.indexOf(pitchClassA);
         const degreesA = DEGREES_IN_CIRCLE / semitones * sequenceIndexA;
         const frequencyA = baseFrequencies[sequenceIndexA];
         for (let j = i + 1; j < soundingPitchClasses.length; j++) {
           const pitchClassB = soundingPitchClasses[j];
-          const sequenceIndexB = pitchSequence.indexOf(Math.round(pitchClassB[0] / pitchClassB[1] * STANDARD_SEMITONES));
+          const sequenceIndexB = pitchSequence.indexOf(pitchClassB);
           const degreesB = DEGREES_IN_CIRCLE / semitones * sequenceIndexB;
           const frequencyB = baseFrequencies[sequenceIndexB];
           const colorA = colors[sequenceIndexA];
@@ -65,7 +64,7 @@ export default function Display({className, soundingPitchClasses, baseFrequencie
         const pitch = pitchSequence[i];
         const degrees = pitch / semitones * DEGREES_IN_CIRCLE;
         const color = colors[i];
-        const isActive = soundingPitchClasses.some((pitchClass) => i / STANDARD_SEMITONES === pitchClass[0] / pitchClass[1]);
+        const isActive = soundingPitchClasses.indexOf(i) >= 0;
         const radians = toRadianDirection(degrees);
         const isInKey = !!chords[i];
 

@@ -52,7 +52,10 @@ function findAudibleOctaves(frequency) {
   return frequencies;
 }
 
-export function playPitchClasses(pitchClasses, transposition, oscillatorType, a4) {
+export function playPitchClasses(pitchClasses, transposition, oscillatorType, a4, semitones) {
+  if (!audioContext) {
+    return;
+  }
   const oldOscillators = currentOscillators;
   const newOscillators = {};
   const nonExistingOscillators = [];
@@ -63,7 +66,7 @@ export function playPitchClasses(pitchClasses, transposition, oscillatorType, a4
   // find all manual and toggled frequencies
     for (let i = 0; i < pitchClasses.length; i++) {
       const pitchClass = pitchClasses[i];
-      const fraction  = pitchClass[0] / pitchClass[1] || 0;
+      const fraction  = pitchClass / semitones;
       const cents = fraction * CENTS_PER_OCTAVE;
       const frequency = transposeFrequency(rootFrequency, cents);
       const baseFrequency = findBaseFrequency(frequency);

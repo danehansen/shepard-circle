@@ -1,6 +1,5 @@
 import {useRef, useState} from 'react';
 import {modulo, toDegreeDirection} from '@danehansen/math';
-import simplifyFraction from 'util/simplifyFraction';
 import styles from './TouchPad.module.scss';
 import {RADIANS_IN_CIRCLE, DEGREES_IN_CIRCLE} from 'util/constants';
 import {useBoundingClientRect} from 'util/hooks';
@@ -34,7 +33,6 @@ export default function TouchPad({
   }
 
   function handle(evt) {
-    const pitches = [];
     const pitchClasses = [];
     const type = evt.type;
     const isTouchEvent = /touch/.test(type);
@@ -56,8 +54,7 @@ export default function TouchPad({
         const touch = targetTouches[i];
         const index = findPitchIndex(touch.clientX, touch.clientY);
         if (typeof index === 'number') {
-              pitches.push(pitchSequence[index]);
-              pitchClasses.push(simplifyFraction(index,semitones));
+              pitchClasses.push(index);
             }
           else {
             setPointerIsDown(false);
@@ -67,8 +64,7 @@ export default function TouchPad({
       if (type !== 'mouseup') {
         const index = findPitchIndex(evt.clientX, evt.clientY);
         if (typeof index === 'number') {
-            pitches.push(pitchSequence[index]);
-            pitchClasses.push(simplifyFraction(index,semitones));
+            pitchClasses.push(index);
           }
         else {
           setPointerIsDown(false);
@@ -82,7 +78,7 @@ export default function TouchPad({
   function handleToggle(evt) {
     const index = findPitchIndex(evt.clientX, evt.clientY);
     if (typeof index === 'number') {
-      togglePitchClass(simplifyFraction(index,semitones))
+      togglePitchClass(index);
     }
   }
 
