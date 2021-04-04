@@ -67,7 +67,7 @@ export default function VirtualFingers({pitchNames, hasMode, toggleVirtualFinger
           className={styles.button}
           onClick={isToggling ? toggleVirtualFinger.bind(null, i, STEPS) : null}
         >
-          <span className={styles.fraction}>+{i}</span>
+          <span className={styles.fraction}>+{i + 1}</span>
         </Button>
       );
     }
