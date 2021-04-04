@@ -6,9 +6,20 @@ import {useState, useEffect} from 'react';
 
 const {STEPS, CENTS} = VIRTUAL_FINGER_UNITS;
 
-export default function VirtualFingers({pitchNames, hasMode, toggleVirtualFinger, setManualVirtualFingers}) {
+export default function VirtualFingers({pitchNames, hasMode, toggleVirtualFinger, setManualVirtualFingers, isToggling, soundingVirtualFingers}) {
   const [halfStepIndexes, setHalfStepIndexes] = useState([]);
   const [stepIndexes, setStepIndexes] = useState([]);
+
+  let soundingVirtualStepIndexes = [];
+  let soundingVirtualHalfstepIndexes = [];
+    soundingVirtualFingers.forEach(({value, units}) => {
+      if (units === STEPS) {
+        soundingVirtualStepIndexes.push(value)
+      } else {
+        soundingVirtualHalfstepIndexes.push(value / 100);
+      }
+    })
+  // console.log(soundingVirtualStepIndexes, soundingVirtualHalfstepIndexes)
 
   useEffect(() => {
     const virtualFingers = [];
@@ -33,8 +44,8 @@ export default function VirtualFingers({pitchNames, hasMode, toggleVirtualFinger
       <Button
         key={i}
         className={styles.button}
-        isActive={halfStepIndexes.indexOf(i - 1) >= 0}
-        onDoubleClick={toggleVirtualFinger.bind(null, i * 100, CENTS)}
+        isActive={soundingVirtualHalfstepIndexes.indexOf(i) >= 0}
+        onClick={isToggling ? toggleVirtualFinger.bind(null, i * 100, CENTS) : null}
       >
         <span className={styles.fraction}>+</span>
         <span className={styles.fraction}>
@@ -51,9 +62,9 @@ export default function VirtualFingers({pitchNames, hasMode, toggleVirtualFinger
       stepNodes.push(
         <Button
           key={i}
-          isActive={stepIndexes.indexOf(i - 1) >= 0}
+          isActive={soundingVirtualStepIndexes.indexOf(i) >= 0}
           className={styles.button}
-          onDoubleClick={toggleVirtualFinger.bind(null, i, STEPS)}
+          onClick={isToggling ? toggleVirtualFinger.bind(null, i, STEPS) : null}
         >
           <span className={styles.fraction}>+{i}</span>
         </Button>
@@ -69,22 +80,29 @@ export default function VirtualFingers({pitchNames, hasMode, toggleVirtualFinger
     setStepIndexes(activeButtons);
   }
 
+  const Component = isToggling ? 'div' : MultiTouchButtonGroup;
+  const semitoneListeners = {};
+  const stepListeners = {};
+  if (!isToggling) {
+    semitoneListeners.setActiveButtons = handleHalfSteps;
+    stepListeners.setActiveButtons = handleSteps;
+  }
 
   return (
     <div className={styles.root}>
-      <MultiTouchButtonGroup
+      <Component
         className={styles.row}
-        setActiveButtons={handleHalfSteps}
+        {...semitoneListeners}
       >
         {semitoneNodes}
-      </MultiTouchButtonGroup>
+      </Component>
       {hasMode && (
-        <MultiTouchButtonGroup
+        <Component
           className={styles.row}
-          setActiveButtons={handleSteps}
+          {...stepListeners}
         >
           {stepNodes}
-        </MultiTouchButtonGroup>
+        </Component>
       )}
     </div>
   );

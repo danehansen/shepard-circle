@@ -1,0 +1,14 @@
+@import 'styles/shared.module.scss';
+
+.root {
+  display: block;
+
+  &.wide {
+    width: 100%;
+  }
+}
+
+.text {
+  display: inline-block;
+  text-transform: capitalize;
+}

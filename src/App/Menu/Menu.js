@@ -1,8 +1,8 @@
 import styles from './Menu.module.scss';
 import {OSCILLATOR_TYPES, MODES, EQ_FREQUENCIES, A4} from 'util/constants';
 import {STANDARD_A4, STANDARD_SEMITONES, HUMAN_CENT_THRESHOLD, CENTS_PER_STANDARD_SEMITONE, CENTS_PER_OCTAVE} from 'util/music';
-import classnames from 'classnames';
-import Input from './Input/Input';
+import Input from 'App/Input/Input';
+import Label from 'App/Label/Label';
 import Button from 'App/Button/Button';
 
 function findIncrementLabel(increment, semitones) {
@@ -55,10 +55,9 @@ export default function Menu({
       <div className={styles.property}>
         <h2 className={styles.title}>Oscillator</h2>
         {Object.values(OSCILLATOR_TYPES).map((value) => {
-          return <label className={styles.label} key={value}>
+          return <Label key={value} text={value}>
             <Input type="radio" checked={oscillatorType === value} value={value} onChange={onOscillatorChange} />
-            <div className={styles.labelText}>{value}</div>
-          </label>
+          </Label>
         })}
       </div>
 
@@ -76,10 +75,9 @@ export default function Menu({
         <h2 className={styles.title}>Transposition</h2>
         <div className={styles.columns}>
           {allPitchNames.map((name, index) => {
-            return <label className={styles.label} key={name}>
+            return <Label text={name} key={name}>
               <Input type="radio" value={index * CENTS_PER_STANDARD_SEMITONE} name="transposition" checked={transposition === index * CENTS_PER_STANDARD_SEMITONE} onChange={({target:{value}}) => {setTransposition(parseInt(value))}} />
-              <div className={styles.labelText}>{name}</div>
-            </label>
+            </Label>
           })}
         </div>
       </div>
@@ -88,24 +86,23 @@ export default function Menu({
         <h2 className={styles.title}>Mode</h2>
         <div className={styles.columns}>
           {MODES.map((modeObj, index) => {
-            return <label className={styles.label} key={modeObj.name}>
+            return <Label text={modeObj.name} key={modeObj.name}>
               <Input type="radio" value={index} name="mode" checked={modeIndex === index} onChange={({target:{value}}) => {setModeIndex(parseInt(value))}} />
-              <div className={styles.labelText}>{modeObj.name}</div>
-            </label>
+            </Label>
           })}
         </div>
       </div>
 
       <div className={styles.property}>
         <h2 className={styles.title}>Semitones<Button className={styles.reset} onClick={(evt) => {evt.preventDefault(); setSemitones(STANDARD_SEMITONES)}}>reset</Button><div className={styles.valueText}>{semitones}</div></h2>
-        <label className={classnames(styles.label, styles.wide)}>
+        <Label wide>
           <Input type="range" min={1} max={CENTS_PER_OCTAVE / HUMAN_CENT_THRESHOLD} value={semitones} onChange={({target: {value}}) => {setSemitones(parseInt(value))}} />
-        </label>
+        </Label>
       </div>
 
       <div className={styles.property}>
         <h2 className={styles.title}>A4<Button className={styles.reset} onClick={(evt) => {evt.preventDefault(); setA4(STANDARD_A4)}}>reset</Button><div className={styles.valueText}>{a4}{A4[a4] && ` (${A4[a4]})`}</div></h2>
-        <label className={classnames(styles.label, styles.wide)}>
+        <Label wide>
           <Input
             type="range"
             min={Math.min(...Object.keys(A4))}
@@ -113,17 +110,16 @@ export default function Menu({
             value={a4}
             onChange={({target:{value}}) => {setA4(parseInt(value))}}
           />
-        </label>
+        </Label>
       </div>
 
       <div className={styles.property}>
         <h2 className={styles.title}>Organize</h2>
         <div className={styles.columns}>
         {pitchSkipOptions.map((num) => {
-          return <label className={styles.label} key={num}>
+          return <Label text={findIncrementLabel(num, semitones)} key={num}>
             <Input type="radio" value={num} name="pitchSkip" checked={pitchSkip === num} onChange={({target:{value}}) => {setPitchSkip(parseInt(value))}} />
-            <div className={styles.labelText}>{findIncrementLabel(num, semitones)}</div>
-          </label>
+          </Label>
         })}
         </div>
       </div>

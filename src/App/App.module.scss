@@ -60,3 +60,9 @@
   position: relative;
   color: $colorW;
 }
+
+.toggleLabel {
+  position: absolute;
+  left: $margin;
+  bottom: $margin;
+}

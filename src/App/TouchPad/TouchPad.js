@@ -8,6 +8,7 @@ export default function TouchPad({
   pitchSequence,
   setManualPitchClasses,
   togglePitchClass,
+  isToggling,
 }) {
   const rootRef = useRef();
   const [pointerIsDown, setPointerIsDown] = useState(false);
@@ -72,6 +73,7 @@ export default function TouchPad({
   }
 
   function handleToggle(evt) {
+    const isTouchEvent = /touch/.test(evt.type);
     const index = findPitchIndex(evt.clientX, evt.clientY);
     if (typeof index === 'number') {
       togglePitchClass(index);
@@ -79,7 +81,7 @@ export default function TouchPad({
   }
 
   let listeners = {
-    onDoubleClick: handleToggle,
+    onClick: isToggling ? handleToggle : null,
   };
   if (IS_TOUCH_SCREEN) {
     listeners = {

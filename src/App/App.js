@@ -8,6 +8,8 @@ import Button from './Button/Button';
 import FirstTouch from './FirstTouch/FirstTouch';
 import MatchingChords from './MatchingChords/MatchingChords';
 import VirtualFingers from './VirtualFingers/VirtualFingers';
+import Label from './Label/Label';
+import Input from './Input/Input';
 import {OSCILLATOR_TYPES, DEFAULT_TRANSPOSITION, EQ_FREQUENCIES, MODES, VIRTUAL_FINGER_UNITS} from 'util/constants';
 import {STANDARD_A4, STANDARD_SEMITONES, transposeFrequency, CENTS_PER_OCTAVE} from 'util/music';
 import findPitchSkipOptions from 'util/findPitchSkipOptions';
@@ -199,6 +201,7 @@ export default function App() {
   // useURLParams('toggledVirtualFingers', toggledVirtualFingers, []);
 
   const [soundingPitchClasses, setSoundingPitchClasses] = useState([...manualPitchClasses]);
+  const [soundingVirtualFingers, setSoundingVirtualFingers] = useState([...manualPitchClasses]);
   useEffect(() => {
     const newSoundingVirtualFingers = unionWith(manualVirtualFingers, toggledVirtualFingers, isEqual);
 
@@ -247,6 +250,7 @@ export default function App() {
 
     newSoundingPitchClasses = unionWith(newSoundingPitchClasses, virtualPitchClasses, isEqual);
     setSoundingPitchClasses(newSoundingPitchClasses);
+    setSoundingVirtualFingers(newSoundingVirtualFingers);
   }, [manualPitchClasses, toggledPitchClasses, manualVirtualFingers, toggledVirtualFingers, modeIndex, semitones]);
 
   useEffect(() => {
@@ -278,6 +282,8 @@ export default function App() {
     setMenuOpen(!isMenuOpen);
   }
 
+  const [isToggling, setIsToggling] = useState(false);
+
   return (
     <FirstTouch className={styles.root} callback={ initializaAudio.bind(null, eq)}>
       <div className={styles.contentHolder} style={{width: `${diameter}px`, height: `calc(100% - ${diameter}px)`}}>
@@ -287,6 +293,8 @@ export default function App() {
             setManualVirtualFingers={setManualVirtualFingers}
             toggleVirtualFinger={toggleVirtualFinger}
             hasMode={!!modeIndex}
+            isToggling={isToggling}
+            soundingVirtualFingers={soundingVirtualFingers}
           />
         </div>
         <div className={styles.bottom}>
@@ -317,8 +325,20 @@ export default function App() {
           setManualPitchClasses={setManualPitchClasses}
           togglePitchClass={togglePitchClass}
           pitchSequence={pitchSequence}
+          isToggling={isToggling}
         />
       </div>
+
+      <Label
+        className={styles.toggleLabel}
+        text='toggling'
+      >
+        <Input
+          type="checkbox"
+          checked={isToggling === true}
+          onChange={setIsToggling.bind(null, !isToggling)}
+        />
+      </Label>
 
       {isMenuOpen && <div className={styles.menuHolder}>
         <Menu

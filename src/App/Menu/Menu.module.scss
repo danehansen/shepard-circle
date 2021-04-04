@@ -28,19 +28,6 @@
   columns: auto 160px;
 }
 
-.label {
-  display: block;
-
-  &.wide {
-    width: 100%;
-  }
-}
-
-.labelText {
-  display: inline-block;
-  text-transform: capitalize;
-}
-
 .valueText {
   font-weight: $fontWeightBody;
   display: inline-block;
