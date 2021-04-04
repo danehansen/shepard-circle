@@ -182,10 +182,10 @@ export default function App() {
     const index = findIndex(toggledVirtualFingers, vf => isEqual(vf, virtualFinger));
     let newToggledVirtualFingers = [];
     if (index >= 0) {
-      newToggledVirtualFingers = [...newToggledVirtualFingers];
+      newToggledVirtualFingers = [...toggledVirtualFingers];
       newToggledVirtualFingers.splice(index, 1);
     } else {
-      newToggledVirtualFingers = [...newToggledVirtualFingers, virtualFinger];
+      newToggledVirtualFingers = [...toggledVirtualFingers, virtualFinger];
     }
     setToggledVirtualFingers(newToggledVirtualFingers);
   }
