@@ -20,21 +20,14 @@ export default function VirtualFingers({pitchNames, hasMode, toggleVirtualFinger
         soundingVirtualHalfstepIndexes.push(value / CENTS_PER_STANDARD_SEMITONE);
       }
     })
-  // console.log(soundingVirtualStepIndexes, soundingVirtualHalfstepIndexes)
 
   useEffect(() => {
     const virtualFingers = [];
     stepIndexes.forEach((index) => {
-      virtualFingers.push({
-        value: index + 1,
-        units: STEPS,
-      });
+      virtualFingers.push(`${index + 1}${STEPS}`);
     });
     halfStepIndexes.forEach((index) => {
-      virtualFingers.push({
-        value: (index + 1) * CENTS_PER_STANDARD_SEMITONE,
-        units: CENTS,
-      });
+      virtualFingers.push(`${(index + 1) * CENTS_PER_STANDARD_SEMITONE}${CENTS}`);
     });
     setManualVirtualFingers(virtualFingers);
   }, [stepIndexes, halfStepIndexes, setManualVirtualFingers]);
@@ -46,7 +39,7 @@ export default function VirtualFingers({pitchNames, hasMode, toggleVirtualFinger
         key={i}
         className={styles.button}
         isActive={soundingVirtualHalfstepIndexes.indexOf(i) >= 0}
-        onClick={isToggling ? toggleVirtualFinger.bind(null, i * CENTS_PER_STANDARD_SEMITONE, CENTS) : null}
+        onClick={isToggling ? toggleVirtualFinger.bind(null, `${(i + 1) * CENTS_PER_STANDARD_SEMITONE}${CENTS}`) : null}
       >
         <span className={styles.fraction}>+</span>
         <span className={styles.fraction}>
@@ -65,7 +58,7 @@ export default function VirtualFingers({pitchNames, hasMode, toggleVirtualFinger
           key={i}
           isActive={soundingVirtualStepIndexes.indexOf(i) >= 0}
           className={styles.button}
-          onClick={isToggling ? toggleVirtualFinger.bind(null, i, STEPS) : null}
+          onClick={isToggling ? toggleVirtualFinger.bind(null, `${i + 1}${STEPS}`) : null}
         >
           <span className={styles.fraction}>+{i + 1}</span>
         </Button>

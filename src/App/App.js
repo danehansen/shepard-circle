@@ -26,7 +26,7 @@ import replaceState from 'util/replaceState';
 
 import {useState, useEffect} from 'react';
 import queryString from 'query-string';
-import {isEqual, unionWith, findIndex} from 'lodash';
+import {isEqual, unionWith} from 'lodash';
 
 export default function App() {
   // useEffect(() => {
@@ -177,15 +177,14 @@ export default function App() {
     setChordNamesSorted(findChordNames(semitones, modeIndex, pitchSkip));
   }, [semitones, pitchSkip, modeIndex]);
 
-  function toggleVirtualFinger(value, units) {
-    const virtualFinger = {value, units};
-    const index = findIndex(toggledVirtualFingers, vf => isEqual(vf, virtualFinger));
+  function toggleVirtualFinger(str) {
+    const index = toggledVirtualFingers.indexOf(str);
     let newToggledVirtualFingers = [];
     if (index >= 0) {
       newToggledVirtualFingers = [...toggledVirtualFingers];
       newToggledVirtualFingers.splice(index, 1);
     } else {
-      newToggledVirtualFingers = [...toggledVirtualFingers, virtualFinger];
+      newToggledVirtualFingers = [...toggledVirtualFingers, str];
     }
     setToggledVirtualFingers(newToggledVirtualFingers);
   }
@@ -198,10 +197,10 @@ export default function App() {
   const [manualVirtualFingers, setManualVirtualFingers] = useState([]);
 
   const [toggledVirtualFingers, setToggledVirtualFingers] = useState(urlParams.toggledVirtualFingers || []);
-  // useURLParams('toggledVirtualFingers', toggledVirtualFingers, []);
+  useURLParams('toggledVirtualFingers', toggledVirtualFingers, []);
 
   const [soundingPitchClasses, setSoundingPitchClasses] = useState([...manualPitchClasses]);
-  const [soundingVirtualFingers, setSoundingVirtualFingers] = useState([...manualPitchClasses]);
+  const [soundingVirtualFingers, setSoundingVirtualFingers] = useState([...manualVirtualFingers]);
   useEffect(() => {
     const newSoundingVirtualFingers = unionWith(manualVirtualFingers, toggledVirtualFingers, isEqual);
 
@@ -210,19 +209,21 @@ export default function App() {
     let virtualPitchClasses = [];
     for (let i = 0; i < newSoundingVirtualFingers.length; i++) {
       const virtualFinger = newSoundingVirtualFingers[i];
+      const isSteps = new RegExp(`${VIRTUAL_FINGER_UNITS.STEPS}$`, 'g').test(virtualFinger);
 
       for (let j = 0; j < newSoundingPitchClasses.length; j++) {
         const pitchClass = newSoundingPitchClasses[j];
         let virtualFingerFraction;
         const pitchClassFraction = pitchClass / semitones;
-        if (virtualFinger.units === VIRTUAL_FINGER_UNITS.STEPS) {
+
+        if (isSteps) {
           let index = pitchClass;
           if (index % 1 === 0) {
             const pitchClassIsInScale = !!MODES[modeIndex].chords[index];
             if (pitchClassIsInScale) {
               let steps = 0;
               let halfSteps = 0;
-              while (steps !== virtualFinger.value) {
+              while (steps !== parseInt(virtualFinger)) {
                 halfSteps ++;
                 index = (index + 1) % STANDARD_SEMITONES;
                 if (!!MODES[modeIndex].chords[index]) {
@@ -237,7 +238,7 @@ export default function App() {
             // TODO: index not 0-11 integer
           }
         } else {
-          virtualFingerFraction = virtualFinger.value / CENTS_PER_OCTAVE;
+          virtualFingerFraction = parseInt(virtualFinger) / CENTS_PER_OCTAVE;
         }
         if (virtualFingerFraction) {
           const totalFraction = (pitchClassFraction + virtualFingerFraction) % 1;

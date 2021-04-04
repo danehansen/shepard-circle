@@ -73,7 +73,6 @@ export default function TouchPad({
   }
 
   function handleToggle(evt) {
-    const isTouchEvent = /touch/.test(evt.type);
     const index = findPitchIndex(evt.clientX, evt.clientY);
     if (typeof index === 'number') {
       togglePitchClass(index);
