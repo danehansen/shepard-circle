@@ -1,6 +1,7 @@
 import Button from 'App/Button/Button';
 import styles from './VirtualFingers.module.scss';
 import {VIRTUAL_FINGER_UNITS} from 'util/constants';
+import {CENTS_PER_STANDARD_SEMITONE, STANDARD_SEMITONES} from 'util/music';
 import MultiTouchButtonGroup from 'App/MultiTouchButtonGroup/MultiTouchButtonGroup';
 import {useState, useEffect} from 'react';
 
@@ -16,7 +17,7 @@ export default function VirtualFingers({pitchNames, hasMode, toggleVirtualFinger
       if (units === STEPS) {
         soundingVirtualStepIndexes.push(value)
       } else {
-        soundingVirtualHalfstepIndexes.push(value / 100);
+        soundingVirtualHalfstepIndexes.push(value / CENTS_PER_STANDARD_SEMITONE);
       }
     })
   // console.log(soundingVirtualStepIndexes, soundingVirtualHalfstepIndexes)
@@ -31,7 +32,7 @@ export default function VirtualFingers({pitchNames, hasMode, toggleVirtualFinger
     });
     halfStepIndexes.forEach((index) => {
       virtualFingers.push({
-        value: (index + 1) * 100,
+        value: (index + 1) * CENTS_PER_STANDARD_SEMITONE,
         units: CENTS,
       });
     });
@@ -39,13 +40,13 @@ export default function VirtualFingers({pitchNames, hasMode, toggleVirtualFinger
   }, [stepIndexes, halfStepIndexes, setManualVirtualFingers]);
 
   const semitoneNodes = [];
-  for (let i = 1; i < 12; i++) {
+  for (let i = 1; i < STANDARD_SEMITONES; i++) {
     semitoneNodes.push(
       <Button
         key={i}
         className={styles.button}
         isActive={soundingVirtualHalfstepIndexes.indexOf(i) >= 0}
-        onClick={isToggling ? toggleVirtualFinger.bind(null, i * 100, CENTS) : null}
+        onClick={isToggling ? toggleVirtualFinger.bind(null, i * CENTS_PER_STANDARD_SEMITONE, CENTS) : null}
       >
         <span className={styles.fraction}>+</span>
         <span className={styles.fraction}>

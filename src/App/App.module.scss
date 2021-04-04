@@ -12,10 +12,6 @@
   height: 100%;
   display: flex;
   user-select: none;
-
-  @media (orientation: portrait) {
-    flex-direction: column;
-  }
 }
 
 .menuHolder {
@@ -40,6 +36,11 @@
   flex-direction: column;
   overflow: visible;
   box-sizing: border-box;
+
+  position: fixed;
+  top: 0;
+  width: 100vw;
+  height: calc(100% - 100vw);
 }
 
 .top {
@@ -57,7 +58,10 @@
 }
 
 .wheelHolder {
-  position: relative;
+  position: fixed;
+  bottom: 0;
+  width: 100vw;
+  height: 100vw;
   color: $colorW;
 }
 
