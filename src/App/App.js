@@ -286,7 +286,7 @@ export default function App() {
 
   return (
     <FirstTouch className={styles.root} callback={ initializaAudio.bind(null, eq)}>
-      <div className={styles.contentHolder} style={{width: `${diameter}px`, height: `calc(100% - ${diameter}px)`}}>
+      <div className={styles.contentHolder}>
         <div className={styles.top}>
           <VirtualFingers
             pitchNames={pitchNames}
@@ -304,7 +304,7 @@ export default function App() {
           />
         </div>
       </div>
-      <div className={styles.wheelHolder} style={{width: `${diameter}px`, height: `${diameter}px`}}>
+      <div className={styles.wheelHolder}>
         <Display
           soundingPitchClasses={soundingPitchClasses}
           baseFrequencies={baseFrequencies}
